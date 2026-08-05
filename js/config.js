@@ -33,7 +33,7 @@ window.CONFIG = {
          'https://yourname.github.io/project-os/'
      Leave empty and the link is left out; you can still paste answers in.
   ------------------------------------------------------------------ */
-  appUrl: '',
+  appUrl: 'https://sarahjhill.github.io/project-os/',
 
   /* ------------------------------------------------------------------
      3. WHAT THE CLIENT SEES AFTER SUBMITTING
