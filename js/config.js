@@ -32,11 +32,8 @@ window.CONFIG = {
      notification email. Set it to your deployed address, e.g.
          'https://yourname.github.io/project-os/'
      Leave empty and the link is left out; you can still paste answers in.
-
-     >>> THIS IS THE ONE THING STILL TO FILL IN. <<<
-     Replace YOUR-USERNAME with your GitHub username once the site is live.
   ------------------------------------------------------------------ */
-  appUrl: '',   // e.g. 'https://YOUR-USERNAME.github.io/project-os/'
+  appUrl: '',
 
   /* ------------------------------------------------------------------
      3. WHAT THE CLIENT SEES AFTER SUBMITTING

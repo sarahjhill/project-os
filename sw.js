@@ -1,6 +1,6 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'project-os-v1';
+const CACHE = 'project-os-v2';
 const ASSETS = [
   "./",
   "index.html",
