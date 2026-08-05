@@ -55,6 +55,45 @@ Edit files on GitHub directly (pencil icon) or upload replacements. Pages redepl
 
 ---
 
+## Turn on form submissions
+
+Without this, client forms still work — they just download a file the client emails back. With it, the client presses **Submit my answers** and it lands in your inbox.
+
+### 1. Get a Formspree endpoint
+Sign up free at [formspree.io](https://formspree.io) → **New Project** → **New Form**, name it "Project OS". Copy the endpoint it gives you; it looks like `https://formspree.io/f/xyzabcde`.
+
+### 2. Paste it into `js/config.js`
+Edit the file on GitHub (pencil icon) and fill in two lines:
+
+```js
+formspreeEndpoint: 'https://formspree.io/f/xyzabcde',
+appUrl: 'https://YOUR-USERNAME.github.io/project-os/',
+```
+
+Commit. Then bump `CACHE` in `sw.js` so the change reaches everyone.
+
+### 3. Send yourself a test submission
+Open your own form and submit it. **Formspree emails you a confirmation link the first time — click it, or nothing else will come through.** This catches out almost everyone.
+
+While you're in `config.js`, edit the `thankYou` block — that's the message the client sees after submitting.
+
+### What happens when a client submits
+
+They see your thank-you message. You get an email containing every answer in readable form, plus two extras at the bottom:
+
+- **➤ FILE THESE ANSWERS (click)** — opens Project OS and files the answers under *Send the intake questionnaire* automatically, then shows them to you.
+- **PROJECT OS DATA** — a block of text for the times the link is too long or your email app breaks it across lines. Copy it, then use **Paste answers from email** in the task.
+
+Either way the answers end up in the same place: open Phase 0 → **Send the intake questionnaire** → **Client responses**, and click **Read answers**.
+
+### Worth knowing
+
+- **The free tier is 50 submissions a month.** Ample for enquiries; watch it if you publish the link widely.
+- **Your endpoint is visible** in the public repo. That's normal and by design — the worst case is spam, which Formspree filters. It gives nobody access to your data.
+- **Client data passes through Formspree.** If you handle anything sensitive, mention them in your privacy policy.
+
+---
+
 ## What you get once deployed
 
 - **The app** at your Pages URL — works on any device, installable to your dock or home screen.
@@ -144,4 +183,3 @@ Chrome, Edge, Safari and Firefox, current versions, desktop and mobile. File att
 ## Licence
 
 MIT — see `LICENSE`. Use it, change it, use it commercially. No warranty.
-# project-os

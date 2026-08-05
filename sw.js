@@ -9,6 +9,7 @@ const ASSETS = [
   "icon-192.png",
   "icon-512.png",
   "manifest.webmanifest",
+  "js/config.js",
   "js/data-phases.js",
   "js/data-phases-2.js",
   "js/data-docs.js",

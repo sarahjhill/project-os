@@ -64,7 +64,11 @@
     'button.primary:hover{filter:brightness(1.07);background:var(--accent)}',
     '.saved{font-size:13px;color:var(--text-3);margin-left:auto}',
     '.done{background:#E6F3ED;border:1px solid var(--ok);border-radius:14px;padding:22px;margin-bottom:16px}',
-    '.done h2{margin:0 0 8px;color:var(--ok);font-size:19px}',
+    '.done{padding:32px}',
+    '.done h2{margin:0 0 12px;color:var(--ok);font-size:23px}',
+    '.done p{margin:0 0 12px;color:var(--text-2)}',
+    '.done p:last-child{margin-bottom:0}',
+    '.done .hint{font-size:13.5px;color:var(--text-3)}',
     '.done ol{margin:10px 0 0;padding-left:20px}',
     '.done li{margin-bottom:6px}',
     '@media print{.actions,.progress{display:none}}'
@@ -212,41 +216,109 @@
       return lines.join('\n');
     }
 
-    document.getElementById('btnDownload').addEventListener('click', function () {
-      var bad = validate();
-      if (bad) {
-        bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        var w = document.getElementById('warn');
-        w.style.display = 'block';
-        w.textContent = 'Some required questions still need an answer — they are marked in red.';
-        return;
-      }
-      document.getElementById('warn').style.display = 'none';
+    function respondentName(payload) {
+      var n = '';
+      payload.answers.forEach(function (a) { if (!n && a.id === 'name' && a.value) n = a.value; });
+      return n;
+    }
 
-      var payload = collect();
-      var name = '';
-      payload.answers.forEach(function (a) { if (a.id === 'name' && a.value) name = a.value; });
-      var slug = (name || 'answers').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
+    function downloadFile(payload) {
+      var slug = (respondentName(payload) || 'answers').toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
       var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = F.formId.replace(/^doc-/, '') + '-' + slug + '.json';
       document.body.appendChild(a); a.click(); a.remove();
+    }
 
+    /* Build the flat object Formspree turns into a readable email. */
+    function formspreeBody(payload) {
+      var out = {};
+      out._subject = (F.studioName || 'Project OS') + ' — ' + F.title +
+        (respondentName(payload) ? ' from ' + respondentName(payload) : '');
+      payload.answers.forEach(function (a) {
+        var key = a.section + ' — ' + a.label;
+        if (key.length > 90) key = key.slice(0, 87) + '…';
+        out[key] = a.value || '(not answered)';
+      });
+      payload.answers.forEach(function (a) {
+        if (a.id === 'email' && a.value) out.email = a.value;   // enables reply-to
+      });
+
+      var json = JSON.stringify(payload);
+      if (F.appUrl) {
+        var packed = '';
+        try { packed = btoa(unescape(encodeURIComponent(json))); } catch (e) { packed = ''; }
+        var base = F.appUrl.charAt(F.appUrl.length - 1) === '/' ? F.appUrl : F.appUrl + '/';
+        var url = base + '#answers=' + encodeURIComponent(packed);
+        if (packed && url.length < 7000) {
+          out['➤ FILE THESE ANSWERS (click)'] = url;
+        }
+      }
+      out['PROJECT OS DATA — copy everything between the markers'] =
+        '<<<PROJECTOS ' + json + ' PROJECTOS>>>';
+      return out;
+    }
+
+    function showThanks() {
+      document.querySelectorAll('section.sec, .progress, .actions').forEach(function (el) {
+        el.style.display = 'none';
+      });
       document.getElementById('sent').style.display = 'block';
-      document.getElementById('sent').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      window.__payloadText = asText(payload);
-    });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-    document.getElementById('btnCopy').addEventListener('click', function () {
-      var txt = asText(collect());
-      navigator.clipboard.writeText(txt).then(function () {
-        var b = document.getElementById('btnCopy');
-        b.textContent = 'Copied — now paste into your reply';
-        setTimeout(function () { b.textContent = 'Copy answers as text'; }, 2600);
-      }, function () {
-        window.prompt('Copy the text below:', txt);
+    var submitting = false;
+
+    document.getElementById('btnSubmit').addEventListener('click', function () {
+      if (submitting) return;
+      var bad = validate();
+      var w = document.getElementById('warn');
+      if (bad) {
+        bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        w.style.display = 'block';
+        w.textContent = 'Some required questions still need an answer — they are marked in red.';
+        return;
+      }
+      w.style.display = 'none';
+
+      var payload = collect();
+      var btn = document.getElementById('btnSubmit');
+
+      // No endpoint configured: fall back to a downloaded file.
+      if (!F.endpoint) {
+        downloadFile(payload);
+        showThanks();
+        return;
+      }
+
+      submitting = true;
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      fetch(F.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(formspreeBody(payload))
+      }).then(function (r) {
+        if (!r.ok) throw new Error('Server responded ' + r.status);
+        try { localStorage.removeItem(KEY); } catch (e) { }
+        showThanks();
+      }).catch(function (err) {
+        submitting = false;
+        btn.disabled = false;
+        btn.textContent = 'Submit my answers';
+        w.style.display = 'block';
+        w.innerHTML = '<strong>That did not send.</strong> ' +
+          'Your answers are safe on this page — nothing has been lost. ' +
+          'Please check your connection and press submit again. ' +
+          'If it keeps failing, press the button below and email me the file instead.' +
+          '<div style="margin-top:10px"><button class="btn" type="button" id="btnRescue">' +
+          'Download my answers instead</button></div>';
+        var rescue = document.getElementById('btnRescue');
+        if (rescue) rescue.addEventListener('click', function () { downloadFile(payload); });
+        console.error('Submission failed:', err);
       });
     });
 
@@ -299,8 +371,22 @@
   function buildHTML(formId) {
     var F = window.FORMS[formId];
     if (!F) return null;
+    var C = window.CONFIG || {};
     var data = JSON.parse(JSON.stringify(F));
     data.formId = formId;
+    data.endpoint = C.formspreeEndpoint || '';
+    data.appUrl = C.appUrl || '';
+    data.studioName = C.studioName || 'Project OS';
+
+    var ty = C.thankYou || {};
+    var thanksHTML =
+      '<h2>' + esc(ty.heading || 'Thank you — your answers have been sent') + '</h2>' +
+      (ty.body ? '<p>' + esc(ty.body) + '</p>' : '') +
+      (ty.next ? '<p>' + esc(ty.next) + '</p>' : '') +
+      (ty.signoff ? '<p style="margin-bottom:0"><strong>' + esc(ty.signoff) + '</strong></p>' : '') +
+      (data.endpoint ? '' :
+        '<p class="hint">A copy has been saved to your Downloads. Please reply to the email ' +
+        'this form came from and attach it.</p>');
 
     var body = F.sections.map(function (s) {
       return '<section class="sec"><h2>' + esc(s.name) + '</h2>' +
@@ -318,23 +404,15 @@
       '<p class="intro">' + esc(F.intro) + '</p></header>\n' +
       '<div class="progress"><div class="pbar"><span id="pbar"></span></div>' +
       '<div class="pcount" id="pcount"></div></div>\n' +
-      '<div class="done" id="sent" style="display:none">' +
-      '<h2>Answers downloaded</h2>' +
-      '<p>Your answers have been saved to your Downloads folder as a small file.</p>' +
-      '<ol><li>Reply to the email this form came from.</li>' +
-      '<li>Attach the downloaded file.</li>' +
-      '<li>Send — that is everything.</li></ol>' +
-      '<p style="margin-top:12px;margin-bottom:0">Prefer not to attach a file? Use ' +
-      '<strong>Copy answers as text</strong> below and paste them straight into your reply.</p></div>\n' +
+      '<div class="done" id="sent" style="display:none">' + thanksHTML + '</div>\n' +
       body +
       '\n<div class="err" id="warn" style="display:none;margin-bottom:10px"></div>\n' +
       '<div class="actions">' +
-      '<button class="btn primary" id="btnDownload" type="button">Finish and download my answers</button>' +
-      '<button class="btn" id="btnCopy" type="button">Copy answers as text</button>' +
+      '<button class="btn primary" id="btnSubmit" type="button">Submit my answers</button>' +
       '<button class="btn" id="btnPrint" type="button">Print</button>' +
       '<span class="saved" id="savedNote"></span></div>\n' +
       '<p class="help" style="margin-top:18px">Your answers are kept in this browser as you type, so you can ' +
-      'close the page and come back to it. Nothing is sent anywhere until you choose to send it.</p>\n' +
+      'close the page and come back to it. Nothing is sent until you press submit.</p>\n' +
       '</div>\n' +
       '<script>window.__FORM__ = ' + json + ';\n(' + formRuntime.toString() + ')();<\/script>\n' +
       '</body>\n</html>';

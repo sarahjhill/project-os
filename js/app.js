@@ -532,6 +532,18 @@
         }).join('') + '</div></div>';
     }
 
+    /* client form responses filed against this task */
+    var taskForms = Object.keys(window.FORMS || {}).filter(function (k) {
+      return window.FORMS[k].task === id;
+    });
+    if (taskForms.length) {
+      h += '<div class="dsec"><h4>Client responses</h4><div id="taskResp"></div>' +
+        '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">' +
+        '<button class="btn sm" id="pasteResp">Paste answers from email</button>' +
+        '<button class="btn sm" id="fileResp">Import answers file</button>' +
+        '</div></div>';
+    }
+
     /* attachments */
     h += '<div class="dsec"><h4>Files for this task</h4>' +
       (S.filesAvailable
@@ -633,6 +645,122 @@
     if (dc) dc.onclick = function () {
       if (confirm('Delete this custom task?')) { S.deleteCustomTask(id); closeDrawer(); render(); }
     };
+
+    if ($('#taskResp')) {
+      renderTaskResponses(id);
+      $('#pasteResp').onclick = function () { pasteAnswersModal(id); };
+      $('#fileResp').onclick = function () {
+        var picker = $('#importPicker');
+        picker.value = '';
+        picker.onchange = function () {
+          var files = Array.prototype.slice.call(picker.files || []);
+          var pending = files.length, bad = [];
+          if (!pending) return;
+          files.forEach(function (f) {
+            var r = new FileReader();
+            r.onload = function () {
+              try {
+                var p = window.FormKit.parseResponse(r.result);
+                S.addResponse(p.formId, p);
+              } catch (e) { bad.push(f.name + ' — ' + e.message); }
+              if (--pending === 0) {
+                renderTaskResponses(id);
+                if (bad.length) alert('Could not read:\n' + bad.join('\n'));
+              }
+            };
+            r.readAsText(f);
+          });
+        };
+        picker.click();
+      };
+    }
+  }
+
+  /* ---- responses shown inside the task drawer ---- */
+  function renderTaskResponses(taskId) {
+    var el = $('#taskResp');
+    if (!el) return;
+    var forms = Object.keys(window.FORMS || {}).filter(function (k) {
+      return window.FORMS[k].task === taskId;
+    });
+    var list = [];
+    forms.forEach(function (k) { list = list.concat(S.listResponses(k)); });
+
+    if (!list.length) {
+      el.innerHTML = '<p class="tiny muted" style="margin:0">Nothing received yet. When a client submits, ' +
+        'click the link in your notification email — or paste the answers here.</p>';
+      return;
+    }
+    el.innerHTML = list.sort(function (a, b) { return b.completed.localeCompare(a.completed); })
+      .map(function (r) {
+        return '<div class="filerow"><div class="fileicon">✓</div>' +
+          '<div class="fname"><strong>' + esc(r.from) + '</strong>' +
+          '<span class="muted tiny"> · ' + esc(new Date(r.completed).toLocaleDateString()) + '</span></div>' +
+          '<button class="btn sm" data-tresp="' + r.id + '">Read answers</button>' +
+          '<button class="btn sm danger" data-trm="' + r.id + '">✕</button></div>';
+      }).join('');
+
+    $$('[data-tresp]', el).forEach(function (b) {
+      b.onclick = function () {
+        var r = S.getResponse(b.dataset.tresp);
+        if (r) showResponse(r.id, null, taskId);
+      };
+    });
+    $$('[data-trm]', el).forEach(function (b) {
+      b.onclick = function () {
+        var r = S.getResponse(b.dataset.trm);
+        if (!r || !confirm('Delete these answers? This cannot be undone.')) return;
+        S.deleteResponse(r.formId, r.id);
+        renderTaskResponses(taskId);
+      };
+    });
+  }
+
+  /* ---- paste answers out of the notification email ---- */
+  function pasteAnswersModal(taskId) {
+    modal('<h3>Paste answers from your email</h3>' +
+      '<p class="tiny muted">In the notification email from Formspree, find the field called ' +
+      '<strong>PROJECT OS DATA</strong> and copy everything on that line, then paste it below. ' +
+      'It does not matter if you include extra text around it.</p>' +
+      '<textarea id="pasteBox" rows="8" placeholder="Paste here…" style="margin-top:10px"></textarea>' +
+      '<div class="err" id="pasteErr" style="display:none;color:var(--danger);font-size:13px;margin-top:8px"></div>' +
+      '<div class="actions"><button class="btn" id="closeModal">Cancel</button>' +
+      '<button class="btn btn-primary" id="pasteGo">File these answers</button></div>',
+      function () {
+        $('#pasteBox').focus();
+        $('#pasteGo').onclick = function () {
+          var raw = $('#pasteBox').value;
+          var err = $('#pasteErr');
+          try {
+            var payload = extractPayload(raw);
+            S.addResponse(payload.formId, payload);
+            closeModal();
+            if (taskId) { openTask(taskId); }
+            else { render(); }
+          } catch (e) {
+            err.style.display = 'block';
+            err.textContent = e.message;
+          }
+        };
+      });
+  }
+
+  /* Pull the JSON out of pasted email text, however it is wrapped. */
+  function extractPayload(raw) {
+    var text = String(raw || '').trim();
+    if (!text) throw new Error('Nothing pasted yet.');
+
+    var m = /<<<PROJECTOS([\s\S]*?)PROJECTOS>>>/.exec(text);
+    if (m) text = m[1].trim();
+
+    if (text.indexOf('{') !== 0) {
+      var start = text.indexOf('{"projectOsForm"');
+      if (start === -1) start = text.indexOf('{');
+      if (start > -1) text = text.slice(start);
+      var end = text.lastIndexOf('}');
+      if (end > -1) text = text.slice(0, end + 1);
+    }
+    return window.FormKit.parseResponse(text);
   }
   function fileError(e) {
     alert('Could not store that file.\n\n' + (e && e.message ? e.message : e) +
@@ -867,7 +995,7 @@
     });
   }
 
-  function showResponse(id, docKey) {
+  function showResponse(id, docKey, taskId) {
     var r = S.getResponse(id);
     if (!r) return;
     var cur = '', rows = '';
@@ -885,11 +1013,17 @@
       '<p class="tiny muted" style="margin:4px 0 0">' + esc(r.formTitle) + ' · completed ' +
       esc(new Date(r.completed).toLocaleString()) + '</p></div>' +
       '<div style="display:flex;gap:8px;flex:0 0 auto">' +
+      '<button class="btn sm" id="printResp">Print</button>' +
       '<button class="btn sm" id="backToDoc">Back</button>' +
       '<button class="btn sm" id="closeModal">Close</button></div></div>' +
       '<div class="md" style="margin-top:14px"><table>' + rows + '</table></div>',
       function () {
-        $('#backToDoc').onclick = function () { showDoc(docKey); };
+        $('#printResp').onclick = function () { window.print(); };
+        $('#backToDoc').onclick = function () {
+          closeModal();
+          if (docKey) showDoc(docKey);
+          else if (taskId) openTask(taskId);
+        };
       });
   }
 
@@ -1212,6 +1346,40 @@
     }
   });
 
+  /* One-click filing: the notification email links back with #answers=<base64>. */
+  function handleAnswersLink() {
+    var h = window.location && window.location.hash;
+    if (!h || h.indexOf('#answers=') !== 0) return;
+    var packed = decodeURIComponent(h.slice('#answers='.length));
+    try {
+      var json = decodeURIComponent(escape(atob(packed)));
+      var payload = window.FormKit.parseResponse(json);
+      var existing = S.listResponses(payload.formId).filter(function (r) {
+        return r.completed === payload.completed;
+      });
+      if (existing.length) {
+        history.replaceState(null, '', window.location.pathname);
+        alert('Those answers are already filed — opening them now.');
+        var task = (window.FORMS[payload.formId] || {}).task;
+        if (task) openTask(task);
+        return;
+      }
+      var rec = S.addResponse(payload.formId, payload);
+      history.replaceState(null, '', window.location.pathname);
+      var taskId = (window.FORMS[payload.formId] || {}).task;
+      render();
+      if (taskId) {
+        openTask(taskId);
+        setTimeout(function () { showResponse(rec.id, null, taskId); }, 120);
+      }
+    } catch (e) {
+      console.warn('Could not read answers link:', e);
+      alert('That link could not be read — it may have been broken across lines by your email app.\n\n' +
+        'Open the task and use "Paste answers from email" instead.');
+      history.replaceState(null, '', window.location.pathname);
+    }
+  }
+
   try {
     if (!window.PHASES || !window.PHASES.length) {
       throw new Error('Process data did not load (js/data-phases.js).');
@@ -1224,6 +1392,7 @@
     renderPhaseFilter();
     render();          // paint immediately — do not wait for storage
     refreshCounts();   // then decorate with file counts when available
+    handleAnswersLink();
   } catch (err) {
     bootError(err.message, err.stack);
   }

@@ -7,6 +7,7 @@
 window.FORMS = {
 
 'doc-intake': {
+  task: 'p0-1',
   title: 'Project Enquiry Form',
   intro: 'Thanks for getting in touch. These questions help me understand what you need and give you an accurate quote. It takes about ten minutes — there are no wrong answers, and a rough guess is far better than a blank.',
   sections: [
@@ -87,6 +88,7 @@ window.FORMS = {
 },
 
 'doc-screener': {
+  task: 'p2-1',
   title: 'Research Session — Sign-up',
   intro: 'We are improving how this works and would like to watch a few people use it. Sessions last about an hour, happen over a video call, and there is a thank-you payment. These questions just check the session would be a good use of your time.',
   sections: [
@@ -129,6 +131,7 @@ window.FORMS = {
 },
 
 'doc-consent': {
+  task: 'p2-3',
   title: 'Research Session — Consent',
   intro: 'Please read and confirm before we start. You can stop at any point, for any reason, and nothing bad happens.',
   sections: [
@@ -156,6 +159,7 @@ window.FORMS = {
 },
 
 'doc-signoff': {
+  task: 'p4-6',
   title: 'Review & Sign-off',
   intro: 'Please look through what has been shared and give your feedback here. Gathering everyone\'s comments into this one form keeps things moving and stops anything getting lost across email threads.',
   sections: [
@@ -199,6 +203,7 @@ window.FORMS = {
 },
 
 'doc-content': {
+  task: 'p1-4',
   title: 'Content & Assets Request',
   intro: 'Everything I need from you to build the site, in one place. Late content is the single most common cause of a project slipping, so it is worth blocking out an hour for this early.',
   sections: [
