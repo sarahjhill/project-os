@@ -162,8 +162,15 @@
 
   /* ================= Views ================= */
   function render() {
-    $('#toolbar').style.display = (view === 'dashboard' || view === 'docs' || view === 'files') ? 'none' : 'flex';
+    $('#toolbar').style.display =
+      (view === 'dashboard' || view === 'docs' || view === 'files' || view === 'clients') ? 'none' : 'flex';
     var main = $('#main');
+    if (view === 'clients') {
+      main.innerHTML = window.ClientsUI ? window.ClientsUI.view() :
+        '<div class="empty">Client sharing is not loaded.</div>';
+      if (window.ClientsUI) window.ClientsUI.wire(render);
+      return;
+    }
     if (view === 'dashboard') main.innerHTML = viewDashboard();
     else if (view === 'phases') main.innerHTML = viewPhases();
     else if (view === 'board') main.innerHTML = viewBoard();

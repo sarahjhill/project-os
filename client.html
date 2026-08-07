@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your project</title>
+<meta name="robots" content="noindex">
+<style>
+:root{
+  --bg:#F7F7F5; --surface:#fff; --sunken:#F0EFEC; --text:#1A1A18; --text-2:#5C5C57;
+  --text-3:#8A8A82; --border:#E3E2DD; --strong:#CFCEC7; --accent:#B85C38;
+  --ok:#2E7D5B; --ok-soft:#E6F3ED; --warn:#B07A16; --warn-soft:#FBF2DE; --danger:#B23A32;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);line-height:1.55;font-size:16px;
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:36px 20px 90px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+ flex-wrap:wrap;margin-bottom:28px}
+h1{font-size:27px;letter-spacing:-.02em;margin:0 0 4px}
+.sub{color:var(--text-2);margin:0;font-size:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px}
+h2{font-size:15px;margin:0 0 14px;letter-spacing:.02em;text-transform:uppercase;
+ color:var(--text-3);font-weight:700}
+.bar{height:10px;border-radius:99px;background:var(--sunken);overflow:hidden;margin:6px 0 10px}
+.bar>span{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.pct{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.phase{font-size:15px;margin:14px 0 4px;font-weight:600}
+.goal{color:var(--text-2);font-size:14px;margin:0}
+.note{background:var(--sunken);border-left:3px solid var(--accent);padding:14px 16px;
+ border-radius:0 10px 10px 0;font-size:15px;margin:0}
+.row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.row .ic{width:26px;height:26px;border-radius:8px;background:var(--sunken);display:grid;
+ place-items:center;font-size:13px;flex:0 0 auto;color:var(--text-2)}
+.row .ic.done{background:var(--ok-soft);color:var(--ok)}
+.row .ic.late{background:var(--warn-soft);color:var(--warn)}
+.row .body{flex:1;min-width:0}
+.row .body strong{display:block;font-size:15px}
+.row .body .d{color:var(--text-2);font-size:13.5px;margin-top:2px}
+.row .when{font-size:12.5px;color:var(--text-3);flex:0 0 auto;text-align:right}
+.done-row strong{text-decoration:line-through;color:var(--text-3)}
+button.btn{padding:11px 18px;border-radius:10px;border:1px solid var(--strong);
+ background:var(--surface);font:inherit;cursor:pointer}
+button.btn:hover{background:var(--sunken)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{filter:brightness(1.07)}
+input{width:100%;padding:11px 13px;border:1px solid var(--strong);border-radius:9px;font:inherit;
+ background:var(--surface)}
+input:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.signin{max-width:440px;margin:60px auto}
+.msg{font-size:14px;color:var(--text-2);margin-top:14px}
+.err{color:var(--danger)}
+.empty{color:var(--text-3);font-size:14px}
+.tiny{font-size:12.5px;color:var(--text-3)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600}
+.pill.done{background:var(--ok-soft);color:var(--ok)}
+.pill.slipped{background:var(--warn-soft);color:var(--warn)}
+.pill.planned{background:var(--sunken);color:var(--text-2)}
+details{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;
+ background:var(--surface)}
+summary{cursor:pointer;font-weight:600;font-size:14.5px}
+details table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
+details td{border-top:1px solid var(--border);padding:7px 6px;vertical-align:top}
+details td:first-child{width:40%;color:var(--text-2)}
+footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
+@media(max-width:600px){.wrap{padding:24px 14px 70px}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="signin card">
+    <h1 style="margin-bottom:8px">Your project</h1>
+    <p class="sub">Loading…</p>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/cloud.js"></script>
+<script>
+(function () {
+  'use strict';
+  var app = document.getElementById('app');
+
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  function d(x){ if(!x) return ''; var t=new Date(x); return isNaN(t)?String(x):
+    t.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }
+
+  function signInView(msg, isErr) {
+    app.innerHTML =
+      '<div class="signin card">' +
+      '<h1 style="margin-bottom:6px">Your project</h1>' +
+      '<p class="sub">Enter the email address your project contact used to invite you. ' +
+      'We will send you a link that signs you in — there is no password.</p>' +
+      '<div style="margin-top:18px"><input id="em" type="email" placeholder="you@example.com" autocomplete="email"></div>' +
+      '<div style="margin-top:10px"><button class="btn primary" id="go" style="width:100%">Email me a sign-in link</button></div>' +
+      '<p class="msg' + (isErr ? ' err' : '') + '" id="msg">' + (msg || '') + '</p></div>';
+
+    document.getElementById('go').onclick = function () {
+      var em = document.getElementById('em').value.trim();
+      var m = document.getElementById('msg');
+      if (!em) { m.textContent = 'Please enter your email address.'; m.className = 'msg err'; return; }
+      m.className = 'msg'; m.textContent = 'Sending…';
+      window.Cloud.signIn(em, location.href.split('#')[0]).then(function () {
+        m.innerHTML = '<strong>Check your inbox.</strong> Click the link in the email and you will be signed in. ' +
+          'It sometimes takes a minute, and the first one can land in spam.';
+      }).catch(function (e) { m.className = 'msg err'; m.textContent = 'Could not send: ' + e.message; });
+    };
+    document.getElementById('em').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') document.getElementById('go').click();
+    });
+  }
+
+  function notInvited(email) {
+    app.innerHTML = '<div class="signin card"><h1 style="margin-bottom:6px">Nothing shared yet</h1>' +
+      '<p class="sub">You are signed in as <strong>' + esc(email) + '</strong>, but no project has been ' +
+      'shared with this address.</p><p class="sub" style="margin-top:10px">If you were invited using a ' +
+      'different email, sign out and try that one. Otherwise ask your project contact to check the address ' +
+      'they invited.</p><div style="margin-top:18px"><button class="btn" id="out">Sign out</button></div></div>';
+    document.getElementById('out').onclick = function () {
+      window.Cloud.signOut().then(function () { signInView(); });
+    };
+  }
+
+  function render(rows, snapshots) {
+    var html = '';
+    rows.forEach(function (row, i) {
+      var snap = snapshots[i];
+      var p = (snap && snap.payload) || {};
+      var sec = p.sections || {};
+      var proj = p.project || {};
+
+      html += '<header class="top"><div>' +
+        '<h1>' + esc(proj.name || 'Your project') + '</h1>' +
+        '<p class="sub">Last updated ' + esc(d(proj.updated || (snap && snap.published_at))) + '</p>' +
+        '</div><button class="btn" id="out">Sign out</button></header>';
+
+      if (!snap) {
+        html += '<div class="card"><p class="empty">Your project contact has not published an update yet. ' +
+          'Check back shortly.</p></div>';
+        return;
+      }
+
+      if (p.note) html += '<div class="card"><h2>Where things are</h2><p class="note">' + esc(p.note) + '</p></div>';
+
+      if (sec.progress && p.progress) {
+        var pr = p.progress;
+        html += '<div class="card"><h2>Progress</h2>' +
+          '<div class="pct">' + (pr.pct || 0) + '%</div>' +
+          '<div class="bar"><span style="width:' + (pr.pct || 0) + '%"></span></div>' +
+          '<p class="phase">Currently: ' + esc(pr.phaseName || '') + '</p>' +
+          '<p class="goal">' + esc(pr.phaseGoal || '') + '</p></div>';
+      }
+
+      if (sec.actions) {
+        var acts = p.actions || [];
+        var open = acts.filter(function (a) { return !a.done; });
+        html += '<div class="card"><h2>What we need from you' +
+          (open.length ? ' (' + open.length + ')' : '') + '</h2>';
+        html += acts.length ? acts.map(function (a) {
+          var late = !a.done && a.due && new Date(a.due) < new Date();
+          return '<div class="row' + (a.done ? ' done-row' : '') + '">' +
+            '<div class="ic' + (a.done ? ' done' : late ? ' late' : '') + '">' +
+            (a.done ? '✓' : late ? '!' : '·') + '</div>' +
+            '<div class="body"><strong>' + esc(a.title) + '</strong>' +
+            (a.detail ? '<div class="d">' + esc(a.detail) + '</div>' : '') + '</div>' +
+            (a.due ? '<div class="when">' + (a.done ? '' : 'by ') + esc(d(a.due)) + '</div>' : '') +
+            '</div>';
+        }).join('') : '<p class="empty">Nothing needed from you right now.</p>';
+        html += '</div>';
+      }
+
+      if (sec.milestones) {
+        var ms = p.milestones || [];
+        html += '<div class="card"><h2>Key dates</h2>';
+        html += ms.length ? ms.map(function (m) {
+          return '<div class="row"><div class="ic' + (m.status === 'done' ? ' done' :
+            m.status === 'slipped' ? ' late' : '') + '">' +
+            (m.status === 'done' ? '✓' : m.status === 'slipped' ? '!' : '·') + '</div>' +
+            '<div class="body"><strong>' + esc(m.name) + '</strong>' +
+            '<div class="d"><span class="pill ' + esc(m.status || 'planned') + '">' +
+            esc(m.status || 'planned') + '</span></div></div>' +
+            '<div class="when">' + esc(d(m.date)) + '</div></div>';
+        }).join('') : '<p class="empty">No dates set yet.</p>';
+        html += '</div>';
+      }
+
+      if (sec.answers && (p.answers || []).length) {
+        html += '<div class="card"><h2>Your answers</h2>' + p.answers.map(function (a) {
+          return '<details><summary>' + esc(a.formTitle) + ' — ' + esc(d(a.completed)) + '</summary>' +
+            '<table>' + (a.answers || []).map(function (x) {
+              return '<tr><td>' + esc(x.label) + '</td><td>' +
+                (x.value ? esc(x.value) : '<span class="tiny">not answered</span>') + '</td></tr>';
+            }).join('') + '</table></details>';
+        }).join('') + '</div>';
+      }
+
+      if (sec.files) {
+        html += '<div class="card"><h2>Shared files</h2><div id="files-' + i + '">' +
+          '<p class="empty">Loading…</p></div></div>';
+      }
+    });
+
+    html += '<footer>This page is private to you. Nothing here is public.</footer>';
+    app.innerHTML = html;
+
+    var out = document.getElementById('out');
+    if (out) out.onclick = function () {
+      window.Cloud.signOut().then(function () { signInView('You have been signed out.'); });
+    };
+
+    rows.forEach(function (row, i) {
+      var host = document.getElementById('files-' + i);
+      if (!host) return;
+      window.Cloud.listSharedFiles(row.project_id).then(function (files) {
+        host.innerHTML = files.length ? files.map(function (f) {
+          return '<div class="row"><div class="ic">📄</div><div class="body">' +
+            '<strong>' + esc(f.name) + '</strong>' +
+            (f.note ? '<div class="d">' + esc(f.note) + '</div>' : '') + '</div>' +
+            '<button class="btn" data-f="' + f.id + '" style="padding:7px 13px;font-size:14px">Open</button></div>';
+        }).join('') : '<p class="empty">Nothing shared yet.</p>';
+
+        Array.prototype.forEach.call(host.querySelectorAll('[data-f]'), function (b) {
+          b.onclick = function () {
+            var rec = files.filter(function (x) { return x.id === b.dataset.f; })[0];
+            b.textContent = 'Opening…';
+            window.Cloud.sharedFileUrl(rec.path, 300).then(function (u) {
+              b.textContent = 'Open';
+              window.open(u, '_blank');
+            }).catch(function (e) { b.textContent = 'Open'; alert(e.message); });
+          };
+        });
+      }).catch(function () { host.innerHTML = '<p class="empty">Could not load files.</p>'; });
+    });
+  }
+
+  function start() {
+    if (!window.Cloud || !window.Cloud.configured()) {
+      app.innerHTML = '<div class="signin card"><h1>Not set up yet</h1>' +
+        '<p class="sub">This client area has not been configured. Please contact whoever sent you this link.</p></div>';
+      return;
+    }
+    window.Cloud.init().then(function () {
+      var u = window.Cloud.user();
+      if (!u) { signInView(); return; }
+
+      window.Cloud.myClientProjects().then(function (rows) {
+        if (!rows.length) { notInvited(u.email); return; }
+        rows.forEach(function (r) { window.Cloud.touchClientSeen(r.id); });
+        return Promise.all(rows.map(function (r) {
+          return window.Cloud.getSnapshot(r.project_id).catch(function () { return null; });
+        })).then(function (snaps) { render(rows, snaps); });
+      }).catch(function (e) {
+        app.innerHTML = '<div class="signin card"><h1>Something went wrong</h1>' +
+          '<p class="sub err">' + esc(e.message) + '</p>' +
+          '<div style="margin-top:16px"><button class="btn" onclick="location.reload()">Try again</button></div></div>';
+      });
+    });
+  }
+
+  window.Cloud.onChange(function () { start(); });
+  start();
+})();
+</script>
+</body>
+</html>

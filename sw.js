@@ -1,6 +1,6 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'project-os-v2';
+const CACHE = 'project-os-v3';
 const ASSETS = [
   "./",
   "index.html",
@@ -16,8 +16,11 @@ const ASSETS = [
   "js/data-docs-2.js",
   "js/data-forms.js",
   "js/forms.js",
+  "js/cloud.js",
   "js/store.js",
+  "js/clients-ui.js",
   "js/app.js",
+  "client.html",
   "forms/index.html",
   "forms/intake.html",
   "forms/screener.html",

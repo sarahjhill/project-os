@@ -46,7 +46,28 @@ window.CONFIG = {
   },
 
   /* ------------------------------------------------------------------
-     4. YOUR DETAILS (optional)
+     4. CLIENT ACCOUNTS (optional — Supabase)
+     ------------------------------------------------------------------
+     Switches on sign-in and the client portal. Without it, Project OS
+     works exactly as before, entirely on your own machine.
+
+     Setup, roughly 20 minutes, is in supabase/SETUP.md. In short:
+       1. Create a free project at https://supabase.com
+       2. Run supabase/schema.sql in the SQL Editor
+       3. Settings → API → copy the Project URL and the anon public key
+       4. Paste them below
+
+     The anon key is MEANT to be public — it is safe in a public repo.
+     Access is enforced by database policies, not by hiding this key.
+     Never paste the service_role key here; that one bypasses everything.
+  ------------------------------------------------------------------ */
+  supabase: {
+    url: '',
+    anonKey: ''
+  },
+
+  /* ------------------------------------------------------------------
+     5. YOUR DETAILS (optional)
      ------------------------------------------------------------------
      Only used in the subject line of the notification email.
   ------------------------------------------------------------------ */
