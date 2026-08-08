@@ -9,6 +9,7 @@
   var CDN = 'https://esm.sh/@supabase/supabase-js@2';
   var sb = null;             // supabase client
   var ready = null;          // promise, resolves once library loaded
+  var initialised = false;   // true once we have actually checked for a session
   var session = null;
   var listeners = [];
 
@@ -32,6 +33,7 @@
   function init() {
     if (ready) return ready;
     if (!configured()) {
+      initialised = true;
       ready = Promise.resolve(null);
       return ready;
     }
@@ -42,13 +44,21 @@
       });
       return sb.auth.getSession().then(function (r) {
         session = (r.data && r.data.session) || null;
+        initialised = true;
         sb.auth.onAuthStateChange(function (_evt, s) { session = s; emit(); });
+        // A magic link arrives as #access_token=… — tidy it away once used.
+        if (session && /access_token=/.test(window.location.hash)) {
+          try { history.replaceState(null, '', window.location.pathname + window.location.search); }
+          catch (e) { }
+        }
         emit();
         return sb;
       });
     }).catch(function (e) {
       console.warn('Project OS: cloud unavailable —', e && e.message);
       sb = null;
+      initialised = true;
+      emit();
       return null;
     });
     return ready;
@@ -265,6 +275,7 @@
 
   window.Cloud = {
     configured: configured,
+    isReady: function () { return initialised; },
     init: init,
     onChange: onChange,
     signIn: signIn, signOut: signOut, user: user, email: email,

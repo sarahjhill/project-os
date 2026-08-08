@@ -1400,6 +1400,17 @@
     render();          // paint immediately — do not wait for storage
     refreshCounts();   // then decorate with file counts when available
     handleAnswersLink();
+
+    // Start the sign-in check straight away so a magic link is picked up
+    // on arrival, whichever tab happens to be open.
+    if (window.Cloud && window.Cloud.configured()) {
+      window.Cloud.init().then(function () {
+        if (view === 'clients') render();
+      });
+      window.Cloud.onChange(function () {
+        if (view === 'clients') render();
+      });
+    }
   } catch (err) {
     bootError(err.message, err.stack);
   }

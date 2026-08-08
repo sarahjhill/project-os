@@ -97,6 +97,13 @@
         'keeps working without it.</p></div>';
     }
 
+    // The Supabase library loads asynchronously. Until it has told us whether
+    // there is a session, do not claim the person is signed out.
+    if (!window.Cloud.isReady()) {
+      return '<div class="card" style="max-width:520px">' +
+        '<p class="muted" style="margin:0">Checking your sign-in…</p></div>';
+    }
+
     var u = window.Cloud.user();
     if (!u) {
       return '<div class="card" style="max-width:520px">' +
@@ -199,9 +206,18 @@
   }
 
   /* ---------- wiring ---------- */
+  var subscribed = false;
+
   function wire(rerender) {
     var C = window.Cloud;
     if (!C || !C.configured()) return;
+
+    // Re-render whenever the sign-in state settles or changes.
+    if (!subscribed) {
+      subscribed = true;
+      C.onChange(function () { rerender(); });
+    }
+    if (!C.isReady()) { C.init().then(function () { rerender(); }); return; }
 
     if ($('#siGo')) {
       $('#siGo').onclick = function () {
