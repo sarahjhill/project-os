@@ -62,8 +62,8 @@ window.CONFIG = {
      Never paste the service_role key here; that one bypasses everything.
   ------------------------------------------------------------------ */
   supabase: {
-    url: '',
-    anonKey: ''
+    url: 'https://unopxbqvhdklwmktajwn.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVub3B4YnF2aGRrbHdta3RhanduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYxMDU3NTgsImV4cCI6MjEwMTY4MTc1OH0.Z2slBhQSmkl0vEfmcnZqbPxY6yxxnZIb_cGYuxnGOTk'
   },
 
   /* ------------------------------------------------------------------
