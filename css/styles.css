@@ -1,30 +1,56 @@
-/* ===== Tokens ===== */
+/* =====================================================================
+   SJ DEVELOPMENT PROCESS — design tokens
+
+   Shares the SJ Development palette with the Make It Pop site, but reads
+   calmer on purpose: this is a working tool, not a shop window. Cooler
+   neutrals, teal as the primary action colour, purple kept for brand
+   moments only.
+
+   Accent contrast is deliberate. The brand teal #07beb8 only reaches
+   2.3:1 on white — fine for a logo tile, unreadable as link text. So the
+   interactive accent is a darkened teal at 4.8:1, and the bright brand
+   teal is kept for fills where contrast does not apply.
+   ===================================================================== */
 :root{
-  --bg:#F7F7F5; --surface:#FFFFFF; --raised:#FFFFFF; --sunken:#F0EFEC;
-  --text:#1A1A18; --text-2:#5C5C57; --text-3:#8A8A82;
-  --border:#E3E2DD; --border-strong:#CFCEC7;
-  --accent:#B85C38; --accent-soft:#FBEEE8; --accent-text:#FFFFFF;
-  --ok:#2E7D5B; --ok-soft:#E6F3ED;
-  --warn:#B07A16; --warn-soft:#FBF2DE;
-  --danger:#B23A32; --danger-soft:#FBE9E7;
-  --info:#3A6EA5; --info-soft:#E8F0F8;
-  --p1:#B23A32; --p2:#B85C38; --p3:#B07A16; --p4:#8A8A82;
+  --bg:#F6F8F8; --surface:#FFFFFF; --raised:#FFFFFF; --sunken:#EDF1F1;
+  --text:#15201F; --text-2:#54615F; --text-3:#84918F;
+  --border:#DFE6E5; --border-strong:#C6D1D0;
+
+  --accent:#08807C;          /* 4.78:1 on white — safe for text and buttons */
+  --accent-bright:#07beb8;   /* brand teal — fills, bars, logo only */
+  --accent-soft:#E4F5F4; --accent-text:#FFFFFF;
+  --brand-2:#6917d0;         /* brand purple — 7.97:1, used sparingly */
+  --brand-2-soft:#F0E8FC;
+
+  --ok:#1E7A5A; --ok-soft:#E3F3EC;
+  --warn:#96700F; --warn-soft:#FAF1DA;
+  --danger:#B02F2F; --danger-soft:#FBE8E8;
+  --info:#2F5F94; --info-soft:#E7EFF8;
+  --p1:#B02F2F; --p2:#96700F; --p3:#2F5F94; --p4:#84918F;
+
   --radius:10px; --radius-lg:16px;
-  --shadow:0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.05);
-  --shadow-lg:0 10px 40px rgba(0,0,0,.14);
+  --shadow:0 1px 2px rgba(12,40,38,.05), 0 4px 14px rgba(12,40,38,.05);
+  --shadow-lg:0 10px 40px rgba(12,40,38,.14);
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --sans:'Lato',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:'Poppins',var(--sans);
 }
 [data-theme="dark"]{
-  --bg:#141412; --surface:#1C1C1A; --raised:#232320; --sunken:#111110;
-  --text:#EDEDE8; --text-2:#A6A69E; --text-3:#77776F;
-  --border:#2E2E2A; --border-strong:#3E3E38;
-  --accent:#D9784E; --accent-soft:#2B1D17; --accent-text:#141412;
-  --ok:#4FB088; --ok-soft:#16261F;
-  --warn:#D9A93E; --warn-soft:#2A2213;
-  --danger:#E0655B; --danger-soft:#2B1715;
-  --info:#6FA0D6; --info-soft:#15202B;
-  --p1:#E0655B; --p2:#D9784E; --p3:#D9A93E; --p4:#77776F;
+  --bg:#0E1817; --surface:#152220; --raised:#1B2A28; --sunken:#0A1211;
+  --text:#E8EFEE; --text-2:#9FADAB; --text-3:#72817F;
+  --border:#243532; --border-strong:#334643;
+
+  --accent:#3FD6D1;          /* 9.55:1 on the dark surface */
+  --accent-bright:#07beb8;
+  --accent-soft:#0F2E2C; --accent-text:#0E1817;
+  --brand-2:#B98BF5;
+  --brand-2-soft:#1F1533;
+
+  --ok:#4FB088; --ok-soft:#132620;
+  --warn:#D9A93E; --warn-soft:#28210F;
+  --danger:#E0655B; --danger-soft:#2A1615;
+  --info:#6FA0D6; --info-soft:#131F2B;
+  --p1:#E0655B; --p2:#D9A93E; --p3:#6FA0D6; --p4:#72817F;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
   --shadow-lg:0 10px 40px rgba(0,0,0,.6);
 }
@@ -49,11 +75,16 @@ a{color:var(--accent)}
 }
 .brand{display:flex;align-items:center;gap:12px}
 .mark{
-  width:36px;height:36px;border-radius:9px;background:var(--accent);color:var(--accent-text);
-  display:grid;place-items:center;font-weight:700;font-size:19px;
+  width:36px;height:36px;border-radius:9px;overflow:hidden;
+  display:grid;place-items:center;flex:0 0 auto;
 }
-.brand h1{font-size:16px;margin:0;letter-spacing:-.01em}
+.mark img,.mark svg{width:100%;height:100%;display:block}
+.brand h1{
+  font-family:var(--display);font-size:15.5px;font-weight:700;
+  margin:0;letter-spacing:-.015em;
+}
 .tagline{margin:0;font-size:11.5px;color:var(--text-3);letter-spacing:.02em}
+h2,h3,h4,.h-display{font-family:var(--display);letter-spacing:-.01em}
 .topbar-right{display:flex;align-items:center;gap:8px}
 
 /* ===== Controls ===== */
@@ -331,4 +362,88 @@ ul.plain li{margin-bottom:5px}
 }
 @media print{
   .topbar,.tabs,.toolbar,.drawer,.scrim{display:none!important}
+}
+
+/* =====================================================================
+   Sign-in gate
+   Shown on app.html until Supabase confirms a session.
+   ===================================================================== */
+body.is-gated{overflow:hidden}
+
+.gate{
+  position:fixed;inset:0;z-index:200;
+  display:grid;place-items:center;padding:24px;
+  background:
+    radial-gradient(900px 460px at 15% -5%, var(--brand-2-soft), transparent 60%),
+    radial-gradient(760px 420px at 100% 105%, var(--accent-soft), transparent 62%),
+    var(--bg);
+  overflow:auto;
+}
+.gate-card{
+  width:100%;max-width:430px;
+  padding:32px 30px 26px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+}
+.gate-brand{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+.gate-mark{width:44px;height:44px;border-radius:11px;display:block;flex:0 0 auto}
+.gate-brand h1{
+  font-family:var(--display);font-size:18px;font-weight:700;
+  margin:0;letter-spacing:-.02em;line-height:1.2;
+}
+.gate-sub{margin:3px 0 0;font-size:12.5px;color:var(--text-3)}
+
+.gate-intro{margin:0 0 22px;font-size:14.5px;line-height:1.6;color:var(--text-2)}
+
+.gate-label{
+  display:block;margin-bottom:6px;
+  font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--text-2);
+}
+.gate-input{
+  width:100%;padding:11px 13px;
+  background:var(--surface);color:var(--text);
+  border:1px solid var(--border-strong);border-radius:var(--radius);
+  font-size:15px;
+}
+.gate-input:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);
+}
+.gate-btn{
+  width:100%;margin-top:14px;padding:12px 16px;
+  background:var(--accent);color:var(--accent-text);
+  border:1px solid var(--accent);border-radius:var(--radius);
+  font-family:var(--display);font-size:14.5px;font-weight:600;cursor:pointer;
+  transition:filter .2s ease;
+}
+.gate-btn:hover{filter:brightness(1.08)}
+.gate-btn:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+
+.gate-msg{margin:14px 0 0;font-size:13.5px;line-height:1.55;color:var(--text-2);min-height:1em}
+.gate-msg.is-ok{color:var(--ok)}
+.gate-msg.is-error{color:var(--danger)}
+
+.gate-note{
+  margin:16px 0 0;padding:11px 13px;
+  background:var(--warn-soft);border-radius:var(--radius);
+  font-size:13px;line-height:1.55;color:var(--text-2);
+}
+
+.gate-foot{
+  margin-top:22px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  font-size:13px;color:var(--text-3);
+}
+.gate-foot a{color:var(--accent);text-decoration:none;font-weight:700}
+.gate-foot a:hover{text-decoration:underline}
+
+@media (max-width:479px){
+  .gate-card{padding:26px 20px 20px}
+  .gate-brand h1{font-size:16.5px}
+}
+.gate-hint{
+  margin:10px 0 0;text-align:center;
+  font-size:12.5px;line-height:1.5;color:var(--text-3);
 }

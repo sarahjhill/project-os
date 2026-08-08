@@ -1,0 +1,250 @@
+/* =====================================================================
+   SJ DEVELOPMENT PROCESS — public landing page
+
+   Same brand as Make It Pop (SJ purple → teal, Poppins over Lato) but a
+   quieter register: no motion, no hero imagery, more air, tighter columns.
+   It should read as the studio's working front door, not a second sales
+   site.
+
+   Deliberately standalone from css/styles.css — nothing here can reach the
+   app, and nothing in the app can reach here.
+   ===================================================================== */
+
+:root{
+  --lp-bg:#F6F8F8;
+  --lp-surface:#FFFFFF;
+  --lp-ink:#15201F;
+  --lp-ink-2:#54615F;
+  --lp-ink-3:#84918F;
+  --lp-line:#DFE6E5;
+
+  --lp-accent:#08807C;        /* 4.78:1 on white — safe for text */
+  --lp-accent-bright:#07beb8; /* brand teal — fills only */
+  --lp-purple:#6917d0;
+  --lp-deep:#0E2A28;
+
+  --lp-radius:12px;
+  --lp-radius-lg:18px;
+  --lp-sans:'Lato',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --lp-display:'Poppins',var(--lp-sans);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+body{
+  margin:0;
+  background:var(--lp-bg);
+  color:var(--lp-ink);
+  font-family:var(--lp-sans);
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:100;
+  padding:12px 18px;background:var(--lp-ink);color:#fff;
+}
+.skip:focus{left:0}
+
+.lp-wrap{width:100%;max-width:1000px;margin:0 auto;padding:0 24px}
+
+a{color:var(--lp-accent)}
+
+/* ============================== Top bar ============================== */
+.lp-top{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 24px;
+  background:var(--lp-surface);
+  border-bottom:1px solid var(--lp-line);
+  position:sticky;top:0;z-index:50;
+  flex-wrap:wrap;
+}
+.lp-brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit}
+.lp-mark{width:34px;height:34px;border-radius:9px;display:block}
+.lp-brand-text{display:flex;flex-direction:column;line-height:1.15}
+.lp-brand-name{font-family:var(--lp-display);font-weight:700;font-size:15.5px;letter-spacing:-.02em}
+.lp-brand-sub{font-size:11.5px;color:var(--lp-ink-3);letter-spacing:.1em;text-transform:uppercase}
+
+.lp-nav{display:flex;align-items:center;gap:18px}
+.lp-nav a{font-size:14.5px;font-weight:700;text-decoration:none}
+.lp-nav a:hover{text-decoration:underline}
+.lp-nav-btn{
+  padding:8px 16px;border-radius:999px;
+  background:var(--lp-accent);color:#fff !important;
+  text-decoration:none !important;
+}
+.lp-nav-btn:hover{filter:brightness(1.1)}
+
+/* ================================ Hero ============================== */
+.lp-hero{
+  padding:84px 0 72px;
+  background:
+    radial-gradient(760px 400px at 12% -10%, #F0E8FC, transparent 62%),
+    radial-gradient(660px 380px at 96% 0%, #E4F5F4, transparent 60%),
+    var(--lp-bg);
+  border-bottom:1px solid var(--lp-line);
+}
+.lp-eyebrow{
+  margin:0 0 18px;
+  font-size:12.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--lp-accent);
+}
+.lp-h1{
+  font-family:var(--lp-display);
+  font-size:clamp(34px,6vw,58px);
+  font-weight:800;
+  line-height:1.08;
+  letter-spacing:-.035em;
+  margin:0 0 22px;
+  max-width:16ch;
+}
+.lp-h1 em{
+  font-style:normal;
+  background:linear-gradient(100deg,var(--lp-purple),var(--lp-accent-bright));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--lp-purple);
+}
+.lp-lede{
+  margin:0 0 30px;max-width:56ch;
+  font-size:clamp(17px,2vw,19.5px);line-height:1.6;color:var(--lp-ink-2);
+}
+
+.lp-cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+
+.lp-btn{
+  display:inline-block;padding:13px 24px;
+  border:1.5px solid var(--lp-accent);border-radius:999px;
+  background:transparent;color:var(--lp-accent);
+  font-family:var(--lp-display);font-size:15px;font-weight:600;
+  text-decoration:none;cursor:pointer;
+  transition:background .2s ease,color .2s ease,filter .2s ease;
+}
+.lp-btn:hover{background:var(--lp-accent);color:#fff}
+.lp-btn:focus-visible{outline:3px solid #B9E7E5;outline-offset:2px}
+.lp-btn-primary{background:var(--lp-accent);color:#fff}
+.lp-btn-primary:hover{filter:brightness(1.1);background:var(--lp-accent);color:#fff}
+.lp-btn-invert{background:#fff;border-color:#fff;color:var(--lp-deep)}
+.lp-btn-invert:hover{background:#fff;color:var(--lp-deep);filter:brightness(.94)}
+
+.lp-reassure{margin:0;font-size:14.5px;color:var(--lp-ink-3)}
+.lp-reassure-light{color:rgba(255,255,255,.72)}
+
+/* ============================= Sections ============================= */
+.lp-section{padding:72px 0}
+.lp-section-alt{background:var(--lp-surface);border-block:1px solid var(--lp-line)}
+
+.lp-h2{
+  font-family:var(--lp-display);
+  font-size:clamp(25px,3.4vw,34px);
+  font-weight:700;letter-spacing:-.025em;line-height:1.2;
+  margin:0 0 12px;
+}
+.lp-sub{margin:0 0 40px;max-width:58ch;font-size:17px;color:var(--lp-ink-2)}
+.lp-sub-light{color:rgba(255,255,255,.78)}
+
+/* ============================= Benefits ============================= */
+.lp-benefits{
+  list-style:none;margin:0;padding:0;
+  display:grid;gap:30px 40px;
+  grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+}
+.lp-benefits li{margin:0}
+.lp-b-num{
+  display:inline-block;margin-bottom:10px;
+  font-family:var(--lp-display);font-size:12.5px;font-weight:700;
+  letter-spacing:.1em;color:var(--lp-accent-bright);
+}
+.lp-benefits h3{
+  font-family:var(--lp-display);
+  font-size:18px;font-weight:600;letter-spacing:-.015em;
+  margin:0 0 8px;
+}
+.lp-benefits p{margin:0;font-size:15.5px;line-height:1.65;color:var(--lp-ink-2)}
+
+/* ============================== Stages ============================== */
+.lp-stages{
+  list-style:none;margin:0 0 26px;padding:0;
+  display:grid;gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  counter-reset:none;
+}
+.lp-stages li{
+  display:flex;align-items:center;gap:11px;
+  padding:13px 15px;
+  background:var(--lp-bg);
+  border:1px solid var(--lp-line);
+  border-radius:var(--lp-radius);
+}
+.lp-s-num{
+  font-family:var(--lp-display);font-size:12px;font-weight:700;
+  letter-spacing:.05em;color:var(--lp-accent-bright);
+  min-width:20px;
+}
+.lp-s-name{font-size:15px;font-weight:700;letter-spacing:-.01em}
+.lp-stages-note{margin:0;max-width:58ch;font-size:15.5px;color:var(--lp-ink-2)}
+
+/* =============================== Doors ============================== */
+.lp-doors{
+  display:grid;gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+}
+.lp-door{
+  padding:28px 26px;
+  background:var(--lp-surface);
+  border:1px solid var(--lp-line);
+  border-radius:var(--lp-radius-lg);
+  display:flex;flex-direction:column;
+}
+.lp-door h3{
+  font-family:var(--lp-display);font-size:19px;font-weight:700;
+  letter-spacing:-.02em;margin:0 0 10px;
+}
+.lp-door>p{margin:0 0 20px;font-size:15.5px;color:var(--lp-ink-2)}
+.lp-door .lp-btn{align-self:flex-start}
+.lp-door-note{
+  margin:16px 0 0;font-size:13.5px;line-height:1.55;color:var(--lp-ink-3);
+}
+
+/* =============================== Final ============================== */
+.lp-final{
+  padding:78px 0;
+  background:linear-gradient(135deg,var(--lp-purple),var(--lp-deep) 65%);
+  color:#fff;text-align:center;
+}
+.lp-final .lp-h2{margin-bottom:12px}
+.lp-final .lp-sub{margin-left:auto;margin-right:auto;margin-bottom:28px}
+.lp-final .lp-reassure{margin-top:16px}
+
+/* =============================== Footer ============================= */
+.lp-foot{
+  padding:34px 0;
+  background:var(--lp-surface);
+  border-top:1px solid var(--lp-line);
+}
+.lp-foot-inner{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:12px 26px;
+}
+.lp-foot p{margin:0;font-size:14px;color:var(--lp-ink-3)}
+.lp-foot-brand{
+  display:flex;align-items:center;gap:9px;
+  font-family:var(--lp-display);font-weight:700;color:var(--lp-ink) !important;
+}
+.lp-foot-mark{width:26px;height:26px;border-radius:7px;display:block}
+.lp-foot-links{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.lp-foot-links a{font-weight:700;text-decoration:none}
+.lp-foot-links a:hover{text-decoration:underline}
+
+/* ============================ Small screens ========================= */
+@media (max-width:639px){
+  body{font-size:16px}
+  .lp-hero{padding:56px 0 48px}
+  .lp-section{padding:52px 0}
+  .lp-final{padding:56px 0}
+  .lp-cta-row .lp-btn{width:100%;text-align:center}
+  .lp-nav{gap:12px}
+  .lp-foot-inner{flex-direction:column;align-items:flex-start}
+}

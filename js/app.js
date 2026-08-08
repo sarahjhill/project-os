@@ -1346,7 +1346,7 @@
   }
 
   window.addEventListener('error', function (e) {
-    console.error('Project OS error:', e.error || e.message);
+    console.error('SJ Development Process error:', e.error || e.message);
     var main = document.getElementById('main');
     if (main && !main.innerHTML.trim()) {
       bootError('A script error stopped the app from starting.', (e.message || '') + '\n' + (e.filename || '') + ':' + (e.lineno || ''));

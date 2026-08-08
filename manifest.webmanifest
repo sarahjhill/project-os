@@ -1,12 +1,12 @@
 {
-  "name": "Project OS",
-  "short_name": "Project OS",
-  "description": "Studio delivery system: discovery to deployment.",
-  "start_url": "./",
+  "name": "SJ Development Process",
+  "short_name": "SJ Process",
+  "description": "The working delivery system behind every SJ Development project.",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#F7F7F5",
-  "theme_color": "#B85C38",
+  "background_color": "#F6F8F8",
+  "theme_color": "#07beb8",
   "icons": [
     {
       "src": "icon.svg",

@@ -1,10 +1,12 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'project-os-v6';
+const CACHE = 'sj-process-v7';
 const ASSETS = [
   "./",
   "index.html",
+  "app.html",
   "css/styles.css",
+  "css/landing.css",
   "icon.svg",
   "icon-192.png",
   "icon-512.png",
@@ -20,6 +22,7 @@ const ASSETS = [
   "js/store.js",
   "js/clients-ui.js",
   "js/app.js",
+  "js/gate.js",
   "client.html",
   "forms/index.html",
   "forms/intake.html",

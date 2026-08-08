@@ -1,4 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#B85C38"/>
-  <path d="M170 128h100c62 0 104 38 104 96s-42 96-104 96h-44v64h-56V128zm56 48v96h40c30 0 50-18 50-48s-20-48-50-48h-40z" fill="#fff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SJ Development">
+  <title>SJ Development</title>
+  <defs>
+    <linearGradient id="sjg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6917d0"/>
+      <stop offset="1" stop-color="#07beb8"/>
+    </linearGradient>
+  </defs>
+  <!-- Solid brand colour underneath, gradient painted over it. Any renderer
+       that ignores linearGradient still shows brand purple, never black. -->
+  <rect width="512" height="512" rx="112" fill="#6917d0"/>
+  <rect width="512" height="512" rx="112" fill="url(#sjg) #6917d0"/>
+  <g fill="#fff" transform="translate(41.42 386.53) scale(0.37029 -0.37029)">
+    <path transform="translate(0 0)" d="M42 210H224Q228 171 251.0 150.5Q274 130 311 130Q349 130 371.0 147.5Q393 165 393 196Q393 222 375.5 239.0Q358 256 332.5 267.0Q307 278 260 292Q192 313 149.0 334.0Q106 355 75.0 396.0Q44 437 44 503Q44 601 115.0 656.5Q186 712 300 712Q416 712 487.0 656.5Q558 601 563 502H378Q376 536 353.0 555.5Q330 575 294 575Q263 575 244.0 558.5Q225 542 225 511Q225 477 257.0 458.0Q289 439 357 417Q425 394 467.5 373.0Q510 352 541.0 312.0Q572 272 572 209Q572 149 541.5 100.0Q511 51 453.0 22.0Q395 -7 316 -7Q239 -7 178.0 18.0Q117 43 80.5 92.0Q44 141 42 210Z"/>
+    <path transform="translate(615 0)" d="M502 702V224Q502 113 439.5 53.0Q377 -7 271 -7Q160 -7 93.0 56.0Q26 119 26 235H196Q196 191 214.0 168.5Q232 146 266 146Q297 146 314.0 166.0Q331 186 331 224V702Z"/>
+  </g>
 </svg>

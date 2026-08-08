@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SJ Development Process</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<meta name="theme-color" content="#07beb8">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="is-gated">
+
+<!-- Sign-in gate. The app markup below stays hidden until Supabase says
+     there is a session. See js/gate.js for what this does and does not
+     protect. -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-brand">
+      <img src="icon.svg" alt="" class="gate-mark">
+      <div>
+        <h1>SJ Development Process</h1>
+        <p class="gate-sub">The working system behind your project</p>
+      </div>
+    </div>
+
+    <p class="gate-intro">
+      Pop your email address in and you're through. No password to remember,
+      nothing to set up.
+    </p>
+
+    <form id="gateForm" novalidate>
+      <label class="gate-label" for="gateEmail">Email address</label>
+      <input class="gate-input" type="email" id="gateEmail" autocomplete="email"
+             placeholder="you@example.com" required>
+      <button class="gate-btn" type="submit">Tell me about your goals</button>
+      <!-- The button is warm rather than literal, so the mechanism is spelled
+           out right underneath it. Nobody should be left waiting for a form
+           that is actually an email. -->
+      <p class="gate-hint">A sign-in link lands in your inbox within a few seconds.</p>
+    </form>
+
+    <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
+
+    <p class="gate-note" id="gateLocalNote" hidden>
+      Cloud sign-in is not configured, so the app is running locally on this
+      device only. Nothing you do here leaves this browser.
+    </p>
+
+    <div class="gate-foot">
+      <a href="./">See what the process involves</a>
+      <span aria-hidden="true">·</span>
+      <a href="client.html">I am a client</a>
+    </div>
+  </div>
+</div>
+
+<div id="appShell" hidden>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark"><img src="icon.svg" alt=""></div>
+    <div>
+      <h1>SJ Development Process</h1>
+      <p class="tagline">Discovery → Research → UX/UI → Build → Launch</p>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <label class="sr-only" for="projectSelect">Active project</label>
+    <select id="projectSelect" class="select"></select>
+    <button class="btn btn-ghost" id="newProjectBtn" title="New project">+ Project</button>
+    <button class="btn btn-ghost icon" id="themeBtn" title="Toggle theme">◐</button>
+    <div class="menu-wrap">
+      <button class="btn btn-ghost icon" id="moreBtn" title="More">⋯</button>
+      <div class="menu" id="moreMenu" hidden>
+        <button data-act="export">Export backup (.json)</button>
+        <button data-act="import">Import backup</button>
+        <button data-act="exportcsv">Export tasks (.csv)</button>
+        <button data-act="rename">Rename project</button>
+        <button data-act="reset">Reset project progress</button>
+        <button data-act="delete" class="danger">Delete project</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-view="dashboard">Dashboard</button>
+  <button class="tab" data-view="phases">Process</button>
+  <button class="tab" data-view="board">Board</button>
+  <button class="tab" data-view="sprints">Sprints</button>
+  <button class="tab" data-view="files">Files</button>
+  <button class="tab" data-view="docs">Templates</button>
+  <button class="tab" data-view="clients">Clients</button>
+</nav>
+
+<div class="toolbar" id="toolbar">
+  <input type="search" id="search" class="input" placeholder="Search tasks, guidance, deliverables…">
+  <select id="filterPhase" class="select sm"><option value="">All phases</option></select>
+  <select id="filterStatus" class="select sm">
+    <option value="">Any status</option>
+    <option value="todo">To do</option>
+    <option value="doing">In progress</option>
+    <option value="blocked">Blocked</option>
+    <option value="review">In review</option>
+    <option value="done">Done</option>
+  </select>
+  <select id="filterPri" class="select sm">
+    <option value="">Any priority</option>
+    <option value="1">Critical</option>
+    <option value="2">High</option>
+    <option value="3">Medium</option>
+    <option value="4">Low</option>
+  </select>
+  <label class="checkline"><input type="checkbox" id="filterMine"> Hide done</label>
+  <button class="btn btn-ghost sm" id="clearFilters">Clear</button>
+</div>
+
+<main id="main">
+  <div id="bootstatus" style="padding:40px;text-align:center;color:#8A8A82;font-size:14px">
+    Loading SJ Development Process…
+  </div>
+  <noscript>
+    <div style="padding:24px;border:1px solid #ccc;border-radius:12px;max-width:640px">
+      <h2 style="margin-top:0">Open this file in a web browser</h2>
+      <p>You are most likely viewing this in a preview pane (a file previewer, email client, or an app's built-in
+         viewer). Those deliberately disable scripts, so the app cannot start.</p>
+      <p><strong>To open it properly:</strong> find the file on your computer, right-click it, choose
+         <strong>Open With</strong>, and pick <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
+         Or open Chrome first and drag the file onto a blank tab.</p>
+      <p style="color:#666;font-size:14px">If it still shows this message in a real browser, JavaScript is switched
+         off in that browser's settings. SJ Development Process runs entirely on your machine — nothing is sent anywhere.</p>
+    </div>
+  </noscript>
+</main>
+
+<!-- Task detail drawer -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Task detail"></aside>
+
+<!-- Generic modal -->
+<div class="modal-wrap" id="modalWrap" hidden>
+  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+</div>
+
+</div><!-- /#appShell -->
+
+<input type="file" id="filePicker" multiple hidden>
+<input type="file" id="importPicker" accept="application/json,.json" multiple hidden>
+
+<script>
+/* Startup marker — runs before everything else so a failure is legible. */
+(function () {
+  var el = document.getElementById('bootstatus');
+  if (el) el.innerHTML = '<strong>JavaScript is running.</strong><br>Loading the process data…';
+  window.__bootStage = 'marker';
+  window.addEventListener('error', function (e) {
+    var s = document.getElementById('bootstatus');
+    if (!s) return;
+    s.style.color = '#B23A32';
+    s.style.textAlign = 'left';
+    s.innerHTML = '<h3>The app hit an error while starting</h3>' +
+      '<p>Last stage reached: <code>' + (window.__bootStage || 'unknown') + '</code></p>' +
+      '<pre style="white-space:pre-wrap;background:#F0EFEC;padding:12px;border-radius:8px;color:#333">' +
+      String(e.message || e) + '\n' + String(e.filename || '') + ' line ' + String(e.lineno || '') +
+      '</pre><p>Send this text over and it can be fixed directly.</p>';
+  });
+})();
+</script>
+
+<script src="js/config.js"></script>
+<script src="js/data-phases.js"></script>
+<script src="js/data-phases-2.js"></script>
+<script src="js/data-docs.js"></script>
+<script src="js/data-docs-2.js"></script>
+<script src="js/data-forms.js"></script>
+<script src="js/forms.js"></script>
+<script src="js/cloud.js"></script>
+<script src="js/store.js"></script>
+<script src="js/clients-ui.js"></script>
+<script src="js/app.js"></script>
+<script src="js/gate.js"></script>
+<script>
+/* Offline support — only on http(s); harmless when opened as a local file. */
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () { /* offline is optional */ });
+  });
+}
+</script>
+</body>
+</html>

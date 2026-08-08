@@ -55,7 +55,7 @@
         return sb;
       });
     }).catch(function (e) {
-      console.warn('Project OS: cloud unavailable —', e && e.message);
+      console.warn('SJ Development Process: cloud unavailable —', e && e.message);
       sb = null;
       initialised = true;
       emit();

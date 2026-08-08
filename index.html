@@ -3,149 +3,236 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Project OS — Studio Delivery System</title>
-<link rel="stylesheet" href="css/styles.css">
-<meta name="description" content="A complete delivery process for a design and development studio: 12 phases, 69 guided tasks, 71 templates, sprint tracking and sendable client forms. Runs entirely in your browser.">
-<meta name="theme-color" content="#B85C38">
-<meta property="og:title" content="Project OS">
-<meta property="og:description" content="Discovery to deployment, as a working system. 69 guided tasks, 71 templates, sendable client forms.">
+<title>SJ Development Process — know exactly what happens next</title>
+<meta name="description" content="A clear, twelve-stage process for building a website, with a sign-in for clients to follow along. No jargon, no guessing what happens next.">
+
+<meta property="og:title" content="SJ Development Process">
+<meta property="og:description" content="Know exactly what happens next. A clear twelve-stage process, and a place to watch your project move.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="og.png">
 <meta name="twitter:card" content="summary_large_image">
+
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#07beb8">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
 
-<header class="topbar">
-  <div class="brand">
-    <div class="mark">P</div>
-    <div>
-      <h1>Project OS</h1>
-      <p class="tagline">Discovery → Research → UX/UI → Build → Launch</p>
-    </div>
-  </div>
+<a class="skip" href="#main">Skip to content</a>
 
-  <div class="topbar-right">
-    <label class="sr-only" for="projectSelect">Active project</label>
-    <select id="projectSelect" class="select"></select>
-    <button class="btn btn-ghost" id="newProjectBtn" title="New project">+ Project</button>
-    <button class="btn btn-ghost icon" id="themeBtn" title="Toggle theme">◐</button>
-    <div class="menu-wrap">
-      <button class="btn btn-ghost icon" id="moreBtn" title="More">⋯</button>
-      <div class="menu" id="moreMenu" hidden>
-        <button data-act="export">Export backup (.json)</button>
-        <button data-act="import">Import backup</button>
-        <button data-act="exportcsv">Export tasks (.csv)</button>
-        <button data-act="rename">Rename project</button>
-        <button data-act="reset">Reset project progress</button>
-        <button data-act="delete" class="danger">Delete project</button>
-      </div>
-    </div>
-  </div>
+<header class="lp-top">
+  <a class="lp-brand" href="./">
+    <img src="icon.svg" alt="" class="lp-mark">
+    <span class="lp-brand-text">
+      <span class="lp-brand-name">SJ Development</span>
+      <span class="lp-brand-sub">Process</span>
+    </span>
+  </a>
+  <nav class="lp-nav" aria-label="Primary">
+    <a href="client.html">Client sign-in</a>
+    <a class="lp-nav-btn" href="app.html">Owner sign-in</a>
+  </nav>
 </header>
 
-<nav class="tabs" id="tabs">
-  <button class="tab active" data-view="dashboard">Dashboard</button>
-  <button class="tab" data-view="phases">Process</button>
-  <button class="tab" data-view="board">Board</button>
-  <button class="tab" data-view="sprints">Sprints</button>
-  <button class="tab" data-view="files">Files</button>
-  <button class="tab" data-view="docs">Templates</button>
-  <button class="tab" data-view="clients">Clients</button>
-</nav>
-
-<div class="toolbar" id="toolbar">
-  <input type="search" id="search" class="input" placeholder="Search tasks, guidance, deliverables…">
-  <select id="filterPhase" class="select sm"><option value="">All phases</option></select>
-  <select id="filterStatus" class="select sm">
-    <option value="">Any status</option>
-    <option value="todo">To do</option>
-    <option value="doing">In progress</option>
-    <option value="blocked">Blocked</option>
-    <option value="review">In review</option>
-    <option value="done">Done</option>
-  </select>
-  <select id="filterPri" class="select sm">
-    <option value="">Any priority</option>
-    <option value="1">Critical</option>
-    <option value="2">High</option>
-    <option value="3">Medium</option>
-    <option value="4">Low</option>
-  </select>
-  <label class="checkline"><input type="checkbox" id="filterMine"> Hide done</label>
-  <button class="btn btn-ghost sm" id="clearFilters">Clear</button>
-</div>
-
 <main id="main">
-  <div id="bootstatus" style="padding:40px;text-align:center;color:#8A8A82;font-size:14px">
-    Loading Project OS…
-  </div>
-  <noscript>
-    <div style="padding:24px;border:1px solid #ccc;border-radius:12px;max-width:640px">
-      <h2 style="margin-top:0">Open this file in a web browser</h2>
-      <p>You are most likely viewing this in a preview pane (a file previewer, email client, or an app's built-in
-         viewer). Those deliberately disable scripts, so the app cannot start.</p>
-      <p><strong>To open it properly:</strong> find the file on your computer, right-click it, choose
-         <strong>Open With</strong>, and pick <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
-         Or open Chrome first and drag the file onto a blank tab.</p>
-      <p style="color:#666;font-size:14px">If it still shows this message in a real browser, JavaScript is switched
-         off in that browser's settings. Project OS runs entirely on your machine — nothing is sent anywhere.</p>
+
+  <!-- ============================ Hero ============================ -->
+  <section class="lp-hero">
+    <div class="lp-wrap">
+      <p class="lp-eyebrow">The process behind every SJ Development project</p>
+      <h1 class="lp-h1">
+        You will always know<br><em>what happens next.</em>
+      </h1>
+      <p class="lp-lede">
+        Most people's experience of getting a website built is a long, quiet gap
+        where nothing seems to happen and nobody tells you anything. This is the
+        opposite of that.
+      </p>
+      <div class="lp-cta-row">
+        <a class="lp-btn lp-btn-primary" href="forms/intake.html">
+          Start with a few questions
+        </a>
+        <a class="lp-btn" href="client.html">Already a client? Sign in</a>
+      </div>
+      <p class="lp-reassure">
+        Step one is a form. It costs nothing, commits you to nothing, and takes
+        about ten minutes.
+      </p>
     </div>
-  </noscript>
+  </section>
+
+  <!-- ========================== Benefits =========================== -->
+  <section class="lp-section">
+    <div class="lp-wrap">
+      <h2 class="lp-h2">Made to be easy on you</h2>
+      <p class="lp-sub">
+        You have a job already. This one is mine.
+      </p>
+
+      <ul class="lp-benefits">
+        <li>
+          <span class="lp-b-num">01</span>
+          <h3>You are never left wondering</h3>
+          <p>
+            Sign in whenever you like and see the stage we're at, what's just been
+            finished, and what's coming. No chasing, no "any update?" emails.
+          </p>
+        </li>
+        <li>
+          <span class="lp-b-num">02</span>
+          <h3>One thing asked at a time</h3>
+          <p>
+            When I need something from you it arrives as a short form with a clear
+            deadline — not a twelve-point email you have to unpick on a Sunday.
+          </p>
+        </li>
+        <li>
+          <span class="lp-b-num">03</span>
+          <h3>Plain English throughout</h3>
+          <p>
+            No wireframe-schema-sprint-velocity talk. If a word needs explaining,
+            it gets explained, and you never have to pretend you followed it.
+          </p>
+        </li>
+        <li>
+          <span class="lp-b-num">04</span>
+          <h3>Nothing gets quietly forgotten</h3>
+          <p>
+            Every stage has a written finish line. Accessibility, speed, testing
+            and handover are steps in the process, not extras that fall off the
+            end when time runs short.
+          </p>
+        </li>
+        <li>
+          <span class="lp-b-num">05</span>
+          <h3>You keep everything</h3>
+          <p>
+            Files, decisions and documents stay in one place you can reach, during
+            the project and after it. You finish owning your site outright.
+          </p>
+        </li>
+        <li>
+          <span class="lp-b-num">06</span>
+          <h3>Priced before it starts</h3>
+          <p>
+            Scope and cost are agreed in writing at stage two, before a line of
+            code exists. Surprises are a failure of process, not a fact of life.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================== The stages ========================= -->
+  <section class="lp-section lp-section-alt">
+    <div class="lp-wrap">
+      <h2 class="lp-h2">Twelve stages, start to finish</h2>
+      <p class="lp-sub">
+        A quick look at the shape of it. Small projects move through some of these
+        in an afternoon; bigger ones take longer. You'll know which is which
+        before we begin.
+      </p>
+
+      <ol class="lp-stages">
+        <li><span class="lp-s-num">00</span><span class="lp-s-name">Discovery</span></li>
+        <li><span class="lp-s-num">01</span><span class="lp-s-name">Proposal</span></li>
+        <li><span class="lp-s-num">02</span><span class="lp-s-name">Research</span></li>
+        <li><span class="lp-s-num">03</span><span class="lp-s-name">Strategy</span></li>
+        <li><span class="lp-s-num">04</span><span class="lp-s-name">Wireframes</span></li>
+        <li><span class="lp-s-num">05</span><span class="lp-s-name">UI Design</span></li>
+        <li><span class="lp-s-num">06</span><span class="lp-s-name">Testing</span></li>
+        <li><span class="lp-s-num">07</span><span class="lp-s-name">Tech Setup</span></li>
+        <li><span class="lp-s-num">08</span><span class="lp-s-name">Build</span></li>
+        <li><span class="lp-s-num">09</span><span class="lp-s-name">QA</span></li>
+        <li><span class="lp-s-num">10</span><span class="lp-s-name">Launch</span></li>
+        <li><span class="lp-s-num">11</span><span class="lp-s-name">Handover</span></li>
+      </ol>
+
+      <p class="lp-stages-note">
+        Behind each of these sits a checklist I work through and you don't have to
+        think about. That part is my problem, which is rather the point.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ Doors ============================ -->
+  <section class="lp-section">
+    <div class="lp-wrap">
+      <h2 class="lp-h2">Signing in</h2>
+      <div class="lp-doors">
+
+        <div class="lp-door">
+          <h3>Clients</h3>
+          <p>
+            See your project's progress, what's needed from you, and the files
+            we've shared. You'll only ever see your own project.
+          </p>
+          <a class="lp-btn lp-btn-primary" href="client.html">Client sign-in</a>
+          <p class="lp-door-note">
+            You'll have had an invitation by email. Sign-in is a link — there is no
+            password to lose.
+          </p>
+        </div>
+
+        <div class="lp-door">
+          <h3>Owner</h3>
+          <p>
+            The full working system: every stage, task, template and client. For me
+            and anyone I invite in.
+          </p>
+          <a class="lp-btn" href="app.html">Owner sign-in</a>
+          <p class="lp-door-note">
+            Not a public tool. Signing in is required before anything loads.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= CTA ============================= -->
+  <section class="lp-final">
+    <div class="lp-wrap">
+      <h2 class="lp-h2">Thinking about a project?</h2>
+      <p class="lp-sub lp-sub-light">
+        Start with the questions. If it turns out I'm not the right fit, I'll tell
+        you that and point you somewhere better.
+      </p>
+      <a class="lp-btn lp-btn-invert" href="forms/intake.html">
+        Start with a few questions
+      </a>
+      <p class="lp-reassure lp-reassure-light">
+        Ten minutes. No cost, no commitment.
+      </p>
+    </div>
+  </section>
+
 </main>
 
-<!-- Task detail drawer -->
-<div class="scrim" id="scrim" hidden></div>
-<aside class="drawer" id="drawer" hidden aria-label="Task detail"></aside>
-
-<!-- Generic modal -->
-<div class="modal-wrap" id="modalWrap" hidden>
-  <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
-</div>
-
-<input type="file" id="filePicker" multiple hidden>
-<input type="file" id="importPicker" accept="application/json,.json" multiple hidden>
+<footer class="lp-foot">
+  <div class="lp-wrap lp-foot-inner">
+    <p class="lp-foot-brand">
+      <img src="icon.svg" alt="" class="lp-foot-mark">
+      SJ Development
+    </p>
+    <p class="lp-foot-links">
+      <a href="https://sarahjhill.github.io/make-it-pop/">Make It Pop</a>
+      <span aria-hidden="true">·</span>
+      <a href="mailto:hantaah21@gmail.com">hantaah21@gmail.com</a>
+    </p>
+    <p class="lp-foot-copy">
+      &copy; <span id="lpYear">2026</span> SJ Development. All rights reserved.
+    </p>
+  </div>
+</footer>
 
 <script>
-/* Startup marker — runs before everything else so a failure is legible. */
-(function () {
-  var el = document.getElementById('bootstatus');
-  if (el) el.innerHTML = '<strong>JavaScript is running.</strong><br>Loading the process data…';
-  window.__bootStage = 'marker';
-  window.addEventListener('error', function (e) {
-    var s = document.getElementById('bootstatus');
-    if (!s) return;
-    s.style.color = '#B23A32';
-    s.style.textAlign = 'left';
-    s.innerHTML = '<h3>The app hit an error while starting</h3>' +
-      '<p>Last stage reached: <code>' + (window.__bootStage || 'unknown') + '</code></p>' +
-      '<pre style="white-space:pre-wrap;background:#F0EFEC;padding:12px;border-radius:8px;color:#333">' +
-      String(e.message || e) + '\n' + String(e.filename || '') + ' line ' + String(e.lineno || '') +
-      '</pre><p>Send this text over and it can be fixed directly.</p>';
-  });
-})();
-</script>
-
-<script src="js/config.js"></script>
-<script src="js/data-phases.js"></script>
-<script src="js/data-phases-2.js"></script>
-<script src="js/data-docs.js"></script>
-<script src="js/data-docs-2.js"></script>
-<script src="js/data-forms.js"></script>
-<script src="js/forms.js"></script>
-<script src="js/cloud.js"></script>
-<script src="js/store.js"></script>
-<script src="js/clients-ui.js"></script>
-<script src="js/app.js"></script>
-<script>
-/* Offline support — only on http(s); harmless when opened as a local file. */
-if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () { /* offline is optional */ });
-  });
-}
+  document.getElementById('lpYear').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>

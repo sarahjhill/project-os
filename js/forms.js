@@ -235,7 +235,7 @@
     /* Build the flat object Formspree turns into a readable email. */
     function formspreeBody(payload) {
       var out = {};
-      out._subject = (F.studioName || 'Project OS') + ' — ' + F.title +
+      out._subject = (F.studioName || 'SJ Development Process') + ' — ' + F.title +
         (respondentName(payload) ? ' from ' + respondentName(payload) : '');
       payload.answers.forEach(function (a) {
         var key = a.section + ' — ' + a.label;
@@ -376,7 +376,7 @@
     data.formId = formId;
     data.endpoint = C.formspreeEndpoint || '';
     data.appUrl = C.appUrl || '';
-    data.studioName = C.studioName || 'Project OS';
+    data.studioName = C.studioName || 'SJ Development Process';
 
     var ty = C.thankYou || {};
     var thanksHTML =
@@ -433,7 +433,7 @@
   function parseResponse(text) {
     var p = JSON.parse(text);
     if (!p || !p.projectOsForm || !p.answers) {
-      throw new Error('That does not look like a Project OS answers file.');
+      throw new Error('That does not look like a SJ Development Process answers file.');
     }
     return p;
   }
