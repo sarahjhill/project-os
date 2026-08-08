@@ -1,6 +1,6 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'project-os-v4';
+const CACHE = 'project-os-v5';
 const ASSETS = [
   "./",
   "index.html",
@@ -50,25 +50,19 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
 
-  // Network-first for pages so updates appear promptly; cache-first for assets.
-  var isPage = e.request.mode === 'navigate' || url.pathname.endsWith('.html');
-  if (isPage) {
-    e.respondWith(
-      fetch(e.request).then(function (r) {
+  // Network-first for EVERYTHING we serve, so an update is never more than
+  // one load away. The cache is the offline fallback, not the primary source.
+  e.respondWith(
+    fetch(e.request).then(function (r) {
+      if (r && r.status === 200) {
         var copy = r.clone();
         caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
-        return r;
-      }).catch(function () { return caches.match(e.request); })
-    );
-  } else {
-    e.respondWith(
-      caches.match(e.request).then(function (hit) {
-        return hit || fetch(e.request).then(function (r) {
-          var copy = r.clone();
-          caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
-          return r;
-        });
-      })
-    );
-  }
+      }
+      return r;
+    }).catch(function () {
+      return caches.match(e.request).then(function (hit) {
+        return hit || caches.match('index.html');
+      });
+    })
+  );
 });
