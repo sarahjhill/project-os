@@ -491,7 +491,7 @@ window.PHASES.push(
       deliver: ['Live production site', 'Completed smoke test checklist', 'Launch announcement'],
       tools: ['Runbook', 'Monitoring dashboards'],
       dod: ['All smoke tests pass in production', 'Monitoring green', 'Client informed'],
-      docs: ['doc-launch-checklist']
+      docs: ['doc-launch-checklist', 'doc-results-request']
     },
     {
       id: 'p10-4', title: 'Post-launch watch (72 hours)', role: 'Dev', est: 4, pri: 1, pts: 3,
@@ -579,7 +579,7 @@ window.PHASES.push(
       deliver: ['Outcome report', 'Case study', 'Testimonial'],
       tools: ['Analytics', 'Docs'],
       dod: ['Metrics compared to baseline', 'Testimonial requested'],
-      docs: ['doc-outcome-report']
+      docs: ['doc-outcome-report', 'doc-results-request']
     },
     {
       id: 'p11-5', title: 'Retainer or phase two proposal', role: 'Lead', est: 2, pri: 2, pts: 2,

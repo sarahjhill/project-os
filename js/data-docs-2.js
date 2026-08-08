@@ -1814,6 +1814,89 @@ Effective hourly rate: fee ÷ actual hours = ___
 **Feed this back into your estimating multipliers.**
 ` },
 
+'doc-results-request': { title: 'Asking a Client for Results', cat: 'Growth', body: `
+# Getting a real result out of a project
+
+Two short emails. The first goes on launch day, the second about a month later. Both are written to be easy to say yes to — nothing that sounds like you are using them for marketing.
+
+---
+
+## Email 1 — launch day
+
+**Subject:** You're live 🎉 (and one small favour)
+
+> Hi [name],
+>
+> [Project] is live: [link]
+>
+> Everything has been checked on phones, tablets and computers, and I will keep an eye on it over the next few days in case anything odd crops up. If you spot something, just reply here and I will sort it.
+>
+> One small favour, whenever you have a spare minute — could you send me a sentence or two on what you are hoping the site will do for you? Something like "we want people to be able to find what they need without having to ring anyone." I ask because in about a month I would love to check whether it actually did that, and it helps to have written down what "worked" was supposed to mean.
+>
+> No rush at all. Congratulations — it has been a genuine pleasure.
+>
+> [You]
+
+**Why it is worded this way:** you are asking for their goal, not a testimonial. People answer that easily, and it sets up the second email without you having to ask twice.
+
+---
+
+## Email 2 — about 30 days after launch
+
+**Subject:** One month in — how's it going?
+
+> Hi [name],
+>
+> It has been about a month since the site went live, so I wanted to check in.
+>
+> When we started, you said you were hoping to [quote their sentence back to them]. Has that happened? I would love to know either way — if something is not working as well as we hoped, I would rather know now while it is easy to fix.
+>
+> If you happen to have a number to hand, it would be brilliant to see one. Even a rough figure is fine:
+>
+> - how many bookings, orders or requests came through the site
+> - how many people signed up
+> - how many enquiries came in, compared with before
+> - or just "we are getting noticeably more/fewer phone calls"
+>
+> And if you are happy with how it has gone, would you mind if I mentioned the project on my website — a line about what it does and how it is going? I would send you the exact wording first, and I would only use a number you are comfortable with.
+>
+> Either way, thank you for trusting me with it.
+>
+> [You]
+
+---
+
+## Getting the ask right
+
+**Only ask for one number.** A list of five questions gets ignored; one gets answered. Pick whichever is easiest for them to actually know.
+
+**Ask permission separately from asking for the number.** Bundling them makes it feel transactional. Split across two emails, it feels like care.
+
+**Send the wording before you publish it.** Charities and larger organisations often need approval before their name appears anywhere. Sending your exact sentence first turns an awkward conversation into a quick yes.
+
+**If they do not track anything** — most small organisations do not — ask instead: "What is different now compared with before?" A sentence like *"we are not answering the same three questions on the phone every day"* is a real result, and it makes better copy than a percentage.
+
+---
+
+## What to do with the answer
+
+One sentence and one number is enough to rewrite your own site around evidence:
+
+> **[Client] came to me needing [their goal, their words].** A month after launch, [number] — and [the thing that changed].
+
+That single specific paragraph will outperform every adjective on the page.
+
+---
+
+## Do these at the same time
+
+**Screenshots on launch day.** Home page, the main journey, and mobile. Much easier now than after the next round of content edits.
+
+**Before-and-after load time.** If they had an old site, run both through PageSpeed Insights and keep the two figures. "Loads in 1.2 seconds instead of 8" is a result you own outright and can publish without anyone's permission.
+
+**Ask who else they know.** The day after a successful launch is the best moment to ask for a referral, and the one most people forget.
+` },
+
 'doc-outcome-report': { title: 'Outcome Report & Case Study', cat: 'Growth', body: `
 # Outcome Report (30–60 days post-launch)
 
