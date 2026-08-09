@@ -1,6 +1,6 @@
 # Project OS
 
-**Discovery to deployment, as a working system.** A complete delivery process for a solo studio doing full-stack work — 12 phases, 69 guided tasks, 71 templates, sprint tracking, and client forms you can send as a link.
+**Discovery to deployment, as a working system.** A complete delivery process for a solo studio doing full-stack work — 12 phases, 69 guided tasks, 72 templates, sprint tracking, and client forms you can send as a link.
 
 No build step, no dependencies, no backend. Plain HTML, CSS and JavaScript.
 
