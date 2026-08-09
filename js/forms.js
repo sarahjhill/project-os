@@ -12,20 +12,43 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
+  /* The SJ Development mark, with the Poppins glyphs already converted to
+     paths so it renders identically with no font available. */
+  var SJ_MARK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">'
+    + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
+    + '<stop offset="0" stop-color="#6917d0"/><stop offset="1" stop-color="#07beb8"/>'
+    + '</linearGradient></defs>'
+    + '<rect width="512" height="512" rx="112" fill="#6917d0"/>'
+    + '<rect width="512" height="512" rx="112" fill="url(#g) #6917d0"/>'
+    + '<g fill="#fff" transform="translate(41.42 386.53) scale(0.37029 -0.37029)">'
+    + '<path transform="translate(0 0)" d="M42 210H224Q228 171 251.0 150.5Q274 130 311 130Q349 130 371.0 147.5Q393 165 393 196Q393 222 375.5 239.0Q358 256 332.5 267.0Q307 278 260 292Q192 313 149.0 334.0Q106 355 75.0 396.0Q44 437 44 503Q44 601 115.0 656.5Q186 712 300 712Q416 712 487.0 656.5Q558 601 563 502H378Q376 536 353.0 555.5Q330 575 294 575Q263 575 244.0 558.5Q225 542 225 511Q225 477 257.0 458.0Q289 439 357 417Q425 394 467.5 373.0Q510 352 541.0 312.0Q572 272 572 209Q572 149 541.5 100.0Q511 51 453.0 22.0Q395 -7 316 -7Q239 -7 178.0 18.0Q117 43 80.5 92.0Q44 141 42 210Z"/><path transform="translate(615 0)" d="M502 702V224Q502 113 439.5 53.0Q377 -7 271 -7Q160 -7 93.0 56.0Q26 119 26 235H196Q196 191 214.0 168.5Q232 146 266 146Q297 146 314.0 166.0Q331 186 331 224V702Z"/>' + '</g></svg>';
+
   /* ---------- the stylesheet used inside the generated form ---------- */
   var FORM_CSS = [
-    ':root{--bg:#F7F7F5;--surface:#fff;--sunken:#F0EFEC;--text:#1A1A18;--text-2:#5C5C57;',
-    '--text-3:#8A8A82;--border:#E3E2DD;--strong:#CFCEC7;--accent:#B85C38;--danger:#B23A32;--ok:#2E7D5B}',
+    /* SJ Development palette. --accent is a darkened brand teal: the bright
+       #07beb8 is only 2.3:1 on white and fails as text or as a button fill. */
+    ':root{--bg:#F6F8F8;--surface:#fff;--sunken:#EDF1F1;--text:#15201F;--text-2:#54615F;',
+    '--text-3:#84918F;--border:#DFE6E5;--strong:#C6D1D0;--accent:#08807C;--accent-bright:#07beb8;',
+    '--brand-2:#6917d0;--accent-soft:#E4F5F4;--danger:#B02F2F;--ok:#1E7A5A}',
     '*{box-sizing:border-box}',
     'body{margin:0;background:var(--bg);color:var(--text);line-height:1.55;',
-    'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;font-size:16px}',
+    "font-family:'Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px}",
+    "h1,h2,.brandname{font-family:'Poppins',Georgia,serif;letter-spacing:-.02em}",
     '.wrap{max-width:720px;margin:0 auto;padding:32px 20px 80px}',
     'header.top{margin-bottom:28px}',
-    'h1{font-size:27px;letter-spacing:-.02em;margin:0 0 10px}',
+    '.brand{display:flex;align-items:center;gap:11px;margin-bottom:20px;',
+    'padding-bottom:16px;border-bottom:1px solid var(--border)}',
+    '.brand img{width:38px;height:38px;border-radius:10px;display:block;flex:0 0 auto}',
+    '.brandname{font-size:15px;font-weight:700;line-height:1.15;color:var(--text)}',
+    '.brandsub{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)}',
+    'h1{font-size:26px;font-weight:700;margin:0 0 10px}',
     '.intro{color:var(--text-2);margin:0}',
+    'footer.foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--border);',
+    'font-size:12.5px;color:var(--text-3);text-align:center}',
     '.progress{position:sticky;top:0;background:var(--bg);padding:12px 0;z-index:5;margin-bottom:4px}',
     '.pbar{height:6px;background:var(--sunken);border-radius:99px;overflow:hidden}',
-    '.pbar>span{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}',
+    '.pbar>span{display:block;height:100%;width:0;transition:width .25s;',
+'background:linear-gradient(90deg,var(--brand-2),var(--accent-bright))}',
     '.pcount{font-size:12px;color:var(--text-3);margin-top:6px}',
     'section.sec{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px}',
     'section.sec h2{font-size:17px;margin:0 0 4px}',
@@ -44,7 +67,7 @@
     'border-radius:9px;margin-bottom:6px;cursor:pointer;background:var(--surface)}',
     '.opt:hover{border-color:var(--strong);background:var(--sunken)}',
     '.opt input{margin-top:3px;flex:0 0 auto;width:auto}',
-    '.opt.on{border-color:var(--accent);background:#FBEEE8}',
+    '.opt.on{border-color:var(--accent);background:var(--accent-soft)}',
     '.scale{display:flex;gap:6px;align-items:center;flex-wrap:wrap}',
     '.scale button{flex:1;min-width:44px;padding:10px 0;border:1px solid var(--strong);background:var(--surface);',
     'border-radius:9px;cursor:pointer;font:inherit}',
@@ -396,11 +419,24 @@
 
     var json = JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 
+    /* The SJ mark is inlined as a data URI rather than linked, so the form
+       still shows the brand when it is saved to disk or opened offline. */
+    var MARK = 'data:image/svg+xml;utf8,' + encodeURIComponent(SJ_MARK);
+
     return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n' +
       '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-      '<title>' + esc(F.title) + '</title>\n<style>' + FORM_CSS + '</style>\n</head>\n<body>\n' +
+      '<title>' + esc(F.title) + ' — SJ Development</title>\n' +
+      '<link rel="icon" href="' + MARK + '">\n' +
+      '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+      '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+      '<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">\n' +
+      '<style>' + FORM_CSS + '</style>\n</head>\n<body>\n' +
       '<div class="wrap">\n' +
-      '<header class="top"><h1>' + esc(F.title) + '</h1>' +
+      '<header class="top">' +
+      '<div class="brand"><img src="' + MARK + '" alt="">' +
+      '<div><div class="brandname">SJ Development</div>' +
+      '<div class="brandsub">Process</div></div></div>' +
+      '<h1>' + esc(F.title) + '</h1>' +
       '<p class="intro">' + esc(F.intro) + '</p></header>\n' +
       '<div class="progress"><div class="pbar"><span id="pbar"></span></div>' +
       '<div class="pcount" id="pcount"></div></div>\n' +
@@ -413,6 +449,8 @@
       '<span class="saved" id="savedNote"></span></div>\n' +
       '<p class="help" style="margin-top:18px">Your answers are kept in this browser as you type, so you can ' +
       'close the page and come back to it. Nothing is sent until you press submit.</p>\n' +
+      '<footer class="foot">&copy; ' + new Date().getFullYear() + ' SJ Development &middot; ' +
+      'Your answers come straight to me and are not shared with anyone else.</footer>\n' +
       '</div>\n' +
       '<script>window.__FORM__ = ' + json + ';\n(' + formRuntime.toString() + ')();<\/script>\n' +
       '</body>\n</html>';

@@ -850,6 +850,33 @@
   }
 
   /* ================= Doc viewer ================= */
+
+  /* -------------------------------------------------------------------
+     Every document leaves the app with the same letterhead and sign-off,
+     so a client never receives an unbranded page.
+
+     Applied at preview/copy/download time rather than baked into the 72
+     template bodies: the source data stays clean, the branding lives in
+     exactly one place, and changing the studio details later is a one-line
+     edit instead of 72.
+     ------------------------------------------------------------------- */
+  function brandedDoc(d) {
+    return [
+      '**SJ Development** — Make It Pop',
+      'sarahjhill.github.io/make-it-pop · hantaah21@gmail.com',
+      '',
+      '---',
+      '',
+      String(d.body || '').trim(),
+      '',
+      '---',
+      '',
+      'Prepared by Sarah Hill · SJ Development',
+      '',
+      '© ' + new Date().getFullYear() + ' SJ Development. Prepared for this project — please do not redistribute.'
+    ].join('\n');
+  }
+
   function showDoc(key) {
     var d = window.DOCS[key];
     if (!d) return;
@@ -877,17 +904,17 @@
         '<div id="respArea"></div>';
     }
 
-    h += '<div class="md">' + md(d.body) + '</div>';
+    h += '<div class="md">' + md(brandedDoc(d)) + '</div>';
 
     modal(h, function () {
       $('#copyDoc').onclick = function () {
-        navigator.clipboard.writeText(d.body).then(function () {
+        navigator.clipboard.writeText(brandedDoc(d)).then(function () {
           $('#copyDoc').textContent = 'Copied ✓';
           setTimeout(function () { var b = $('#copyDoc'); if (b) b.textContent = 'Copy'; }, 1600);
         });
       };
       $('#dlDoc').onclick = function () {
-        var blob = new Blob([d.body], { type: 'text/markdown' });
+        var blob = new Blob([brandedDoc(d)], { type: 'text/markdown' });
         var a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = key.replace(/^doc-/, '') + '.md';

@@ -1,6 +1,6 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'sj-process-v7';
+const CACHE = 'sj-process-v8';
 const ASSETS = [
   "./",
   "index.html",

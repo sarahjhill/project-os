@@ -1716,7 +1716,7 @@ Users and permissions · content updates · refunds and cancellations · reports
 | Service | Cost/mo | Renews | Paid by |
 |---|---|---|---|
 
-**If the site is down:** check [status page] → check [monitoring] → contact [you] at [contact] → expected response [time]
+**If the site is down:** check [status page] → check [monitoring] → contact Sarah Hill (SJ Development) at hantaah21@gmail.com → expected response [time]
 
 ## 5. Credentials
 Shared vault (1Password/Bitwarden) containing every account, with the client as owner and you as a member.
@@ -1835,7 +1835,7 @@ Two short emails. The first goes on launch day, the second about a month later. 
 >
 > No rush at all. Congratulations — it has been a genuine pleasure.
 >
-> [You]
+> Sarah Hill · SJ Development
 
 **Why it is worded this way:** you are asking for their goal, not a testimonial. People answer that easily, and it sets up the second email without you having to ask twice.
 
@@ -1862,7 +1862,7 @@ Two short emails. The first goes on launch day, the second about a month later. 
 >
 > Either way, thank you for trusting me with it.
 >
-> [You]
+> Sarah Hill · SJ Development
 
 ---
 
