@@ -9,7 +9,7 @@ window.FORMS = {
 'doc-intake': {
   task: 'p0-1',
   title: 'Project Enquiry Form',
-  intro: 'Thanks for getting in touch. These questions help me understand what you need and give you an accurate quote. It takes about ten minutes — there are no wrong answers, and a rough guess is far better than a blank.',
+  intro: 'Thanks for getting in touch. Just enough to understand what you need and come back to you properly — about five minutes. There are no wrong answers, and a rough guess is far better than a blank. The detail can wait until we speak.',
   sections: [
     {
       name: 'About you',
@@ -23,44 +23,31 @@ window.FORMS = {
         { id: 'business', label: 'In a sentence or two, what does your business do and who for?', type: 'textarea', required: true }
       ]
     },
+    /* The 'problem' section and most of the audience questions were cut: this
+       is first contact, and the detail belongs in the discovery call rather
+       than a form someone fills in before they have even spoken to me.
+       The two questions kept here had to be reworded — they said "they" and
+       "them", which referred to the deleted question about who would use it. */
+    /* Ids changed with the questions. 'access' used to be a yes/no about
+       meeting users and 'alternatives' about current workarounds — reusing
+       those ids for entirely different questions would have made old and new
+       submissions impossible to tell apart in the answers file. */
     {
-      name: 'The problem',
+      name: 'What good looks like',
       fields: [
-        { id: 'problem', label: 'What problem are you trying to solve?', type: 'textarea', required: true,
-          help: 'Describe it in your own words — no need for technical language.' },
-        { id: 'today', label: 'What happens today when someone tries to do this? Walk me through it step by step.', type: 'textarea', required: true,
-          help: 'Include the awkward bits: the spreadsheet, the phone call, the thing you do manually every Friday.' },
-        { id: 'tried', label: 'What have you already tried? What did or did not work?', type: 'textarea' },
-        { id: 'cost', label: 'How is this costing you?', type: 'textarea',
-          help: 'Lost sales, wasted hours, complaints, staff frustration — a rough estimate is fine.' }
-      ]
-    },
-    {
-      name: 'The people who will use it',
-      fields: [
-        { id: 'users', label: 'Who will use this, and roughly how many people?', type: 'textarea', required: true },
-        { id: 'frequency', label: 'How often would a typical person use it?',
-          type: 'select', options: ['Several times a day', 'Daily', 'A few times a week', 'Weekly', 'Monthly', 'A few times a year', 'Once'] },
-        { id: 'devices', label: 'What will they mostly use it on?',
-          type: 'checkbox', options: ['Mobile phone', 'Tablet', 'Laptop or desktop', 'Not sure'] },
-        { id: 'alternatives', label: 'What do they use instead today?', type: 'textarea',
-          help: 'Including spreadsheets, phone calls, paper, or a competitor.' },
-        { id: 'access', label: 'Would you be able to introduce me to two or three of them for research?',
-          type: 'radio', options: ['Yes', 'Possibly', 'No'] }
+        { id: 'likes', label: 'Can you give me up to three sites that you like, or want to be better than?',
+          type: 'textarea',
+          help: 'Links are ideal, but names are fine. A line on what you like about each one helps even more.' },
+        { id: 'competitors', label: 'Who are your main competitors?', type: 'textarea',
+          help: 'Whoever your customers would go to instead of you.' }
       ]
     },
     {
       name: 'Scope',
       fields: [
-        { id: 'mustdo', label: 'What must this do on day one to be worth doing at all?', type: 'textarea', required: true },
-        { id: 'nicetohave', label: 'What would be good to have eventually, but can wait?', type: 'textarea' },
-        { id: 'systems', label: 'What existing systems must it connect to?',
-          type: 'checkbox', options: ['Payments (Stripe, PayPal, card terminal)', 'Email marketing', 'Accounting software', 'CRM', 'Stock or inventory', 'Calendar or booking', 'Delivery or shipping', 'Something else', 'None that I know of'] },
-        { id: 'systemsdetail', label: 'If you ticked any above, which products specifically?', type: 'textarea' },
-        { id: 'brand', label: 'Where are you with branding?',
-          type: 'radio', options: ['Full brand guidelines exist', 'Logo and colours only', 'Something informal I would like refreshed', 'Starting from scratch'] },
-        { id: 'content', label: 'Who will write the words and provide the images?',
-          type: 'radio', options: ['I have it all ready', 'I will write it, but need a deadline', 'I would like help writing it', 'I have not thought about it yet'] }
+        { id: 'mustdo', label: 'What are your expectations once it is launched?', type: 'textarea', required: true,
+          help: 'What should be different for you or your customers once it is live?' },
+        { id: 'nicetohave', label: 'What would be good to have eventually, but can wait?', type: 'textarea' }
       ]
     },
     {
