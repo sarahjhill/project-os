@@ -6,7 +6,11 @@
 (function () {
   'use strict';
 
-  var LS_KEY = 'projectos.v1';
+  /* Guest mode gets its own key so somebody looking round on a shared
+     machine can neither see nor overwrite the real projects. */
+  var LS_KEY = (window.GUEST && window.GUEST.active)
+    ? window.GUEST.storageKey
+    : 'projectos.v1';
   var DB_NAME = 'projectos-files';
   var DB_VER = 1;
 

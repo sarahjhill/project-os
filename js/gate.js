@@ -46,6 +46,11 @@
     document.body.classList.add('is-gated');
   }
 
+  /* A guest is here to look, not to sign in. guest.js has already emptied
+     the cloud config, so there is nothing for them to reach even if they
+     tried. Open the door and leave the banner to explain itself. */
+  if (window.GUEST && window.GUEST.active) { open(); return; }
+
   /* Without Supabase configured there is nothing to sign in to, so the gate
      would lock the owner out of their own app. Let it through and say so. */
   if (!window.Cloud || !window.Cloud.configured()) {

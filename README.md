@@ -4,6 +4,18 @@
 
 No build step, no dependencies, no backend. Plain HTML, CSS and JavaScript.
 
+**Have a look first:** [open the guest demo](https://sarahjhill.github.io/project-os/app.html?guest=1) — the real app, loaded with a fictional project. No sign-up, nothing saved anywhere but your own browser.
+
+---
+
+> ### If you are copying this repository
+>
+> **`js/config.js` contains live keys for the author's Supabase project and Formspree form. Replace both with your own before you use it.**
+>
+> Left as they are, the app will sign in but show you nothing — the database only returns rows belonging to its owner — and any client form you send would deliver a stranger's answers to somebody else's inbox.
+>
+> `supabase/SETUP.md` walks through creating your own, and it is free. If you would rather not bother with any of that, the app runs perfectly well with no Supabase at all, storing everything in your browser.
+
 ---
 
 ## Deploy it to GitHub Pages

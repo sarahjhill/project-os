@@ -447,3 +447,79 @@ body.is-gated{overflow:hidden}
   margin:10px 0 0;text-align:center;
   font-size:12.5px;line-height:1.5;color:var(--text-3);
 }
+
+/* =====================================================================
+   Guest mode
+   ===================================================================== */
+
+.guest-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #fff;
+  background: linear-gradient(to right, #6917d0, #07beb8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
+.guest-tag {
+  flex: 0 0 auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.guest-text { flex: 1 1 260px; }
+
+.guest-reset,
+.guest-out {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.guest-reset:hover,
+.guest-out:hover,
+.guest-reset:focus-visible,
+.guest-out:focus-visible {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #fff;
+  color: #1a1a20;
+  outline: none;
+}
+
+/* The gate's own way in, sitting under the sign-in form. */
+.gate-guest {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 13px;
+  text-align: center;
+  color: #6b6f80;
+}
+
+.gate-guest a { font-weight: 700; }
+
+@media (max-width: 560px) {
+  .guest-bar { font-size: 12px; padding: 9px 12px; }
+  .guest-text { flex-basis: 100%; order: 3; }
+}

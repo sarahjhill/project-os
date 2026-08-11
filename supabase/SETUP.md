@@ -6,6 +6,21 @@ Until you do this, Project OS carries on working exactly as it does now, entirel
 
 ---
 
+> ### Read this first if you have copied this repository
+>
+> **Create your own Supabase project. Do not use the keys already in `js/config.js`.**
+>
+> Those keys point at the author's live database, holding real client work. Two things follow from that:
+>
+> - **Nothing you do will work properly.** The security policies only return rows belonging to the signed-in owner. You will sign in, see an empty app, and assume you have broken something. You have not — you are simply looking at somebody else's locked filing cabinet.
+> - **You would be sending your own client's details to a stranger's database.** Names, briefs, budgets, uploaded files. Do not do that to them.
+>
+> The whole of step 1 below is creating your own. It is free and takes about two minutes. Replace both values in `js/config.js` with yours before you run anything.
+>
+> If you only want to see how the app works, you do not need Supabase at all — open `app.html?guest=1` for the guest demo, or just run the app locally and it will store everything in your own browser.
+
+---
+
 ## 1. Create the Supabase project
 
 1. Sign up at [supabase.com](https://supabase.com) and click **New project**.
