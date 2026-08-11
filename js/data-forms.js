@@ -240,6 +240,96 @@ window.FORMS = {
       ]
     }
   ]
+},
+
+/* The one form that arrives before there is a project at all. It is the front
+   door for the free website audit offered on Make It Pop, so it asks only what
+   is needed to run the audit and write the report — no budget, no sign-off, no
+   deadline. Those belong in doc-intake, which comes later and only if the
+   audit turns into work. */
+'doc-audit': {
+  task: 'p0-2',
+  title: 'Free Website Audit — Request',
+  intro: 'Thanks for asking. This is enough for me to look at your website properly and come back with something specific rather than generic — about three minutes. Rough guesses beat blanks, and anything you would rather not answer can stay empty.',
+  sections: [
+    {
+      name: 'About you',
+      fields: [
+        { id: 'name', label: 'Your name', type: 'text', required: true },
+        { id: 'email', label: 'Email address', type: 'email', required: true,
+          help: 'This is where your report will be sent.' },
+        { id: 'phone', label: 'Phone number', type: 'tel',
+          help: 'Only if you would rather I rang than emailed.' },
+        { id: 'company', label: 'Business or organisation name', type: 'text', required: true },
+        { id: 'website', label: 'Your website address', type: 'text', required: true, placeholder: 'https://',
+          help: 'The one you want me to look at. If you have more than one, whichever is busiest.' },
+        { id: 'business', label: 'In a sentence or two, what do you do and who for?', type: 'textarea', required: true },
+        { id: 'orgtype', label: 'Which of these fits you best?', type: 'radio', required: true,
+          options: ['A local business', 'A charity, mosque or good cause', 'A school or education group', 'A community group or club', 'Something else'] },
+        { id: 'area', label: 'Which areas do you serve?', type: 'text',
+          placeholder: 'e.g. Cardiff and the Vale, or just Grangetown',
+          help: 'It tells me who you are up against in the local search results.' }
+      ]
+    },
+    {
+      name: 'What is bothering you',
+      fields: [
+        { id: 'concern', label: 'What made you ask for an audit?', type: 'textarea', required: true,
+          help: 'Even "it feels slow and I do not know why" is a useful answer.' },
+        { id: 'goal', label: 'What would you most like more of?', type: 'radio', required: true,
+          options: ['Phone calls', 'Enquiries through the website', 'Online bookings or appointments', 'Online sales', 'Donations', 'People through the door', 'I am not sure yet'] },
+        { id: 'knownissues', label: 'Is there anything you already know is broken or annoying?', type: 'textarea',
+          help: 'No need to be technical. "The contact page looks wrong on my phone" is perfect.' },
+        { id: 'competitors', label: 'Who do you lose customers to?', type: 'textarea',
+          help: 'Names or links, whichever is easier. I will look at how you compare.' }
+      ]
+    },
+    {
+      /* The three questions that make the report's figures defensible: the
+         estimate is built from the client's own numbers rather than an
+         industry average dressed up as a prediction about their business. */
+      name: 'Your numbers',
+      note: 'These are what let me put a realistic figure on what the website is costing you, using your numbers rather than invented ones. A rough guess is fine. Leave them blank if you would rather not say and I will fall back on industry ranges — the report just gets less precise, not less useful.',
+      fields: [
+        { id: 'enquiries', label: 'Roughly how many enquiries do you get in a typical week?', type: 'text',
+          placeholder: 'e.g. about ten, calls and emails together' },
+        { id: 'customervalue', label: 'Roughly what is an average customer worth to you?', type: 'text',
+          placeholder: 'e.g. £200 a job, or £40 a month',
+          help: 'Whatever a typical sale, job or donation comes to.' },
+        { id: 'closerate', label: 'Of the people who get in touch, roughly how many become customers?', type: 'text',
+          placeholder: 'e.g. about half' },
+        { id: 'tracking', label: 'Do you have Google Analytics or Search Console set up?', type: 'radio',
+          options: ['Yes, both', 'One of them, I think', 'No', 'I have no idea'],
+          help: 'If you do, there is real data I can use instead of estimates. If not, that is completely normal.' }
+      ]
+    },
+    {
+      name: 'The practical bits',
+      fields: [
+        { id: 'whobuilt', label: 'Who built the site, and who looks after it now?', type: 'text',
+          placeholder: 'e.g. my nephew in 2019, nobody since' },
+        { id: 'access', label: 'Could you get in and change something if you needed to?', type: 'radio',
+          options: ['Yes, I have the logins', 'Someone else has them', 'I do not know'],
+          help: 'This decides whether the fix list is something you can act on yourself.' },
+        { id: 'gbp', label: 'Do you have a Google Business Profile?', type: 'radio',
+          options: ['Yes, and I keep it updated', 'Yes, but I never touch it', 'No', 'I do not know what that is'],
+          help: 'The listing with your opening hours and reviews that appears on Google Maps.' },
+        /* Asked rather than assumed. The checks are read-only and public, but
+           running them against someone's site without saying so is not how I
+           want to open a relationship. */
+        { id: 'permission', label: 'May I run automated tests against your website?', type: 'checkbox', required: true,
+          options: ['Yes — run speed, mobile and accessibility checks on my site'],
+          help: 'The same read-only checks anyone can run on any public website. Nothing is changed and nothing is published.' }
+      ]
+    },
+    {
+      name: 'Finally',
+      fields: [
+        { id: 'source', label: 'How did you hear about me?', type: 'text' },
+        { id: 'anything', label: 'Anything else I should know?', type: 'textarea' }
+      ]
+    }
+  ]
 }
 
 };
