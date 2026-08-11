@@ -523,3 +523,20 @@ body.is-gated{overflow:hidden}
   .guest-bar { font-size: 12px; padding: 9px 12px; }
   .guest-text { flex-basis: 100%; order: 3; }
 }
+
+/* Copyright line at the foot of the app. Quiet — it is a working tool, and
+   nobody needs a legal notice shouting at them all day. */
+.app-foot {
+  margin: 40px 0 0;
+  padding: 18px 20px 26px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-3);
+}
+
+.app-foot p { margin: 0 0 4px; }
+.app-foot p:last-child { margin-bottom: 0; }
+
+.app-foot a { color: var(--text-3); text-decoration: underline; }
+.app-foot a:hover { color: var(--accent); }

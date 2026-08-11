@@ -194,4 +194,10 @@ Chrome, Edge, Safari and Firefox, current versions, desktop and mobile. File att
 
 ## Licence
 
-MIT — see `LICENSE`. Use it, change it, use it commercially. No warranty.
+**Copyright © 2026 Sarah Hill, trading as SJ Development. All rights reserved.** See `LICENSE`.
+
+Read it, run it locally, learn from it — that is why the repository is public. It may not be copied, redistributed, sold, offered as a service, or used commercially without my written permission.
+
+If you are a charity, a community group, or someone learning, just ask: hantaah21@gmail.com. The answer will very likely be yes.
+
+*(This repository was MIT-licensed until August 2026. That grant still applies to copies taken while it stood — it cannot be withdrawn — but not to anything published since.)*

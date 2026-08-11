@@ -154,6 +154,22 @@
   <div class="modal" id="modal" role="dialog" aria-modal="true"></div>
 </div>
 
+<!-- Copyright. Inside the shell rather than the page, so it is not sitting
+     under the sign-in form on the way in. -->
+<footer class="app-foot">
+  <p>
+    &copy; <span id="appYear">2026</span> SJ Development. All rights reserved.
+  </p>
+  <p>
+    The process, the templates, the forms and the code are my own work.
+    Not licensed for reuse, redistribution or resale —
+    <a href="https://github.com/sarahjhill/project-os/blob/main/LICENSE"
+       target="_blank" rel="noopener">see the licence</a>.
+    Asking is always welcome:
+    <a href="mailto:hantaah21@gmail.com">hantaah21@gmail.com</a>
+  </p>
+</footer>
+
 </div><!-- /#appShell -->
 
 <input type="file" id="filePicker" multiple hidden>
@@ -192,6 +208,13 @@
 <script src="js/clients-ui.js"></script>
 <script src="js/app.js"></script>
 <script src="js/gate.js"></script>
+<script>
+  /* Footer year, so the copyright does not quietly go stale. */
+  (function () {
+    var el = document.getElementById('appYear');
+    if (el) el.textContent = new Date().getFullYear();
+  })();
+</script>
 <script>
 /* Offline support — only on http(s); harmless when opened as a local file. */
 if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {

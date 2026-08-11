@@ -1,21 +1,85 @@
-MIT License
+Copyright (c) 2026 Sarah Hill, trading as SJ Development.
+All rights reserved.
 
-Copyright (c) 2026 Sarah Hill, trading as SJ Development
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+WHAT THIS COVERS
+----------------
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Everything in this repository. The process itself and all of the material
+that expresses it, including:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+  - the delivery process: the twelve phases, sixty-nine guided tasks, the
+    sequencing, the exit criteria and the definitions of done
+  - all seventy-two document templates and their wording
+  - the five client forms and every question in them
+  - all HTML, CSS and JavaScript, including the application, the store,
+    the sign-in gate, guest mode and the client portal
+  - the Supabase schema and security policies
+  - all written copy, documentation and setup guides
+  - the SJ Development name, logo, icons and visual design
+
+This material may not be copied, reproduced, republished, redistributed,
+sublicensed, sold, rented, offered as a service, or used to create
+derivative works, in whole or in part, without my written permission.
+
+It may not be used commercially. That includes selling it, packaging it
+into a product, offering it to your own clients as your own, or charging
+anyone for access to it.
+
+You are welcome to read the source, open it in your browser's developer
+tools, run it locally, and learn from how it is built. That is what the
+web is for, and it is why this repository is public. Lifting it wholesale,
+or reusing it for your own commercial work, is a different thing.
+
+
+A NOTE ON THE PREVIOUS LICENCE
+------------------------------
+
+This repository was published under the MIT Licence until August 2026.
+That grant cannot be withdrawn from anyone who took a copy while it stood,
+and it continues to apply to those copies of those versions.
+
+Everything published from this point onward is under the terms above.
+
+
+A NOTE ON FORKING
+-----------------
+
+GitHub's Terms of Service give every GitHub user the right to view and
+fork any public repository. Nothing here overrides that, and nothing here
+attempts to.
+
+What this licence governs is what may be done with the material once it
+has been forked or copied: not sold, not redistributed, not passed off as
+someone else's work, not used commercially.
+
+
+WHAT THIS DOES NOT COVER
+------------------------
+
+Third-party material that is not mine to license to anyone else. Nothing
+above grants you rights over it, and nothing above takes any rights away
+from its authors.
+
+  - Supabase JS client, loaded at runtime from a CDN and never bundled
+    here. MIT Licence, Supabase Inc.
+  - Poppins (Indian Type Foundry, Jonny Pinhorn) and Lato (Lukasz
+    Dziedzic), loaded from Google Fonts. SIL Open Font License 1.1.
+    Poppins outlines are also embedded in icon.svg, which the OFL permits.
+
+No other third-party code is included. There is no build step, no package
+manager and no vendored libraries.
+
+
+CONTACT
+-------
+
+Permission requests, licensing questions, or "can I use a bit of this":
+hantaah21@gmail.com
+
+I am not unreasonable. If you are a charity, a community group, or someone
+learning, ask me and the answer will very likely be yes.
+
+
+Note: this is a plain statement of copyright, not legal advice. If
+anything here needs to stand up in a dispute, have a solicitor look at it.
