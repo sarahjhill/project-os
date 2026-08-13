@@ -163,7 +163,8 @@
   /* ================= Views ================= */
   function render() {
     $('#toolbar').style.display =
-      (view === 'dashboard' || view === 'docs' || view === 'files' || view === 'clients') ? 'none' : 'flex';
+      (view === 'dashboard' || view === 'docs' || view === 'files' ||
+       view === 'clients' || view === 'audits') ? 'none' : 'flex';
     var main = $('#main');
     if (view === 'clients') {
       main.innerHTML = window.ClientsUI ? window.ClientsUI.view() :
@@ -177,8 +178,121 @@
     else if (view === 'sprints') main.innerHTML = viewSprints();
     else if (view === 'files') { main.innerHTML = '<div class="empty">Loading files…</div>'; viewFiles(); }
     else if (view === 'docs') main.innerHTML = viewDocs();
+    else if (view === 'audits') main.innerHTML = viewAudits();
     if (view === 'board') wireBoard();
   }
+
+  /* ---- Website audit programme ----
+     Read-only, and deliberately not wired into the task/progress store.
+     PHASES tracks work done for one client on one project; the audit
+     programme is run over and over against a list of strangers, so
+     ticking it off once would be meaningless. The one piece of state
+     worth keeping is which step is open, which lives in `state`. */
+  function viewAudits() {
+    var A = window.AUDIT;
+    if (!A) return '<div class="empty">The audit programme is not loaded.</div>';
+
+    state.openAudit = state.openAudit || {};
+
+    var h = '';
+
+    h += '<div class="card">' +
+      '<h2 class="section" style="margin-top:0">' + esc(A.title) + '</h2>' +
+      '<p class="muted" style="margin-top:0">' + esc(A.goal) + '</p>' +
+      '<p>' + esc(A.intro) + '</p>' +
+      '<div class="why" style="margin-top:14px"><strong>The rule</strong><br>' + esc(A.principle) + '</div>' +
+      '<div class="exit-crit" style="margin-top:14px"><strong>This is working when</strong><ul>' +
+      A.exit.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('') +
+      '</ul></div>' +
+      '</div>';
+
+    /* --- the steps --- */
+    h += '<h2 class="section">The steps</h2>';
+    A.steps.forEach(function (s, i) {
+      var open = !!state.openAudit[s.id];
+      h += '<section class="phase' + (open ? ' open' : '') + '" data-audit="' + s.id + '">' +
+        '<div class="phase-head" data-audittoggle="' + s.id + '">' +
+        '<div class="phase-num">' + (i + 1) + '</div>' +
+        '<div class="phase-title"><h3>' + esc(s.title) + '</h3>' +
+        '<p>' + esc(s.why.split('. ')[0]) + '.</p></div>' +
+        '<div class="phase-meta">' +
+        '<span class="pill plain">' + s.est + 'h</span>' +
+        '<span class="chev">▶</span></div></div>' +
+        '<div class="phase-body">' +
+        '<div class="why"><strong>Why</strong><br>' + esc(s.why) + '</div>' +
+        '<div class="dsec"><h4>How</h4><ol>' +
+        s.how.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+        '</ol></div>' +
+        '<div class="grid k3">' +
+        listBlock('Produces', s.deliver) +
+        listBlock('Tools', s.tools) +
+        listBlock('Done when', s.dod) +
+        '</div>' +
+        '</div></section>';
+    });
+
+    /* --- who to approach --- */
+    h += '<h2 class="section">Who to approach</h2>';
+    h += '<div class="card"><p class="muted" style="margin-top:0">' + esc(A.targets.note) + '</p></div>';
+    h += '<div class="grid k2">';
+    A.targets.groups.forEach(function (g) {
+      h += '<div class="card">' +
+        '<h3 style="margin:0 0 6px;font-size:15px">' + esc(g.name) + '</h3>' +
+        '<p class="tiny muted" style="margin:0 0 10px">' + esc(g.why) + '</p>' +
+        '<p class="tiny" style="margin:0 0 4px"><strong>Searches</strong></p>' +
+        '<div class="chiprow">' +
+        g.search.map(function (q) { return '<span class="pill plain">' + esc(q) + '</span>'; }).join('') +
+        '</div></div>';
+    });
+    h += '</div>';
+
+    h += '<div class="card" style="margin-top:16px">' +
+      '<h3 style="margin:0 0 6px;font-size:15px">Work district by district</h3>' +
+      '<p class="tiny muted" style="margin:0 0 10px">' + esc(A.targets.districtNote) + '</p>' +
+      '<div class="chiprow">' +
+      A.targets.districts.map(function (d) { return '<span class="pill plain">' + esc(d) + '</span>'; }).join('') +
+      '</div></div>';
+
+    /* --- the scanner --- */
+    h += '<h2 class="section">What the scanner checks</h2>';
+    h += '<div class="card"><p class="muted" style="margin-top:0">' + esc(A.scanner.note) + '</p>' +
+      '<table class="filetable"><thead><tr>' +
+      '<th>Check</th><th>How</th><th>Flag it when</th></tr></thead><tbody>' +
+      A.scanner.checks.map(function (c) {
+        return '<tr><td><strong>' + esc(c.name) + '</strong></td>' +
+          '<td class="tiny muted">' + esc(c.how) + '</td>' +
+          '<td class="tiny">' + esc(c.flag) + '</td></tr>';
+      }).join('') +
+      '</tbody></table></div>';
+
+    /* --- the maths --- */
+    h += '<h2 class="section">Costing it honestly</h2>';
+    h += '<div class="card">' +
+      '<p class="muted" style="margin-top:0">' + esc(A.maths.note) + '</p>' +
+      '<div class="grid k2">' +
+      listBlock('They supply', A.maths.inputs) +
+      listBlock('Research supplies', A.maths.rates) +
+      '</div>' +
+      '<div class="why" style="margin-top:14px"><strong>What comes out</strong><br>' +
+      esc(A.maths.output) + '</div>' +
+      '</div>';
+
+    h += '<div class="card" style="margin-top:16px">' +
+      '<h3 style="margin:0 0 8px;font-size:15px">The inbound route</h3>' +
+      '<p class="tiny muted" style="margin:0 0 10px">Anyone who asks for an audit through the Make It Pop site fills this in. ' +
+      'It collects the same things you would otherwise have to estimate — including their real numbers, which makes the costing exact rather than a range.</p>' +
+      '<a class="btn sm" href="forms/audit.html" target="_blank" rel="noopener">Open the audit request form</a>' +
+      '</div>';
+
+    return h;
+  }
+
+  function listBlock(title, items) {
+    return '<div class="dsec"><h4>' + esc(title) + '</h4><ul>' +
+      (items || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') +
+      '</ul></div>';
+  }
+
 
   /* ---- Dashboard ---- */
   function viewDashboard() {
@@ -1228,6 +1342,18 @@
     if (el) {
       var pid = el.dataset.toggle;
       state.openPhases[pid] = !state.openPhases[pid];
+      S.saveNow();
+      el.parentElement.classList.toggle('open');
+      return;
+    }
+
+    // audit step toggle — same behaviour as a phase, kept separate so an
+    // audit step id can never collide with a phase id in stored state
+    el = e.target.closest('[data-audittoggle]');
+    if (el) {
+      var aid = el.dataset.audittoggle;
+      if (!state.openAudit) state.openAudit = {};
+      state.openAudit[aid] = !state.openAudit[aid];
       S.saveNow();
       el.parentElement.classList.toggle('open');
       return;
