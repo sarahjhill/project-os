@@ -11,7 +11,7 @@ window.CONFIG = {
 
      To get yours:
        1. Sign up free at https://formspree.io
-       2. New Project  →  New Form.  Name it "SJ Development Process".
+       2. New Project  →  New Form.  Name it "The SJH Process".
        3. Copy the endpoint it shows you. It looks like:
               https://formspree.io/f/xyzabcde
        4. Paste it below, between the quotes.
@@ -48,7 +48,7 @@ window.CONFIG = {
   /* ------------------------------------------------------------------
      4. CLIENT ACCOUNTS (optional — Supabase)
      ------------------------------------------------------------------
-     Switches on sign-in and the client portal. Without it, SJ Development Process
+     Switches on sign-in and the client portal. Without it, The SJH Process
      works exactly as before, entirely on your own machine.
 
      Setup, roughly 20 minutes, is in supabase/SETUP.md. In short:
@@ -71,6 +71,6 @@ window.CONFIG = {
      ------------------------------------------------------------------
      Only used in the subject line of the notification email.
   ------------------------------------------------------------------ */
-  studioName: 'SJ Development Process'
+  studioName: 'The SJH Process'
 };
 try { window.__bootStage = 'config-loaded'; } catch (e) { }

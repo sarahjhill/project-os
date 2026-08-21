@@ -1,7 +1,7 @@
 {
-  "name": "SJ Development Process",
+  "name": "The SJH Process",
   "short_name": "SJ Process",
-  "description": "The working delivery system behind every SJ Development project.",
+  "description": "The working delivery system behind every Sarah J Hill project.",
   "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",

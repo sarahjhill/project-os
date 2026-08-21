@@ -208,7 +208,7 @@ Pull 20–30 reviews from G2, Trustpilot, Capterra or app stores.
 'doc-proposal': { title: 'Proposal Template', cat: 'Sales', body: `
 # Proposal — [Project Name]
 
-Prepared for [Client] by Sarah Hill, SJ Development · [Date] · Valid until [Date + 14 days]
+Prepared for [Client] by Sarah J Hill · [Date] · Valid until [Date + 14 days]
 
 ## 1. What we understand
 [Two paragraphs restating their problem in their own words, with a quote from the discovery call. If they don't nod at this section, nothing else matters.]

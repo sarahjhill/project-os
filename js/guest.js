@@ -1,5 +1,5 @@
 /* =====================================================================
-   SJ DEVELOPMENT PROCESS — Guest mode
+   THE SJH PROCESS — Guest mode
 
    Lets somebody look round the working tool without an account, and
    without touching anything real.
