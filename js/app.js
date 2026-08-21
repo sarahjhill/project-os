@@ -163,7 +163,7 @@
   /* ================= Views ================= */
   function render() {
     $('#toolbar').style.display =
-      (view === 'dashboard' || view === 'docs' || view === 'files' ||
+      (view === 'dashboard' || view === 'summary' || view === 'docs' || view === 'files' ||
        view === 'clients' || view === 'audits') ? 'none' : 'flex';
     var main = $('#main');
     if (view === 'clients') {
@@ -173,6 +173,7 @@
       return;
     }
     if (view === 'dashboard') main.innerHTML = viewDashboard();
+    else if (view === 'summary') main.innerHTML = viewSummary();
     else if (view === 'phases') main.innerHTML = viewPhases();
     else if (view === 'board') main.innerHTML = viewBoard();
     else if (view === 'sprints') main.innerHTML = viewSprints();
@@ -295,6 +296,164 @@
 
 
   /* ---- Dashboard ---- */
+  /* ---- Summary ----
+     One click: where the project is now, what is next, what is already done.
+     Deliberately brief — this is the view for a low-energy day, when opening
+     the full process list is too much. Read-only; rows reuse taskRow() so
+     they open the same drawer as everywhere else. */
+  function viewSummary() {
+    var p = S.project(), st = S.stats(), today = S.today();
+    var all = S.allTasks();
+
+    function metaOf(t) { return p.tasks[t.id] || {}; }
+    function statusOf(t) { return metaOf(t).status || 'todo'; }
+    function days(a, b) {
+      if (!a || !b) return null;
+      return Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
+    }
+
+    /* ---- which sprint are we in ---- */
+    var sprints = (p.sprints || []).filter(function (s) { return s.start && s.end; });
+    var current = null, upcoming = null;
+    sprints.forEach(function (s) {
+      if (!current && !s.closed && s.start <= today && today <= s.end) current = s;
+      if (!upcoming && s.start > today) upcoming = s;
+    });
+    var focus = current || upcoming;
+    var lastEnd = sprints.length ? sprints.map(function (s) { return s.end; }).sort().pop() : '';
+
+    /* ---- buckets ---- */
+    var open = all.filter(function (t) { return statusOf(t) !== 'done'; });
+    var overdue = open.filter(function (t) { var d = metaOf(t).due; return d && d < today; });
+    var soon = open.filter(function (t) {
+      var d = metaOf(t).due, n = days(today, d);
+      return d && n !== null && n >= 0 && n <= 7;
+    });
+    var doing = all.filter(function (t) { return statusOf(t) === 'doing'; });
+    var blocked = all.filter(function (t) { return statusOf(t) === 'blocked'; });
+
+    function byDue(a, b) {
+      var da = metaOf(a).due || '9999', db = metaOf(b).due || '9999';
+      return da < db ? -1 : da > db ? 1 : (a.phaseNum - b.phaseNum);
+    }
+    overdue.sort(byDue); soon.sort(byDue);
+
+    var nextUp = open.slice().sort(byDue).filter(function (t) {
+      return overdue.indexOf(t) === -1 && soon.indexOf(t) === -1;
+    }).slice(0, 5);
+
+    /* Tasks parked as not applicable are "done" to keep the board clean, but they
+       are not achievements — keep them out of the done list and count them apart. */
+    function isNA(t) { return /^\s*N\/A\b/i.test(metaOf(t).notes || ''); }
+    var doneAll = all.filter(function (t) { return statusOf(t) === 'done' && !isNA(t); });
+    var naCount = all.filter(function (t) { return statusOf(t) === 'done' && isNA(t); }).length;
+    var doneRecent = doneAll.filter(function (t) { return metaOf(t).finished; })
+      .sort(function (a, b) { return metaOf(a).finished < metaOf(b).finished ? 1 : -1; })
+      .slice(0, 8);
+
+    /* ---- header numbers ---- */
+    var toEnd = days(today, lastEnd);
+    var h = '';
+    h += '<div class="grid k4">' +
+      statCard(st.pct + '%', 'Complete', st.done + ' of ' + st.total + ' tasks') +
+      statCard(String(open.length), 'Still to do',
+        doing.length + ' in progress' + (blocked.length ? ', ' + blocked.length + ' blocked' : '')) +
+      statCard(String(overdue.length), 'Overdue',
+        overdue.length ? 'oldest ' + esc(metaOf(overdue[0]).due) : 'nothing late') +
+      statCard(toEnd === null ? '—' : (toEnd < 0 ? 'past' : toEnd + 'd'), 'Until project end',
+        lastEnd ? 'ends ' + esc(lastEnd) : 'no sprint dates set') +
+      '</div>';
+
+    /* ---- where you are ---- */
+    h += '<h2 class="section">Where you are</h2><div class="card">';
+    if (focus) {
+      var inIt = current === focus;
+      var left = days(today, focus.end);
+      var sprintTasks = all.filter(function (t) { return metaOf(t).sprint === focus.id; });
+      var sprintDone = sprintTasks.filter(function (t) { return statusOf(t) === 'done'; }).length;
+      var pct = sprintTasks.length ? Math.round(sprintDone / sprintTasks.length * 100) : 0;
+      h += '<p style="margin:0 0 4px"><strong>' + esc(focus.name) + '</strong> ' +
+        '<span class="tiny muted">' + esc(focus.start) + ' → ' + esc(focus.end) + '</span></p>';
+      h += '<p class="tiny muted" style="margin:0 0 10px">' +
+        (inIt
+          ? (left >= 0 ? left + ' day' + (left === 1 ? '' : 's') + ' left in this sprint' : 'this sprint has run over')
+          : 'starts in ' + days(today, focus.start) + ' days') +
+        '</p>';
+      if (focus.goal) h += '<p class="why" style="margin:0 0 12px">' + esc(focus.goal) + '</p>';
+      h += '<div style="display:flex;align-items:center;gap:14px">' +
+        '<div class="bar' + (pct === 100 ? ' ok' : '') + '" style="flex:1"><span style="width:' + pct + '%"></span></div>' +
+        '<div class="tiny muted" style="width:70px;text-align:right">' + sprintDone + '/' + sprintTasks.length + '</div>' +
+        '</div>';
+    } else {
+      h += '<div class="empty">No dated sprint covers today. Add dates on the Sprints tab and this will fill in.</div>';
+    }
+    h += '</div>';
+
+    /* ---- what is next ---- */
+    h += '<h2 class="section">What is next</h2>';
+    if (!overdue.length && !soon.length && !nextUp.length) {
+      h += '<div class="card"><div class="empty">Nothing outstanding. Everything is done.</div></div>';
+    } else {
+      h += '<div class="card">';
+      if (overdue.length) {
+        h += '<p class="tiny muted" style="margin:0 0 8px">OVERDUE — ' + overdue.length + '</p>';
+        overdue.slice(0, 5).forEach(function (t) { h += taskRow(t); });
+        if (overdue.length > 5) h += '<p class="tiny muted" style="margin:8px 0 0">and ' + (overdue.length - 5) + ' more</p>';
+      }
+      if (soon.length) {
+        h += '<p class="tiny muted" style="margin:' + (overdue.length ? '16px' : '0') + ' 0 8px">DUE WITHIN 7 DAYS — ' + soon.length + '</p>';
+        soon.slice(0, 6).forEach(function (t) { h += taskRow(t); });
+        if (soon.length > 6) h += '<p class="tiny muted" style="margin:8px 0 0">and ' + (soon.length - 6) + ' more</p>';
+      }
+      if (nextUp.length) {
+        h += '<p class="tiny muted" style="margin:' + ((overdue.length || soon.length) ? '16px' : '0') + ' 0 8px">AFTER THAT</p>';
+        nextUp.forEach(function (t) { h += taskRow(t); });
+      }
+      h += '</div>';
+    }
+
+    /* ---- what is done ---- */
+    h += '<h2 class="section">Done so far <span class="tiny muted">' + doneAll.length + ' task' +
+      (doneAll.length === 1 ? '' : 's') + '</span></h2><div class="card">';
+    if (!doneRecent.length) {
+      h += '<div class="empty">Nothing ticked off yet.</div>';
+    } else {
+      doneRecent.forEach(function (t) {
+        h += '<div style="display:flex;align-items:baseline;gap:10px;padding:5px 0">' +
+          '<span style="color:var(--ok,#2f6b4f)">✓</span>' +
+          '<span style="flex:1;font-size:13.5px">' + esc(t.title) + '</span>' +
+          '<span class="tiny muted">' + esc(metaOf(t).finished || '') + '</span>' +
+          '</div>';
+      });
+      if (doneAll.length > doneRecent.length) {
+        h += '<p class="tiny muted" style="margin:10px 0 0">and ' + (doneAll.length - doneRecent.length) + ' more</p>';
+      }
+    }
+    if (naCount) {
+      h += '<p class="tiny muted" style="margin:10px 0 0;padding-top:10px;border-top:1px solid rgba(128,128,128,.18)">' +
+        naCount + ' further task' + (naCount === 1 ? '' : 's') + ' parked as not applicable to this project.</p>';
+    }
+    h += '</div>';
+
+    /* ---- phases at a glance ---- */
+    h += '<h2 class="section">The process at a glance</h2><div class="card">';
+    window.PHASES.forEach(function (ph) {
+      var ps = S.phaseStats(ph.id);
+      var complete = ps.total && ps.done === ps.total;
+      h += '<div style="display:flex;align-items:center;gap:12px;padding:4px 0">' +
+        '<span style="width:16px;text-align:center;' + (complete ? 'color:var(--ok,#2f6b4f)' : 'opacity:.3') + '">' +
+        (complete ? '✓' : '○') + '</span>' +
+        '<span style="width:150px;flex:0 0 auto;font-size:13px' + (complete ? ';opacity:.6' : '') + '"><strong>' +
+        ph.num + '. ' + esc(ph.short) + '</strong></span>' +
+        '<div class="bar' + (complete ? ' ok' : '') + '" style="flex:1"><span style="width:' + ps.pct + '%"></span></div>' +
+        '<span class="tiny muted" style="width:58px;text-align:right">' + ps.done + '/' + ps.total + '</span>' +
+        '</div>';
+    });
+    h += '</div>';
+
+    return h;
+  }
+
   function viewDashboard() {
     var st = S.stats(), p = S.project();
     var nextUp = S.allTasks().filter(function (t) {
@@ -1479,7 +1638,7 @@
       else if (!$('#drawer').hidden) closeDrawer();
     }
     if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      e.preventDefault(); view = view === 'dashboard' || view === 'docs' || view === 'files' ? 'phases' : view;
+      e.preventDefault(); view = view === 'dashboard' || view === 'summary' || view === 'docs' || view === 'files' ? 'phases' : view;
       $$('.tab').forEach(function (t) { t.classList.toggle('active', t.dataset.view === view); });
       render(); $('#search').focus();
     }
