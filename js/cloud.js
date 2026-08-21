@@ -55,7 +55,7 @@
         return sb;
       });
     }).catch(function (e) {
-      console.warn('SJ Development Process: cloud unavailable —', e && e.message);
+      console.warn('The SJH Process: cloud unavailable —', e && e.message);
       sb = null;
       initialised = true;
       emit();

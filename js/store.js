@@ -253,7 +253,7 @@
     });
     dbPromise.catch(function (e) {
       filesAvailable = false;
-      console.warn('SJ Development Process: file attachments unavailable —', e && e.message);
+      console.warn('The SJH Process: file attachments unavailable —', e && e.message);
     });
     return dbPromise;
   }
@@ -422,7 +422,7 @@
   function importJSON(text) {
     var parsed = JSON.parse(text);
     var incoming = parsed.state || parsed;
-    if (!incoming.projects) throw new Error('Not a SJ Development Process backup file.');
+    if (!incoming.projects) throw new Error('Not an SJH Process backup file.');
     Object.keys(incoming.projects).forEach(function (k) { state.projects[k] = incoming.projects[k]; });
     state.activeId = incoming.activeId && state.projects[incoming.activeId] ? incoming.activeId : Object.keys(state.projects)[0];
     saveNow();

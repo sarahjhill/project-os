@@ -93,7 +93,7 @@
         '<p class="muted">Sharing with clients needs a free Supabase account — it stores the accounts and ' +
         'the small amount of information you choose to publish.</p>' +
         '<p class="muted tiny">Follow <strong>supabase/SETUP.md</strong> in your project folder, then fill in ' +
-        'the <code>supabase</code> section of <code>js/config.js</code>. Everything else in SJ Development Process ' +
+        'the <code>supabase</code> section of <code>js/config.js</code>. Everything else in The SJH Process ' +
         'keeps working without it.</p></div>';
     }
 

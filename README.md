@@ -194,7 +194,7 @@ Chrome, Edge, Safari and Firefox, current versions, desktop and mobile. File att
 
 ## Licence
 
-**Copyright © 2026 Sarah Hill, trading as SJ Development. All rights reserved.** See `LICENSE`.
+**Copyright © 2026 Sarah Hill, trading as Sarah J Hill. All rights reserved.** See `LICENSE`.
 
 Read it, run it locally, learn from it — that is why the repository is public. It may not be copied, redistributed, sold, offered as a service, or used commercially without my written permission.
 

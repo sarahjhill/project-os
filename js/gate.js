@@ -1,5 +1,5 @@
 /* =====================================================================
-   SJ DEVELOPMENT PROCESS — sign-in gate
+   THE SJH PROCESS — sign-in gate
 
    Keeps the working tool out of view for anyone who is not signed in.
 
