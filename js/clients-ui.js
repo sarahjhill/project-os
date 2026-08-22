@@ -43,7 +43,7 @@
 
     // current phase = first with unfinished work
     var current = null;
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       if (current) return;
       var ps = S.phaseStats(ph.id);
       if (ps.done < ps.total) current = { phase: ph, ps: ps };
@@ -64,7 +64,7 @@
         phaseName: current ? current.phase.name : 'Complete',
         phaseGoal: current ? current.phase.goal : 'All planned work is finished.',
         phaseNum: current ? current.phase.num : 11,
-        phaseTotal: window.PHASES.length,
+        phaseTotal: S.phases().length,
         phasePct: current ? current.ps.pct : 100
       };
     }

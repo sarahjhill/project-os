@@ -540,3 +540,26 @@ body.is-gated{overflow:hidden}
 
 .app-foot a { color: var(--text-3); text-decoration: underline; }
 .app-foot a:hover { color: var(--accent); }
+
+/* ---------- Track picker (new project) ----------
+   Two kinds of project, two processes. The choice is made once, at creation,
+   so it wants to read as a decision rather than another form field. */
+.trackpick{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.trackcard{position:relative;display:block;padding:12px 14px;border:1px solid var(--border);
+  border-radius:10px;background:var(--surface);cursor:pointer;transition:border-color .12s,background .12s}
+.trackcard:hover{border-color:var(--accent)}
+.trackcard input{position:absolute;opacity:0;width:0;height:0}
+.trackcard.is-on{border-color:var(--accent);background:var(--accent-soft)}
+.trackcard:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+/* field() wraps this in a <label>, whose uppercase caption styling would
+   otherwise cascade into the card copy. Reset it here. */
+.trackcard-body{display:block;text-transform:none;letter-spacing:normal;color:var(--text)}
+.trackcard-name{display:block;font-family:var(--display);font-weight:600;font-size:.95rem;margin-bottom:3px;color:var(--text);text-transform:none;letter-spacing:normal}
+.trackcard-blurb{display:block;font-size:.8rem;line-height:1.45;color:var(--text-2);text-transform:none;letter-spacing:normal;font-weight:400}
+.trackcard-count{display:block;margin-top:6px;font-size:.72rem;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--accent);font-weight:600}
+
+/* Which process a project is on, shown wherever the project is named. */
+.trackbadge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;
+  font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+  background:var(--accent-soft);color:var(--accent);border:1px solid var(--border);vertical-align:middle}

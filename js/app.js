@@ -148,13 +148,36 @@
   function renderProjectSelect() {
     var sel = $('#projectSelect');
     sel.innerHTML = S.projectList().map(function (p) {
+      /* A <select> can't hold a badge, so non-client tracks say so in the label. */
+      var tr = window.trackFor(p.track);
+      var tag = (tr.id === (window.DEFAULT_TRACK || 'client')) ? '' : '  \u00b7 ' + tr.short;
       return '<option value="' + p.id + '"' + (p.id === state.activeId ? ' selected' : '') + '>' +
-        esc(p.name) + (p.client ? ' — ' + esc(p.client) : '') + '</option>';
+        esc(p.name) + (p.client ? ' \u2014 ' + esc(p.client) : '') + esc(tag) + '</option>';
     }).join('');
+  }
+  /* The strapline under the title is the shape of the process you are on,
+     so it has to follow the track rather than always naming the client one. */
+  function renderTagline() {
+    var el = $('#trackTagline');
+    if (!el) return;
+    var phs = S.phases();
+    if (!phs.length) return;
+    var pick = phs.length <= 5 ? phs
+      : [phs[0], phs[2], phs[Math.floor(phs.length / 2)], phs[phs.length - 4], phs[phs.length - 1]];
+    el.textContent = pick.map(function (p) { return p.short || p.name; }).join(' \u2192 ');
+  }
+
+  function projectChanged() {
+    renderTagline();
+    filters.phase = '';
+    renderProjectSelect();
+    renderPhaseFilter();
+    render();
+    refreshCounts();
   }
   function renderPhaseFilter() {
     $('#filterPhase').innerHTML = '<option value="">All phases</option>' +
-      window.PHASES.map(function (p) {
+      S.phases().map(function (p) {
         return '<option value="' + p.id + '"' + (filters.phase === p.id ? ' selected' : '') + '>' +
           p.num + '. ' + esc(p.short) + '</option>';
       }).join('');
@@ -437,7 +460,7 @@
 
     /* ---- phases at a glance ---- */
     h += '<h2 class="section">The process at a glance</h2><div class="card">';
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
       var complete = ps.total && ps.done === ps.total;
       h += '<div style="display:flex;align-items:center;gap:12px;padding:4px 0">' +
@@ -475,7 +498,7 @@
       '</div>';
 
     h += '<h2 class="section">Phase progress</h2><div class="card">';
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
       h += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:11px">' +
         '<div style="width:150px;flex:0 0 auto"><strong style="font-size:13px">' + ph.num + '. ' + esc(ph.short) + '</strong></div>' +
@@ -547,7 +570,7 @@
   function viewPhases() {
     var h = '';
     var any = false;
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       var ts = S.phaseTasks(ph.id).filter(matches);
       var ps = S.phaseStats(ph.id);
       var open = state.openPhases[ph.id] || (filters.q && ts.length);
@@ -1136,7 +1159,7 @@
   function brandedDoc(d) {
     return [
       '**Sarah J Hill** — Make It Pop',
-      'sarahjhill.github.io/make-it-pop · hantaah21@gmail.com',
+      'sarahjhill.github.io/make-it-pop · sarah@sarahjhill.com',
       '',
       '---',
       '',
@@ -1356,24 +1379,63 @@
   }
 
   function newProjectModal() {
+    /* Two kinds of project need two different processes: work you are doing
+       FOR someone, and work you are doing for yourself. Pick the track here
+       and the whole board follows it. */
+    var tracks = Object.keys(window.TRACKS).map(function (id) {
+      var tr = window.TRACKS[id];
+      return '<label class="trackcard" data-track="' + id + '">' +
+        '<input type="radio" name="npTrack" value="' + id + '"' +
+        (id === (window.DEFAULT_TRACK || 'client') ? ' checked' : '') + '>' +
+        '<span class="trackcard-body">' +
+        '<span class="trackcard-name">' + esc(tr.name) + '</span>' +
+        '<span class="trackcard-blurb">' + esc(tr.blurb) + '</span>' +
+        '<span class="trackcard-count">' + tr.phases.length + ' phases</span>' +
+        '</span></label>';
+    }).join('');
+
     modal('<h3>New project</h3>' +
       '<div class="fieldrow">' +
       field('Project name', '<input class="input" id="npName" placeholder="Bright Salon booking system">') +
+      '</div>' +
+      field('Process', '<div class="trackpick">' + tracks + '</div>') +
+      '<div class="fieldrow" id="npClientRow">' +
       field('Client', '<input class="input" id="npClient" placeholder="Bright Salon Ltd">') +
       '</div>' +
-      '<p class="tiny muted" style="margin-top:12px">You get a fresh copy of the full 12-phase process with its own progress, files and sprints.</p>' +
+      '<p class="tiny muted" id="npNote" style="margin-top:12px"></p>' +
       '<div class="actions"><button class="btn" id="closeModal">Cancel</button>' +
       '<button class="btn btn-primary" id="npGo">Create project</button></div>', function () {
+        function picked() {
+          var r = document.querySelector('input[name="npTrack"]:checked');
+          return r ? r.value : (window.DEFAULT_TRACK || 'client');
+        }
+        function sync() {
+          var id = picked(), tr = window.trackFor(id);
+          /* A project for yourself has no client to name. */
+          $('#npClientRow').style.display = (id === 'client') ? '' : 'none';
+          $('#npNote').textContent = 'You get a fresh copy of the ' + tr.phases.length +
+            '-phase ' + tr.name.toLowerCase() + ' process, with its own progress and notes.';
+          Array.prototype.forEach.call(document.querySelectorAll('.trackcard'), function (el) {
+            el.classList.toggle('is-on', el.getAttribute('data-track') === id);
+          });
+        }
+        Array.prototype.forEach.call(document.querySelectorAll('input[name="npTrack"]'), function (r) {
+          r.onchange = sync;
+        });
+        sync();
         $('#npName').focus();
         $('#npGo').onclick = function () {
-          S.addProject($('#npName').value.trim() || 'New project', $('#npClient').value.trim());
-          closeModal(); renderProjectSelect(); refreshCounts();
+          var id = picked();
+          var clientEl = $('#npClient');
+          S.addProject($('#npName').value.trim() || 'New project',
+            (id === 'client' && clientEl) ? clientEl.value.trim() : '', id);
+          closeModal(); projectChanged();
         };
       });
   }
 
   function addTaskModal(phaseId) {
-    var ph = window.PHASES.filter(function (p) { return p.id === phaseId; })[0];
+    var ph = S.phases().filter(function (p) { return p.id === phaseId; })[0];
     modal('<h3>Add task to ' + esc(ph.name) + '</h3>' +
       '<div class="fieldrow">' +
       field('Title', '<input class="input" id="ctTitle" placeholder="Write the migration script">') +
@@ -1612,7 +1674,7 @@
     }
   });
 
-  $('#projectSelect').onchange = function () { S.setActive(this.value); refreshCounts(); };
+  $('#projectSelect').onchange = function () { S.setActive(this.value); projectChanged(); };
   $('#newProjectBtn').onclick = newProjectModal;
   $('#themeBtn').onclick = function () {
     var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -1709,6 +1771,7 @@
     document.documentElement.dataset.theme = state.theme || 'light';
     renderProjectSelect();
     renderPhaseFilter();
+    renderTagline();
     render();          // paint immediately — do not wait for storage
     refreshCounts();   // then decorate with file counts when available
     handleAnswersLink();

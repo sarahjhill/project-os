@@ -198,6 +198,6 @@ Chrome, Edge, Safari and Firefox, current versions, desktop and mobile. File att
 
 Read it, run it locally, learn from it — that is why the repository is public. It may not be copied, redistributed, sold, offered as a service, or used commercially without my written permission.
 
-If you are a charity, a community group, or someone learning, just ask: hantaah21@gmail.com. The answer will very likely be yes.
+If you are a charity, a community group, or someone learning, just ask: sarah@sarahjhill.com. The answer will very likely be yes.
 
 *(This repository was MIT-licensed until August 2026. That grant still applies to copies taken while it stood — it cannot be withdrawn — but not to anything published since.)*

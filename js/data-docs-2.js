@@ -1716,7 +1716,7 @@ Users and permissions · content updates · refunds and cancellations · reports
 | Service | Cost/mo | Renews | Paid by |
 |---|---|---|---|
 
-**If the site is down:** check [status page] → check [monitoring] → contact Sarah Hill at hantaah21@gmail.com → expected response [time]
+**If the site is down:** check [status page] → check [monitoring] → contact Sarah Hill at sarah@sarahjhill.com → expected response [time]
 
 ## 5. Credentials
 Shared vault (1Password/Bitwarden) containing every account, with the client as owner and you as a member.

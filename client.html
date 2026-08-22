@@ -103,7 +103,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       '<p class="sub">Enter the email address your project contact used to invite you. ' +
       'We will send you a link that signs you in — there is no password.</p>' +
       '<div style="margin-top:18px"><input id="em" type="email" placeholder="you@example.com" autocomplete="email"></div>' +
-      '<div style="margin-top:10px"><button class="btn primary" id="go" style="width:100%">Email me a sign-in link</button></div>' +
+      '<div style="margin-top:10px"><button type="button" class="btn primary" id="go" style="width:100%">Email me a sign-in link</button></div>' +
       '<p class="msg' + (isErr ? ' err' : '') + '" id="msg">' + (msg || '') + '</p></div>';
 
     document.getElementById('go').onclick = function () {
@@ -126,7 +126,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       '<p class="sub">You are signed in as <strong>' + esc(email) + '</strong>, but no project has been ' +
       'shared with this address.</p><p class="sub" style="margin-top:10px">If you were invited using a ' +
       'different email, sign out and try that one. Otherwise ask your project contact to check the address ' +
-      'they invited.</p><div style="margin-top:18px"><button class="btn" id="out">Sign out</button></div></div>';
+      'they invited.</p><div style="margin-top:18px"><button type="button" class="btn" id="out">Sign out</button></div></div>';
     document.getElementById('out').onclick = function () {
       window.Cloud.signOut().then(function () { signInView(); });
     };
@@ -143,7 +143,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       html += '<header class="top"><div>' +
         '<h1>' + esc(proj.name || 'Your project') + '</h1>' +
         '<p class="sub">Last updated ' + esc(d(proj.updated || (snap && snap.published_at))) + '</p>' +
-        '</div><button class="btn" id="out">Sign out</button></header>';
+        '</div><button type="button" class="btn" id="out">Sign out</button></header>';
 
       if (!snap) {
         html += '<div class="card"><p class="empty">Your project contact has not published an update yet. ' +
@@ -227,7 +227,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
           return '<div class="row"><div class="ic">📄</div><div class="body">' +
             '<strong>' + esc(f.name) + '</strong>' +
             (f.note ? '<div class="d">' + esc(f.note) + '</div>' : '') + '</div>' +
-            '<button class="btn" data-f="' + f.id + '" style="padding:7px 13px;font-size:14px">Open</button></div>';
+            '<button type="button" class="btn" data-f="' + f.id + '" style="padding:7px 13px;font-size:14px">Open</button></div>';
         }).join('') : '<p class="empty">Nothing shared yet.</p>';
 
         Array.prototype.forEach.call(host.querySelectorAll('[data-f]'), function (b) {
@@ -263,7 +263,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       }).catch(function (e) {
         app.innerHTML = '<div class="signin card"><h1>Something went wrong</h1>' +
           '<p class="sub err">' + esc(e.message) + '</p>' +
-          '<div style="margin-top:16px"><button class="btn" onclick="location.reload()">Try again</button></div></div>';
+          '<div style="margin-top:16px"><button type="button" class="btn" onclick="location.reload()">Try again</button></div></div>';
       });
     });
   }

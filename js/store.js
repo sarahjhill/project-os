@@ -21,11 +21,12 @@
   function today() { return new Date().toISOString().slice(0, 10); }
 
   /* ---------- default project ---------- */
-  function newProject(name, client) {
+  function newProject(name, client, track) {
     return {
       id: uid('proj'),
       name: name || 'New project',
       client: client || '',
+      track: track || window.DEFAULT_TRACK || 'client',
       created: today(),
       sprintLength: 7,
       capacity: 20,
@@ -34,6 +35,14 @@
       sprints: [],        // { id, name, goal, start, end, closed }
       docNotes: {}        // docId -> user notes
     };
+  }
+
+  /* The phases for the ACTIVE project. Projects saved before tracks existed
+     have no track field and fall through to the client one, so nothing that
+     already worked changes. */
+  function phases() {
+    var p = project();
+    return window.phasesFor ? window.phasesFor(p && p.track) : (window.PHASES || []);
   }
 
   /* ---------- load / save ---------- */
@@ -73,8 +82,8 @@
   function projectList() {
     return Object.keys(state.projects).map(function (k) { return state.projects[k]; });
   }
-  function addProject(name, client) {
-    var p = newProject(name, client);
+  function addProject(name, client, track) {
+    var p = newProject(name, client, track);
     state.projects[p.id] = p; state.activeId = p.id; saveNow(); return p;
   }
   function setActive(id) { if (state.projects[id]) { state.activeId = id; saveNow(); } }
@@ -95,13 +104,13 @@
   /* ---------- task catalogue (built-in + custom) ---------- */
   function allTasks() {
     var out = [];
-    window.PHASES.forEach(function (ph) {
+    phases().forEach(function (ph) {
       ph.tasks.forEach(function (t) {
         out.push(Object.assign({}, t, { phaseId: ph.id, phaseName: ph.name, phaseNum: ph.num, custom: false }));
       });
     });
     (project().custom || []).forEach(function (t) {
-      var ph = window.PHASES.filter(function (p) { return p.id === t.phaseId; })[0];
+      var ph = phases().filter(function (p) { return p.id === t.phaseId; })[0];
       out.push(Object.assign({}, t, {
         phaseName: ph ? ph.name : 'Custom', phaseNum: ph ? ph.num : 99, custom: true
       }));
@@ -458,6 +467,7 @@
     project: project, projectList: projectList, addProject: addProject,
     setActive: setActive, deleteProject: deleteProject, resetProgress: resetProgress,
     allTasks: allTasks, taskById: taskById, phaseTasks: phaseTasks,
+    phases: phases, track: function () { var p = project(); return window.trackFor(p && p.track); },
     addCustomTask: addCustomTask, deleteCustomTask: deleteCustomTask,
     meta: meta, setMeta: setMeta, toggleDone: toggleDone, toggleDod: toggleDod,
     addSprint: addSprint, updateSprint: updateSprint, deleteSprint: deleteSprint,
