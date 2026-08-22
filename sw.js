@@ -1,6 +1,6 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'sj-process-v10';
+const CACHE = 'sj-process-v11';
 const ASSETS = [
   "./",
   "index.html",
@@ -14,6 +14,9 @@ const ASSETS = [
   "js/config.js",
   "js/data-phases.js",
   "js/data-phases-2.js",
+  "js/data-phases-growth.js",
+  "js/data-tracks.js",
+  "js/data-audit.js",
   "js/data-docs.js",
   "js/data-docs-2.js",
   "js/data-forms.js",
@@ -23,13 +26,15 @@ const ASSETS = [
   "js/clients-ui.js",
   "js/app.js",
   "js/gate.js",
+  "js/guest.js",
   "client.html",
   "forms/index.html",
   "forms/intake.html",
   "forms/screener.html",
   "forms/consent.html",
   "forms/signoff.html",
-  "forms/content.html"
+  "forms/content.html",
+  "forms/audit.html"
 ];
 
 self.addEventListener('install', function (e) {
