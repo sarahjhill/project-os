@@ -53,11 +53,11 @@ window.PHASES_GROWTH = [
       id: 'g1-1', title: 'Create the Google Business Profile', role: 'Marketing', est: 0.5, pri: 1, pts: 3,
       why: 'This is the panel beside Google results and in Maps. For a local service business it is the single biggest ranking factor there is, and it is free. You do not need premises to have one.',
       how: [
-        'Go to business.google.com and sign in with the Google account you actually check.',
+        'Go to business.google.com and sign in with hantaah21@gmail.com — the account you actually read. Verification codes and every review notification land there, and a profile owned by an account you never open is a profile you stop noticing. Ownership can be transferred to another Google account later if you ever want to.',
         'Business name: Make It Pop. Use exactly this wording everywhere — Google cross-checks it against other listings.',
         'When asked whether customers visit you at an address, say NO. Choose service area business, area = Cardiff.',
         'Primary category: Website Designer. Add Internet Marketing Service and Graphic Designer as secondary.',
-        'Website: https://sarahjhill.com  Contact: sarah@sarahjhill.com',
+        'Website: https://sarahjhill.com. There is no reliable public email field on a Business Profile — the contact routes are the website, the phone number and Google messaging — so put sarah@sarahjhill.com on the site, not here. Note that Cloudflare Email Routing only receives — it has no SMTP server, so Gmail send-as cannot use it. Replying from the Gmail is fine for now; branded sending needs either a free SMTP relay or a paid mailbox, and is not worth doing until enquiries are regular.',
         'Start verification now — postcard or video call, up to two weeks — so the clock runs while you do everything else.',
         'Once verified, fill in EVERY field: description, services (website design, free website audit, bilingual Welsh websites), and at least five photos of real work.',
         'Do not skip the description or the services. A half-filled profile ranks below a complete one, and completeness is entirely in your control.'
