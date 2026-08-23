@@ -25,24 +25,24 @@
       <img src="icon.svg" alt="" class="gate-mark">
       <div>
         <h1>The SJH Process</h1>
-        <p class="gate-sub">The working system behind your project</p>
+        <p class="gate-sub">Owner sign-in</p>
       </div>
     </div>
 
     <p class="gate-intro">
-      Pop your email address in and you're through. No password to remember,
-      nothing to set up.
+      This is your workspace. Enter your email and a sign-in link lands in
+      your inbox — no password to remember.
     </p>
 
     <form id="gateForm" novalidate>
       <label class="gate-label" for="gateEmail">Email address</label>
       <input class="gate-input" type="email" id="gateEmail" autocomplete="email"
              placeholder="you@example.com" required>
-      <button class="gate-btn" type="submit">Tell me about your goals</button>
-      <!-- The button is warm rather than literal, so the mechanism is spelled
-           out right underneath it. Nobody should be left waiting for a form
-           that is actually an email. -->
-      <p class="gate-hint">A sign-in link lands in your inbox within a few seconds.</p>
+      <button class="gate-btn" type="submit">Email me a sign-in link</button>
+      <!-- Say exactly what the button does. This door is the owner's, and
+           warm-but-vague copy here read as a client sign-up form, which is
+           what the two links in the footer are for. -->
+      <p class="gate-hint">It arrives within a few seconds. Open it on this device.</p>
     </form>
 
     <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
@@ -53,14 +53,12 @@
     </p>
 
     <p class="gate-guest">
-      Just having a look?
-      <a href="app.html?guest=1">Come in as a guest</a> — no email needed.
+      Not the owner? <a href="client.html">Clients sign in here</a>, or
+      <a href="app.html?guest=1">look round as a guest</a> — no email needed.
     </p>
 
     <div class="gate-foot">
       <a href="./">See what the process involves</a>
-      <span aria-hidden="true">·</span>
-      <a href="client.html">I am a client</a>
     </div>
   </div>
 </div>
