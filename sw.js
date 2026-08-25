@@ -1,6 +1,6 @@
 /* Project OS service worker — offline support.
    Bump CACHE when you change any file, or browsers will keep serving the old one. */
-const CACHE = 'sj-process-v14';
+const CACHE = 'sj-process-v15';
 const ASSETS = [
   "./",
   "index.html",
@@ -15,6 +15,7 @@ const ASSETS = [
   "js/data-phases.js",
   "js/data-phases-2.js",
   "js/data-phases-growth.js",
+  "js/data-phase-deployment.js",
   "js/data-tracks.js",
   "js/data-audit.js",
   "js/data-docs.js",
