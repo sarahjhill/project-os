@@ -107,6 +107,97 @@ window.CHECKLISTS = [
     ]
   },
   {
+    id: 'lighthouse',
+    title: 'Lighthouse & validation pass',
+    intro: 'Run this against the DEPLOYED site, not localhost. Accessibility is the score that is actually assessed — Performance on a free-tier dyno is not worth chasing.',
+    steps: [
+      {
+        id: 'lh-1',
+        label: 'Wake the site first',
+        cmd: '',
+        note: 'Eco dynos sleep after 30 minutes. A cold start will wreck your Performance number and tell you nothing true. Load the site once, wait for it, then reload before auditing.'
+      },
+      {
+        id: 'lh-2',
+        label: 'Open an incognito window',
+        cmd: '',
+        note: 'Extensions inject scripts and skew every category. Incognito (Shift+Cmd+N) with extensions off gives you the real numbers.'
+      },
+      {
+        id: 'lh-3',
+        label: 'Open the Lighthouse panel',
+        cmd: '',
+        note: 'DevTools with Option+Cmd+I, then the Lighthouse tab. If you cannot see it, click the » overflow at the end of the tab strip.'
+      },
+      {
+        id: 'lh-4',
+        label: 'Run Mobile · Navigation · all four categories',
+        cmd: '',
+        note: 'Categories are Performance, Accessibility, Best Practices and SEO. Mode: Navigation. Device: Mobile — it is the harsher test and the one graders tend to run.'
+      },
+      {
+        id: 'lh-5',
+        label: 'Run again on Desktop',
+        cmd: '',
+        note: 'Scores differ meaningfully between the two. Capture both.'
+      },
+      {
+        id: 'lh-6',
+        label: 'Get Accessibility to 100',
+        cmd: '',
+        note: 'This is the one tied to criterion 1.1. Read the failing audits, not just the number — each one names the element and links an explanation.'
+      },
+      {
+        id: 'lh-7',
+        label: 'Do not stop at a green Accessibility score',
+        cmd: '',
+        note: 'Lighthouse only catches the machine-checkable subset of WCAG — roughly a third. It cannot tell whether your alt text is meaningful, your headings are in a sensible order, or your error messages make sense. 100 is the floor, not proof.'
+      },
+      {
+        id: 'lh-8',
+        label: 'Run every page through WAVE',
+        cmd: '',
+        note: 'wave.webaim.org, or the browser extension. It catches things Lighthouse misses — contrast on specific elements, form labels, heading structure. Do every page, not just the home page.'
+      },
+      {
+        id: 'lh-9',
+        label: 'Test with the keyboard only',
+        cmd: '',
+        note: 'Put the mouse down. Tab through every page: can you reach every control, is the focus ring always visible, can you complete a form and submit it? Automated tools cannot check this and it is a real WCAG requirement.'
+      },
+      {
+        id: 'lh-10',
+        label: 'Validate the HTML',
+        cmd: '',
+        note: 'validator.w3.org — use "validate by URI" against the live pages. Django templates can produce nesting errors you will not spot by eye.'
+      },
+      {
+        id: 'lh-11',
+        label: 'Validate the CSS',
+        cmd: '',
+        note: 'jigsaw.w3.org/css-validator. Warnings from Bootstrap are normal and can be noted rather than fixed — say so in the README.'
+      },
+      {
+        id: 'lh-12',
+        label: 'Lint the Python',
+        cmd: 'python -m flake8 .',
+        note: 'Criterion 1.4 asks for PEP 8 adherence. This is free marks — the linter tells you exactly what to change.'
+      },
+      {
+        id: 'lh-13',
+        label: 'Screenshot every result',
+        cmd: '',
+        note: 'Save into docs/images. Lighthouse mobile, Lighthouse desktop, WAVE clean, HTML valid, CSS valid, linter clean. Evidence you cannot reconstruct after you have changed the code.'
+      },
+      {
+        id: 'lh-14',
+        label: 'Write it up as VALIDATION, separately from testing',
+        cmd: '',
+        note: 'Code Institute say explicitly they want testing "beyond results of validation tools". Put validators in their own README section so the marker can see your behaviour testing is separate — otherwise it reads as though screenshots are all you did.'
+      }
+    ]
+  },
+  {
     id: 'django-trouble',
     title: 'When something is not working',
     intro: 'The four that catch everyone. Tick one off when you have ruled it out.',
