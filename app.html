@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The SJH Process</title>
+<title>SJ Development Process</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,25 +24,25 @@
     <div class="gate-brand">
       <img src="icon.svg" alt="" class="gate-mark">
       <div>
-        <h1>The SJH Process</h1>
-        <p class="gate-sub">Owner sign-in</p>
+        <h1>SJ Development Process</h1>
+        <p class="gate-sub">The working system behind your project</p>
       </div>
     </div>
 
     <p class="gate-intro">
-      This is your workspace. Enter your email and a sign-in link lands in
-      your inbox — no password to remember.
+      Pop your email address in and you're through. No password to remember,
+      nothing to set up.
     </p>
 
     <form id="gateForm" novalidate>
       <label class="gate-label" for="gateEmail">Email address</label>
       <input class="gate-input" type="email" id="gateEmail" autocomplete="email"
              placeholder="you@example.com" required>
-      <button class="gate-btn" type="submit">Email me a sign-in link</button>
-      <!-- Say exactly what the button does. This door is the owner's, and
-           warm-but-vague copy here read as a client sign-up form, which is
-           what the two links in the footer are for. -->
-      <p class="gate-hint">It arrives within a few seconds. Open it on this device.</p>
+      <button class="gate-btn" type="submit">Tell me about your goals</button>
+      <!-- The button is warm rather than literal, so the mechanism is spelled
+           out right underneath it. Nobody should be left waiting for a form
+           that is actually an email. -->
+      <p class="gate-hint">A sign-in link lands in your inbox within a few seconds.</p>
     </form>
 
     <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
@@ -53,12 +53,14 @@
     </p>
 
     <p class="gate-guest">
-      Not the owner? <a href="client.html">Clients sign in here</a>, or
-      <a href="app.html?guest=1">look round as a guest</a> — no email needed.
+      Just having a look?
+      <a href="app.html?guest=1">Come in as a guest</a> — no email needed.
     </p>
 
     <div class="gate-foot">
       <a href="./">See what the process involves</a>
+      <span aria-hidden="true">·</span>
+      <a href="client.html">I am a client</a>
     </div>
   </div>
 </div>
@@ -69,40 +71,41 @@
   <div class="brand">
     <div class="mark"><img src="icon.svg" alt=""></div>
     <div>
-      <h1>The SJH Process</h1>
-      <p class="tagline" id="trackTagline">Discovery → Research → UX/UI → Build → Launch</p>
+      <h1>SJ Development Process</h1>
+      <p class="tagline">Discovery → Research → UX/UI → Build → Launch</p>
     </div>
   </div>
 
   <div class="topbar-right">
     <label class="sr-only" for="projectSelect">Active project</label>
     <select id="projectSelect" class="select"></select>
-    <button type="button" class="btn btn-ghost" id="newProjectBtn" title="New project">+ Project</button>
-    <button type="button" class="btn btn-ghost icon" id="themeBtn" title="Toggle theme">◐</button>
+    <button class="btn btn-ghost" id="newProjectBtn" title="New project">+ Project</button>
+    <button class="btn btn-ghost icon" id="themeBtn" title="Toggle theme">◐</button>
     <div class="menu-wrap">
-      <button type="button" class="btn btn-ghost icon" id="moreBtn" title="More">⋯</button>
+      <button class="btn btn-ghost icon" id="moreBtn" title="More">⋯</button>
       <div class="menu" id="moreMenu" hidden>
-        <button type="button" data-act="export">Export backup (.json)</button>
-        <button type="button" data-act="import">Import backup</button>
-        <button type="button" data-act="exportcsv">Export tasks (.csv)</button>
-        <button type="button" data-act="rename">Rename project</button>
-        <button type="button" data-act="reset">Reset project progress</button>
-        <button type="button" data-act="delete" class="danger">Delete project</button>
+        <button data-act="export">Export backup (.json)</button>
+        <button data-act="import">Import backup</button>
+        <button data-act="exportcsv">Export tasks (.csv)</button>
+        <button data-act="rename">Rename project</button>
+        <button data-act="reset">Reset project progress</button>
+        <button data-act="delete" class="danger">Delete project</button>
       </div>
     </div>
   </div>
 </header>
 
 <nav class="tabs" id="tabs">
-  <button type="button" class="tab active" data-view="dashboard">Dashboard</button>
-  <button type="button" class="tab" data-view="summary">Summary</button>
-  <button type="button" class="tab" data-view="phases">Process</button>
-  <button type="button" class="tab" data-view="board">Board</button>
-  <button type="button" class="tab" data-view="sprints">Sprints</button>
-  <button type="button" class="tab" data-view="files">Files</button>
-  <button type="button" class="tab" data-view="docs">Templates</button>
-  <button type="button" class="tab" data-view="audits">Audits</button>
-  <button type="button" class="tab" data-view="clients">Clients</button>
+  <button class="tab active" data-view="dashboard">Dashboard</button>
+  <button class="tab" data-view="summary">Summary</button>
+  <button class="tab" data-view="today">Today</button>
+  <button class="tab" data-view="phases">Process</button>
+  <button class="tab" data-view="board">Board</button>
+  <button class="tab" data-view="sprints">Sprints</button>
+  <button class="tab" data-view="files">Files</button>
+  <button class="tab" data-view="docs">Templates</button>
+  <button class="tab" data-view="audits">Audits</button>
+  <button class="tab" data-view="clients">Clients</button>
 </nav>
 
 <div class="toolbar" id="toolbar">
@@ -124,12 +127,12 @@
     <option value="4">Low</option>
   </select>
   <label class="checkline"><input type="checkbox" id="filterMine"> Hide done</label>
-  <button type="button" class="btn btn-ghost sm" id="clearFilters">Clear</button>
+  <button class="btn btn-ghost sm" id="clearFilters">Clear</button>
 </div>
 
 <main id="main">
   <div id="bootstatus" style="padding:40px;text-align:center;color:#8A8A82;font-size:14px">
-    Loading The SJH Process…
+    Loading SJ Development Process…
   </div>
   <noscript>
     <div style="padding:24px;border:1px solid #ccc;border-radius:12px;max-width:640px">
@@ -140,7 +143,7 @@
          <strong>Open With</strong>, and pick <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
          Or open Chrome first and drag the file onto a blank tab.</p>
       <p style="color:#666;font-size:14px">If it still shows this message in a real browser, JavaScript is switched
-         off in that browser's settings. The SJH Process runs entirely on your machine — nothing is sent anywhere.</p>
+         off in that browser's settings. SJ Development Process runs entirely on your machine — nothing is sent anywhere.</p>
     </div>
   </noscript>
 </main>
@@ -158,7 +161,7 @@
      under the sign-in form on the way in. -->
 <footer class="app-foot">
   <p>
-    &copy; <span id="appYear">2026</span> Sarah J Hill. All rights reserved.
+    &copy; <span id="appYear">2026</span> SJ Development. All rights reserved.
   </p>
   <p>
     The process, the templates, the forms and the code are my own work.
@@ -166,7 +169,7 @@
     <a href="https://github.com/sarahjhill/project-os/blob/main/LICENSE"
        target="_blank" rel="noopener">see the licence</a>.
     Asking is always welcome:
-    <a href="mailto:sarah@sarahjhill.com">sarah@sarahjhill.com</a>
+    <a href="mailto:hantaah21@gmail.com">hantaah21@gmail.com</a>
   </p>
 </footer>
 
@@ -197,10 +200,8 @@
 
 <script src="js/config.js"></script>
 <script src="js/data-phases.js"></script>
+<script src="js/data-checklists.js"></script>
 <script src="js/data-phases-2.js"></script>
-<script src="js/data-phases-growth.js"></script>
-<script src="js/data-phase-deployment.js"></script>
-<script src="js/data-tracks.js"></script>
 <script src="js/data-docs.js"></script>
 <script src="js/data-docs-2.js"></script>
 <script src="js/data-forms.js"></script>

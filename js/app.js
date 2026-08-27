@@ -148,36 +148,13 @@
   function renderProjectSelect() {
     var sel = $('#projectSelect');
     sel.innerHTML = S.projectList().map(function (p) {
-      /* A <select> can't hold a badge, so non-client tracks say so in the label. */
-      var tr = window.trackFor(p.track);
-      var tag = (tr.id === (window.DEFAULT_TRACK || 'client')) ? '' : '  \u00b7 ' + tr.short;
       return '<option value="' + p.id + '"' + (p.id === state.activeId ? ' selected' : '') + '>' +
-        esc(p.name) + (p.client ? ' \u2014 ' + esc(p.client) : '') + esc(tag) + '</option>';
+        esc(p.name) + (p.client ? ' — ' + esc(p.client) : '') + '</option>';
     }).join('');
-  }
-  /* The strapline under the title is the shape of the process you are on,
-     so it has to follow the track rather than always naming the client one. */
-  function renderTagline() {
-    var el = $('#trackTagline');
-    if (!el) return;
-    var phs = S.phases();
-    if (!phs.length) return;
-    var pick = phs.length <= 5 ? phs
-      : [phs[0], phs[2], phs[Math.floor(phs.length / 2)], phs[phs.length - 4], phs[phs.length - 1]];
-    el.textContent = pick.map(function (p) { return p.short || p.name; }).join(' \u2192 ');
-  }
-
-  function projectChanged() {
-    renderTagline();
-    filters.phase = '';
-    renderProjectSelect();
-    renderPhaseFilter();
-    render();
-    refreshCounts();
   }
   function renderPhaseFilter() {
     $('#filterPhase').innerHTML = '<option value="">All phases</option>' +
-      S.phases().map(function (p) {
+      window.PHASES.map(function (p) {
         return '<option value="' + p.id + '"' + (filters.phase === p.id ? ' selected' : '') + '>' +
           p.num + '. ' + esc(p.short) + '</option>';
       }).join('');
@@ -186,7 +163,7 @@
   /* ================= Views ================= */
   function render() {
     $('#toolbar').style.display =
-      (view === 'dashboard' || view === 'summary' || view === 'docs' || view === 'files' ||
+      (view === 'dashboard' || view === 'summary' || view === 'today' || view === 'docs' || view === 'files' ||
        view === 'clients' || view === 'audits') ? 'none' : 'flex';
     var main = $('#main');
     if (view === 'clients') {
@@ -197,6 +174,7 @@
     }
     if (view === 'dashboard') main.innerHTML = viewDashboard();
     else if (view === 'summary') main.innerHTML = viewSummary();
+    else if (view === 'today') main.innerHTML = viewToday();
     else if (view === 'phases') main.innerHTML = viewPhases();
     else if (view === 'board') main.innerHTML = viewBoard();
     else if (view === 'sprints') main.innerHTML = viewSprints();
@@ -324,6 +302,107 @@
      Deliberately brief — this is the view for a low-energy day, when opening
      the full process list is too much. Read-only; rows reuse taskRow() so
      they open the same drawer as everywhere else. */
+  /* ---- Today ----
+     What is on today, plus tickable command checklists.
+     Tick state lives on project().checks so each project runs its own copy. */
+  function viewToday() {
+    var p = S.project(), today = S.today();
+    if (!p.checks) p.checks = {};
+    var all = S.allTasks();
+
+    function metaOf(t) { return p.tasks[t.id] || {}; }
+    function statusOf(t) { return metaOf(t).status || 'todo'; }
+
+    var open = all.filter(function (t) { return statusOf(t) !== 'done'; });
+    var dueToday = open.filter(function (t) { return metaOf(t).due === today; });
+    var overdue = open.filter(function (t) { var d = metaOf(t).due; return d && d < today; });
+    var doing = all.filter(function (t) { return statusOf(t) === 'doing'; });
+
+    var pretty = today;
+    try {
+      pretty = new Date(today + 'T00:00:00').toLocaleDateString('en-GB',
+        { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (e) { }
+
+    var h = '';
+
+    /* ---- the day ---- */
+    h += '<h2 class="section" style="margin-top:0">' + esc(pretty) + '</h2>';
+    h += '<div class="card">';
+    if (!dueToday.length && !overdue.length && !doing.length) {
+      h += '<div class="empty">Nothing due today and nothing in progress. Pick something from Summary, or work a checklist below.</div>';
+    } else {
+      if (overdue.length) {
+        h += '<p class="tiny muted" style="margin:0 0 8px">OVERDUE — ' + overdue.length + '</p>';
+        overdue.slice(0, 4).forEach(function (t) { h += taskRow(t); });
+      }
+      if (doing.length) {
+        h += '<p class="tiny muted" style="margin:' + (overdue.length ? '16px' : '0') + ' 0 8px">IN PROGRESS</p>';
+        doing.forEach(function (t) { h += taskRow(t); });
+      }
+      if (dueToday.length) {
+        h += '<p class="tiny muted" style="margin:' + ((overdue.length || doing.length) ? '16px' : '0') + ' 0 8px">DUE TODAY — ' + dueToday.length + '</p>';
+        dueToday.forEach(function (t) { h += taskRow(t); });
+      }
+    }
+    h += '</div>';
+
+    /* ---- checklists ---- */
+    var lists = window.CHECKLISTS || [];
+    if (!lists.length) {
+      h += '<div class="card"><div class="empty">No checklists loaded.</div></div>';
+      return h;
+    }
+
+    lists.forEach(function (list) {
+      var doneCount = list.steps.filter(function (s) { return p.checks[s.id]; }).length;
+      var pct = list.steps.length ? Math.round(doneCount / list.steps.length * 100) : 0;
+
+      h += '<h2 class="section">' + esc(list.title) +
+        ' <span class="tiny muted">' + doneCount + '/' + list.steps.length + '</span></h2>';
+      h += '<div class="card">';
+      if (list.intro) h += '<p class="why" style="margin:0 0 12px">' + esc(list.intro) + '</p>';
+
+      h += '<div style="display:flex;align-items:center;gap:14px;margin:0 0 14px">' +
+        '<div class="bar' + (pct === 100 ? ' ok' : '') + '" style="flex:1"><span style="width:' + pct + '%"></span></div>' +
+        '<button class="btn sm btn-ghost" data-resetlist="' + esc(list.id) + '">Reset</button>' +
+        '</div>';
+
+      list.steps.forEach(function (s, i) {
+        var on = !!p.checks[s.id];
+        h += '<div style="display:flex;gap:12px;padding:10px 0;border-top:1px solid rgba(128,128,128,.15)">' +
+          '<div class="tick" data-check="' + esc(s.id) + '" role="checkbox" aria-checked="' + on + '" tabindex="0"' +
+          (on ? ' style="background:var(--ok,#2f6b4f);border-color:var(--ok,#2f6b4f);color:#fff"' : '') +
+          '>✓</div>' +
+          '<div style="flex:1;min-width:0">' +
+          '<p style="margin:0 0 4px;font-size:13.5px;font-weight:600' + (on ? ';opacity:.55;text-decoration:line-through' : '') + '">' +
+          (i + 1) + '. ' + esc(s.label) + '</p>';
+
+        if (s.cmd) {
+          h += '<div style="display:flex;gap:8px;align-items:flex-start;margin:6px 0 0">' +
+            '<pre style="flex:1;margin:0;font-size:12px;white-space:pre-wrap;word-break:break-all">' +
+            '<code>' + esc(s.cmd) + '</code></pre>' +
+            '<button class="btn sm btn-ghost" data-copy="' + esc(s.cmd) + '" style="flex:0 0 auto">Copy</button>' +
+            '</div>';
+        }
+        if (s.alt) {
+          h += '<p class="tiny muted" style="margin:6px 0 0">or <code>' + esc(s.alt) + '</code></p>';
+        }
+        if (s.note) {
+          h += '<p class="tiny muted" style="margin:6px 0 0">' + esc(s.note) + '</p>';
+        }
+        if (on && typeof p.checks[s.id] === 'string') {
+          h += '<p class="tiny muted" style="margin:6px 0 0">done ' + esc(p.checks[s.id]) + '</p>';
+        }
+        h += '</div></div>';
+      });
+
+      h += '</div>';
+    });
+
+    return h;
+  }
+
   function viewSummary() {
     var p = S.project(), st = S.stats(), today = S.today();
     var all = S.allTasks();
@@ -460,7 +539,7 @@
 
     /* ---- phases at a glance ---- */
     h += '<h2 class="section">The process at a glance</h2><div class="card">';
-    S.phases().forEach(function (ph) {
+    window.PHASES.forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
       var complete = ps.total && ps.done === ps.total;
       h += '<div style="display:flex;align-items:center;gap:12px;padding:4px 0">' +
@@ -498,7 +577,7 @@
       '</div>';
 
     h += '<h2 class="section">Phase progress</h2><div class="card">';
-    S.phases().forEach(function (ph) {
+    window.PHASES.forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
       h += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:11px">' +
         '<div style="width:150px;flex:0 0 auto"><strong style="font-size:13px">' + ph.num + '. ' + esc(ph.short) + '</strong></div>' +
@@ -570,7 +649,7 @@
   function viewPhases() {
     var h = '';
     var any = false;
-    S.phases().forEach(function (ph) {
+    window.PHASES.forEach(function (ph) {
       var ts = S.phaseTasks(ph.id).filter(matches);
       var ps = S.phaseStats(ph.id);
       var open = state.openPhases[ph.id] || (filters.q && ts.length);
@@ -1158,8 +1237,8 @@
      ------------------------------------------------------------------- */
   function brandedDoc(d) {
     return [
-      '**Sarah J Hill** — Make It Pop',
-      'sarahjhill.github.io/make-it-pop · sarah@sarahjhill.com',
+      '**SJ Development** — Make It Pop',
+      'sarahjhill.github.io/make-it-pop · hantaah21@gmail.com',
       '',
       '---',
       '',
@@ -1167,9 +1246,9 @@
       '',
       '---',
       '',
-      'Prepared by Sarah Hill',
+      'Prepared by Sarah Hill · SJ Development',
       '',
-      '© ' + new Date().getFullYear() + ' Sarah J Hill. Prepared for this project — please do not redistribute.'
+      '© ' + new Date().getFullYear() + ' SJ Development. Prepared for this project — please do not redistribute.'
     ].join('\n');
   }
 
@@ -1379,63 +1458,24 @@
   }
 
   function newProjectModal() {
-    /* Two kinds of project need two different processes: work you are doing
-       FOR someone, and work you are doing for yourself. Pick the track here
-       and the whole board follows it. */
-    var tracks = Object.keys(window.TRACKS).map(function (id) {
-      var tr = window.TRACKS[id];
-      return '<label class="trackcard" data-track="' + id + '">' +
-        '<input type="radio" name="npTrack" value="' + id + '"' +
-        (id === (window.DEFAULT_TRACK || 'client') ? ' checked' : '') + '>' +
-        '<span class="trackcard-body">' +
-        '<span class="trackcard-name">' + esc(tr.name) + '</span>' +
-        '<span class="trackcard-blurb">' + esc(tr.blurb) + '</span>' +
-        '<span class="trackcard-count">' + tr.phases.length + ' phases</span>' +
-        '</span></label>';
-    }).join('');
-
     modal('<h3>New project</h3>' +
       '<div class="fieldrow">' +
       field('Project name', '<input class="input" id="npName" placeholder="Bright Salon booking system">') +
-      '</div>' +
-      field('Process', '<div class="trackpick">' + tracks + '</div>') +
-      '<div class="fieldrow" id="npClientRow">' +
       field('Client', '<input class="input" id="npClient" placeholder="Bright Salon Ltd">') +
       '</div>' +
-      '<p class="tiny muted" id="npNote" style="margin-top:12px"></p>' +
+      '<p class="tiny muted" style="margin-top:12px">You get a fresh copy of the full 12-phase process with its own progress, files and sprints.</p>' +
       '<div class="actions"><button class="btn" id="closeModal">Cancel</button>' +
       '<button class="btn btn-primary" id="npGo">Create project</button></div>', function () {
-        function picked() {
-          var r = document.querySelector('input[name="npTrack"]:checked');
-          return r ? r.value : (window.DEFAULT_TRACK || 'client');
-        }
-        function sync() {
-          var id = picked(), tr = window.trackFor(id);
-          /* A project for yourself has no client to name. */
-          $('#npClientRow').style.display = (id === 'client') ? '' : 'none';
-          $('#npNote').textContent = 'You get a fresh copy of the ' + tr.phases.length +
-            '-phase ' + tr.name.toLowerCase() + ' process, with its own progress and notes.';
-          Array.prototype.forEach.call(document.querySelectorAll('.trackcard'), function (el) {
-            el.classList.toggle('is-on', el.getAttribute('data-track') === id);
-          });
-        }
-        Array.prototype.forEach.call(document.querySelectorAll('input[name="npTrack"]'), function (r) {
-          r.onchange = sync;
-        });
-        sync();
         $('#npName').focus();
         $('#npGo').onclick = function () {
-          var id = picked();
-          var clientEl = $('#npClient');
-          S.addProject($('#npName').value.trim() || 'New project',
-            (id === 'client' && clientEl) ? clientEl.value.trim() : '', id);
-          closeModal(); projectChanged();
+          S.addProject($('#npName').value.trim() || 'New project', $('#npClient').value.trim());
+          closeModal(); renderProjectSelect(); refreshCounts();
         };
       });
   }
 
   function addTaskModal(phaseId) {
-    var ph = S.phases().filter(function (p) { return p.id === phaseId; })[0];
+    var ph = window.PHASES.filter(function (p) { return p.id === phaseId; })[0];
     modal('<h3>Add task to ' + esc(ph.name) + '</h3>' +
       '<div class="fieldrow">' +
       field('Title', '<input class="input" id="ctTitle" placeholder="Write the migration script">') +
@@ -1558,6 +1598,48 @@
     el = e.target.closest('.tab');
     if (el) { view = el.dataset.view; $$('.tab').forEach(function (t) { t.classList.toggle('active', t === el); }); render(); return; }
 
+    // checklist step toggle (Today)
+    el = e.target.closest('[data-check]');
+    if (el) {
+      var p0 = S.project();
+      if (!p0.checks) p0.checks = {};
+      var ck = el.dataset.check;
+      if (p0.checks[ck]) delete p0.checks[ck]; else p0.checks[ck] = S.today();
+      S.saveNow(); render();
+      return;
+    }
+
+    // copy a command to the clipboard (Today)
+    el = e.target.closest('[data-copy]');
+    if (el) {
+      var txt = el.dataset.copy;
+      var btn = el;
+      var restore = btn.textContent;
+      function flash(ok) {
+        btn.textContent = ok ? 'Copied' : 'Press Cmd+C';
+        setTimeout(function () { btn.textContent = restore; }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () { flash(true); }, function () { flash(false); });
+      } else {
+        flash(false);
+      }
+      return;
+    }
+
+    // reset one checklist (Today)
+    el = e.target.closest('[data-resetlist]');
+    if (el) {
+      var listId = el.dataset.resetlist;
+      var list = (window.CHECKLISTS || []).filter(function (l) { return l.id === listId; })[0];
+      if (list && confirm('Untick every step in "' + list.title + '"?')) {
+        var pr = S.project();
+        if (pr.checks) list.steps.forEach(function (s) { delete pr.checks[s.id]; });
+        S.saveNow(); render();
+      }
+      return;
+    }
+
     // phase toggle
     el = e.target.closest('[data-toggle]');
     if (el) {
@@ -1674,7 +1756,7 @@
     }
   });
 
-  $('#projectSelect').onchange = function () { S.setActive(this.value); projectChanged(); };
+  $('#projectSelect').onchange = function () { S.setActive(this.value); refreshCounts(); };
   $('#newProjectBtn').onclick = newProjectModal;
   $('#themeBtn').onclick = function () {
     var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -1700,7 +1782,7 @@
       else if (!$('#drawer').hidden) closeDrawer();
     }
     if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      e.preventDefault(); view = view === 'dashboard' || view === 'summary' || view === 'docs' || view === 'files' ? 'phases' : view;
+      e.preventDefault(); view = view === 'dashboard' || view === 'summary' || view === 'today' || view === 'docs' || view === 'files' ? 'phases' : view;
       $$('.tab').forEach(function (t) { t.classList.toggle('active', t.dataset.view === view); });
       render(); $('#search').focus();
     }
@@ -1720,7 +1802,7 @@
   }
 
   window.addEventListener('error', function (e) {
-    console.error('The SJH Process error:', e.error || e.message);
+    console.error('SJ Development Process error:', e.error || e.message);
     var main = document.getElementById('main');
     if (main && !main.innerHTML.trim()) {
       bootError('A script error stopped the app from starting.', (e.message || '') + '\n' + (e.filename || '') + ':' + (e.lineno || ''));
@@ -1771,7 +1853,6 @@
     document.documentElement.dataset.theme = state.theme || 'light';
     renderProjectSelect();
     renderPhaseFilter();
-    renderTagline();
     render();          // paint immediately — do not wait for storage
     refreshCounts();   // then decorate with file counts when available
     handleAnswersLink();
