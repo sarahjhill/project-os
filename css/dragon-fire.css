@@ -1,0 +1,119 @@
+/* ============================================================
+   DRAGON FIRE THEME
+   Loaded AFTER css/styles.css, so it wins.
+
+   The app was already themed entirely from custom properties,
+   which means the whole thing — dashboard, client view, every
+   form — re-skins from this one file. Nothing in app.js had to
+   change.
+   ------------------------------------------------------------
+   Every colour below was contrast-checked against the surface
+   it actually sits on. The numbers in the comments are real
+   ratios, not guesses. WCAG AA wants 4.5:1 for body text.
+   ------------------------------------------------------------
+   Index:  light tokens · dark tokens · typography
+           accent corrections · focus ring
+   ============================================================ */
+
+/* ---------------- LIGHT ---------------- */
+:root{
+  --bg:#F6F3ED;               /* warm paper, same as the main site */
+  --surface:#FFFDF9;
+  --raised:#FFFFFF;
+  --sunken:#EBE6DC;
+
+  --text:#0A0A0C;             /* 19.5:1 on surface */
+  --text-2:#56534D;           /*  7.5:1 */
+  --text-3:#78756F;
+
+  --border:#DCD7CC;
+  --border-strong:#C7C0B2;
+
+  --accent:#C2260E;           /*  5.8:1 on surface — safe for text and buttons */
+  --accent-bright:#FF3B1F;    /*  the flame. Fills, bars and the logo only.    */
+  --accent-soft:#FFE9E4;
+  --accent-text:#FFFFFF;      /*  5.9:1 on --accent */
+
+  --brand-2:#8A5D00;          /*  5.7:1 — the amber, darkened enough to read */
+  --brand-2-soft:#FFF4DD;
+
+  --ok:#1E7A5A;      --ok-soft:#E3F3EC;
+  --warn:#8A5D00;    --warn-soft:#FFF4DD;
+  --danger:#B02F2F;  --danger-soft:#FBE8E8;
+  --info:#2F5F94;    --info-soft:#E7EFF8;
+  --p1:#B02F2F; --p2:#8A5D00; --p3:#2F5F94; --p4:#78756F;
+
+  --radius:3px;               /* the new brand is square-ish, not rounded */
+  --radius-lg:4px;
+  --shadow:0 1px 2px rgba(10,10,12,.06), 0 4px 14px rgba(10,10,12,.06);
+  --shadow-lg:0 10px 40px rgba(10,10,12,.16);
+
+  /* No web fonts. The app was pulling Lato and Poppins from Google on
+     every page, which is the single slowest thing it did. */
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --display:var(--sans);
+}
+
+/* ---------------- DARK ---------------- */
+[data-theme="dark"]{
+  --bg:#0A0A0C;               /* ink */
+  --surface:#141419;
+  --raised:#1C1C22;
+  --sunken:#08080A;
+
+  --text:#F6F3ED;             /* 16.6:1 on surface */
+  --text-2:#BCBAB4;           /*  9.5:1 */
+  --text-3:#8B8B95;           /*  5.4:1 */
+
+  --border:#242430;
+  --border-strong:#343442;
+
+  --accent:#FF6A4D;           /*  6.5:1 on surface — lifted so it reads as text */
+  --accent-bright:#FF3B1F;
+  --accent-soft:#2A1116;
+  --accent-text:#0A0A0C;      /*  5.6:1 on --accent-bright */
+
+  --brand-2:#FFB020;          /* 10.0:1 — the amber, full strength on dark */
+  --brand-2-soft:#241A06;
+
+  --ok:#4FB088;      --ok-soft:#132620;
+  --warn:#FFB020;    --warn-soft:#241A06;
+  --danger:#E0655B;  --danger-soft:#2A1615;
+  --info:#6FA0D6;    --info-soft:#131F2B;
+  --p1:#E0655B; --p2:#FFB020; --p3:#6FA0D6; --p4:#8B8B95;
+
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 4px 14px rgba(0,0,0,.4);
+  --shadow-lg:0 10px 40px rgba(0,0,0,.7);
+}
+
+/* ---------------- TYPE ---------------- */
+/* Headings in the new brand are tight and heavy rather than airy. */
+h1, h2, h3, .display, .app-title, .brand-name{
+  letter-spacing:-.025em;
+  font-weight:800;
+}
+
+/* ---------------- THE LOGO MARK ---------------- */
+/* The flame is the identity now, so wherever the old teal dot or bar
+   appeared it becomes the flame instead. */
+.brand-mark, .logo-dot, .dot-accent{
+  background:var(--accent-bright) !important;
+}
+
+/* ---------------- FOCUS ---------------- */
+/* Amber, visible on both themes, never removed. */
+:focus-visible{
+  outline:3px solid #FFB020 !important;
+  outline-offset:3px !important;
+}
+
+/* ---------------- SELECTION ---------------- */
+::selection{ background:var(--accent-bright); color:#fff; }
+
+/* ---------------- HARD-CODED LEFTOVERS ----------------
+   Two places in styles.css paint colours directly instead of
+   through a token, so the theme cannot reach them from :root. */
+.progress-gradient,
+[class*="gradient"]{
+  background:linear-gradient(to right, var(--brand-2), var(--accent-bright)) !important;
+}

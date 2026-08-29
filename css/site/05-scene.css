@@ -1,0 +1,41 @@
+/* ============================================================
+   05 · HERO SCENE — the dragon
+   A Welsh dragon's head on the right of the hero, breathing a
+   flame stream leftwards under the headline.
+   ------------------------------------------------------------
+   The copy is left-aligned, so the dragon lives right and the
+   flame travels into the empty half. Everything sits BEHIND the
+   text (z-index below .wrap), so nothing can obscure a word no
+   matter how the flame animates.
+   ------------------------------------------------------------
+   Index:  scene shell · dragon body · eye · flame breath
+           embers · the ember line · responsive · reduced motion
+   ============================================================ */
+
+.scene{
+  position: absolute;
+  inset: 0;                      /* the whole hero, so the fire can cross it */
+  z-index: 2;                    /* above .glow (1), below .wrap (3) */
+  pointer-events: none;
+  line-height: 0;
+}
+
+.sjh-dragon-canvas{ display: block; width: 100%; height: 100%; }
+
+/* --- the line that explains the dragon --- */
+.ember-line{
+  font-weight: 800;
+  letter-spacing: -.015em;
+  color: var(--amber);
+}
+.ember-line b{ color: var(--flame); }
+
+/* --- smaller screens: the dragon drops back and calms down --- */
+@media (max-width: 900px){ .scene{ opacity: .6; } }
+@media (max-width: 600px){ .scene{ opacity: .42; } }
+
+/* --- stillness for anyone who asked for it --- */
+@media (prefers-reduced-motion: reduce){
+  .dragon-rig, .dragon-eye, .ember-dot{ animation: none; }
+  .flame-tongue{ animation: none; opacity: .45; }
+}

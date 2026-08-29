@@ -1,251 +1,380 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en-GB">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The SJH Process — know exactly what happens next</title>
-<meta name="description" content="A clear, twelve-stage process for building a website, with a sign-in for clients to follow along. No jargon, no guessing what happens next.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Social preview. og:image MUST be absolute — a relative path like
-     "og.png" is silently ignored by every scraper, which then falls back to
-     guessing an image from the page. -->
-<meta property="og:site_name" content="Sarah J Hill">
-<meta property="og:title" content="The SJH Process">
-<meta property="og:description" content="Know exactly what happens next. A clear twelve-stage process, and a place to watch your project move.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://sarahjhill.github.io/project-os/">
-<meta property="og:image" content="https://sarahjhill.github.io/project-os/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The SJH Process landing page: you will always know what happens next.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="The SJH Process">
-<meta name="twitter:description" content="Know exactly what happens next. A clear twelve-stage process, and a place to watch your project move.">
-<meta name="twitter:image" content="https://sarahjhill.github.io/project-os/og.png">
+  <!-- ============ SEO ============ -->
+  <title>The SJH Dragon Fire Process — Client Portal &amp; Studio Licence, £39</title>
+  <meta name="description" content="Twelve phases, sixty-nine guided tasks, seventy-two templates and a client sign-in. Clients watch every phase as it happens. Studios licence the whole thing, rebranded as theirs, for £39.">
+  <link rel="canonical" href="https://sarahjhill.github.io/project-os/">
+  <meta name="author" content="Sarah J Hill">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#0a0a0c">
 
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-180.png">
-<meta name="theme-color" content="#07beb8">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sarahjhill.github.io/project-os/">
+  <meta property="og:site_name" content="The SJH Dragon Fire Process">
+  <meta property="og:title" content="Nobody should have to type &ldquo;any update?&rdquo;">
+  <meta property="og:description" content="The project system I run every build on. Clients watch it happen. Studios can own it for £39.">
+  <meta property="og:image" content="https://sarahjhill.github.io/project-os/documentation/images/dashboard.webp">
+  <meta property="og:locale" content="en_GB">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The SJH Dragon Fire Process">
+  <meta name="twitter:description" content="Twelve phases. Sixty-nine tasks. Seventy-two templates. One person to ring.">
+  <meta name="twitter:image" content="https://sarahjhill.github.io/project-os/documentation/images/dashboard.webp">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/landing.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- ============ STYLES ============ -->
+  <link rel="stylesheet" href="css/site/01-tokens.css">
+  <link rel="stylesheet" href="css/site/02-layout.css">
+  <link rel="stylesheet" href="css/site/03-components.css">
+  <link rel="stylesheet" href="css/site/05-scene.css">
+  <link rel="stylesheet" href="css/site/04-motion.css">
+
+  <!-- ============ STRUCTURED DATA ============ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "The SJH Dragon Fire Process",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any modern browser",
+    "url": "https://sarahjhill.github.io/project-os/",
+    "author": {
+      "@type": "Person",
+      "name": "Sarah Hill",
+      "url": "https://sarahjhill.com/",
+      "email": "sarah@sarahjhill.com"
+    },
+    "description": "A twelve-phase project delivery system with 69 guided tasks, 72 templates and a client sign-in. Licensed to studios to rebrand and own outright.",
+    "featureList": "12 phases, 69 guided tasks, 72 templates, 5 client forms, client sign-in, installs to a phone, works offline",
+    "offers": {
+      "@type": "Offer",
+      "price": "39",
+      "priceCurrency": "GBP",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+  </script>
 </head>
 <body>
 
 <a class="skip" href="#main">Skip to content</a>
+<div id="tick" aria-hidden="true"></div>
 
-<header class="lp-top">
-  <a class="lp-brand" href="./">
-    <img src="icon.svg" alt="" class="lp-mark">
-    <span class="lp-brand-text">
-      <span class="lp-brand-name">The SJH Process</span>
-      <span class="lp-brand-sub">Sarah J Hill</span>
-    </span>
-  </a>
-  <nav class="lp-nav" aria-label="Primary">
-    <a href="client.html">Client sign-in</a>
-    <a class="lp-nav-btn" href="app.html">Owner sign-in</a>
-  </nav>
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">Dragon Fire <span>Process</span><em>By Sarah J Hill</em></a>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navlinks">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="navlinks" id="navlinks">
+      <a href="#client">For clients</a>
+      <a href="#box">What's in it</a>
+      <a href="#templates">The 72 templates</a>
+      <a href="#studio">Licence it</a>
+      <a class="navcta" href="app.html?guest=1">Try the demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="glow" id="glow" aria-hidden="true"></div>
+  <div class="scene" aria-hidden="true"><canvas class="sjh-dragon-canvas"></canvas></div>
+  <div class="wrap">
+    <div class="count" aria-hidden="true" data-lbl-start="weeks of silence" data-lbl-end="not on my watch">
+      <span class="num" id="num">3</span>
+      <span class="lbl" id="lbl">weeks of silence</span>
+    </div>
+    <h1><span class="resolve">Nobody should have to type <span class="hit">&ldquo;any update?&rdquo;</span></span></h1>
+    <p class="sub ember-line">The industry standard is silence and a hopeful email.
+      <b>This is the opposite of that.</b></p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="app.html?guest=1">Look round a real project &rarr;</a>
+      <a class="btn btn-ghost" href="#studio">Own it for &pound;39</a>
+      <button class="replay" id="replay" type="button">Watch it again</button>
+    </div>
+  </div>
+  <div class="scrollcue" aria-hidden="true">Scroll</div>
 </header>
 
 <main id="main">
 
-  <!-- ============================ Hero ============================ -->
-  <section class="lp-hero">
-    <div class="lp-wrap">
-      <p class="lp-eyebrow">The process behind every Sarah J Hill project</p>
-      <h1 class="lp-h1">
-        You will always know<br><em>what happens next.</em>
-      </h1>
-      <p class="lp-lede">
-        Most people's experience of getting a website built is a long, quiet gap
-        where nothing seems to happen and nobody tells you anything. This is the
-        opposite of that.
-      </p>
-      <div class="lp-cta-row">
-        <a class="lp-btn lp-btn-primary" href="forms/intake.html">
-          Start with a few questions
-        </a>
-        <a class="lp-btn" href="app.html?guest=1">Have a look round as a guest</a>
-        <a class="lp-btn" href="client.html">Already a client? Sign in</a>
+<!-- ============ FOR CLIENTS ============ -->
+<section class="band" id="client">
+  <div class="wrap">
+    <p class="eyebrow stand">If you're a client</p>
+    <h2 class="stand">You watch it happen. You don't wait to be told.</h2>
+    <p class="lead stand">From the day the project starts, it is a live page you sign in to.
+      Everything below is what you see.</p>
+
+    <div class="rows">
+      <div class="row stand">
+        <div><h3>Every moment, as it unfolds</h3>
+          <p>Every phase and every task, ticking off in front of you as it actually happens. No weekly
+            email saying &ldquo;good progress&rdquo;. You watch the real thing move.</p></div>
+        <div class="payoff"><em>You get</em><b>The truth, live, without asking for it.</b></div>
       </div>
-      <p class="lp-reassure">
-        Step one is a form. It costs nothing, commits you to nothing, and takes
-        about five minutes. Or open the guest demo and see the whole system
-        working, with nothing to sign up for.
-      </p>
-    </div>
-  </section>
-
-  <!-- ========================== Benefits =========================== -->
-  <section class="lp-section">
-    <div class="lp-wrap">
-      <h2 class="lp-h2">Made to be easy on you</h2>
-      <p class="lp-sub">
-        You have a job already. This one is mine.
-      </p>
-
-      <ul class="lp-benefits">
-        <li>
-          <span class="lp-b-num">01</span>
-          <h3>You are never left wondering</h3>
-          <p>
-            Sign in whenever you like and see the stage we're at, what's just been
-            finished, and what's coming. No chasing, no "any update?" emails.
-          </p>
-        </li>
-        <li>
-          <span class="lp-b-num">02</span>
-          <h3>One thing asked at a time</h3>
-          <p>
-            When I need something from you it arrives as a short form with a clear
-            deadline — not a twelve-point email you have to unpick on a Sunday.
-          </p>
-        </li>
-        <li>
-          <span class="lp-b-num">03</span>
-          <h3>Plain English throughout</h3>
-          <p>
-            No wireframe-schema-sprint-velocity talk. If a word needs explaining,
-            it gets explained, and you never have to pretend you followed it.
-          </p>
-        </li>
-        <li>
-          <span class="lp-b-num">04</span>
-          <h3>Nothing gets quietly forgotten</h3>
-          <p>
-            Every stage has a written finish line. Accessibility, speed, testing
-            and handover are steps in the process, not extras that fall off the
-            end when time runs short.
-          </p>
-        </li>
-        <li>
-          <span class="lp-b-num">05</span>
-          <h3>You keep everything</h3>
-          <p>
-            Files, decisions and documents stay in one place you can reach, during
-            the project and after it. You finish owning your site outright.
-          </p>
-        </li>
-        <li>
-          <span class="lp-b-num">06</span>
-          <h3>Priced before it starts</h3>
-          <p>
-            Scope and cost are agreed in writing at stage two, before a line of
-            code exists. Surprises are a failure of process, not a fact of life.
-          </p>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ========================== The stages ========================= -->
-  <section class="lp-section lp-section-alt">
-    <div class="lp-wrap">
-      <h2 class="lp-h2">Twelve stages, start to finish</h2>
-      <p class="lp-sub">
-        A quick look at the shape of it. Small projects move through some of these
-        in an afternoon; bigger ones take longer. You'll know which is which
-        before we begin.
-      </p>
-
-      <ol class="lp-stages">
-        <li><span class="lp-s-num">00</span><span class="lp-s-name">Discovery</span></li>
-        <li><span class="lp-s-num">01</span><span class="lp-s-name">Proposal</span></li>
-        <li><span class="lp-s-num">02</span><span class="lp-s-name">Research</span></li>
-        <li><span class="lp-s-num">03</span><span class="lp-s-name">Strategy</span></li>
-        <li><span class="lp-s-num">04</span><span class="lp-s-name">Wireframes</span></li>
-        <li><span class="lp-s-num">05</span><span class="lp-s-name">UI Design</span></li>
-        <li><span class="lp-s-num">06</span><span class="lp-s-name">Testing</span></li>
-        <li><span class="lp-s-num">07</span><span class="lp-s-name">Tech Setup</span></li>
-        <li><span class="lp-s-num">08</span><span class="lp-s-name">Build</span></li>
-        <li><span class="lp-s-num">09</span><span class="lp-s-name">QA</span></li>
-        <li><span class="lp-s-num">10</span><span class="lp-s-name">Launch</span></li>
-        <li><span class="lp-s-num">11</span><span class="lp-s-name">Handover</span></li>
-      </ol>
-
-      <p class="lp-stages-note">
-        Behind each of these sits a checklist I work through and you don't have to
-        think about. That part is my problem, which is rather the point.
-      </p>
-    </div>
-  </section>
-
-  <!-- ============================ Doors ============================ -->
-  <section class="lp-section">
-    <div class="lp-wrap">
-      <h2 class="lp-h2">Signing in</h2>
-      <div class="lp-doors">
-
-        <div class="lp-door">
-          <h3>Clients</h3>
-          <p>
-            See your project's progress, what's needed from you, and the files
-            we've shared. You'll only ever see your own project.
-          </p>
-          <a class="lp-btn lp-btn-primary" href="client.html">Client sign-in</a>
-          <p class="lp-door-note">
-            You'll have had an invitation by email. Sign-in is a link — there is no
-            password to lose.
-          </p>
-        </div>
-
-        <div class="lp-door">
-          <h3>Owner</h3>
-          <p>
-            The full working system: every stage, task, template and client. For me
-            and anyone I invite in.
-          </p>
-          <a class="lp-btn" href="app.html">Owner sign-in</a>
-          <p class="lp-door-note">
-            Not a public tool. Signing in is required before anything loads.
-          </p>
-        </div>
-
+      <div class="row stand">
+        <div><h3>Everything on one page</h3>
+          <p>Your logo, your photos, your words, the plan, the invoice, the sign-off &mdash; uploaded and
+            downloaded from the same place, whenever it suits you. No hunting back through an email chain
+            for the file you sent in March.</p></div>
+        <div class="payoff"><em>You get</em><b>One page. Nothing lost, nothing attached.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>One thing at a time, and only when it's your turn</h3>
+          <p>Whatever is needed from you is written there in plain English, one small step at a time,
+            with a line saying why it matters. Nothing lands on you all at once.</p></div>
+        <div class="payoff"><em>You get</em><b>A short list you can actually finish.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>No password to lose</h3>
+          <p>It emails you a link and that is the whole of it. Installs to your phone like an app, and
+            keeps working when the signal doesn't.</p></div>
+        <div class="payoff"><em>You get</em><b>Access from wherever you happen to be.</b></div>
       </div>
     </div>
-  </section>
 
-  <!-- ============================= CTA ============================= -->
-  <section class="lp-final">
-    <div class="lp-wrap">
-      <h2 class="lp-h2">Thinking about a project?</h2>
-      <p class="lp-sub lp-sub-light">
-        Start with the questions. If it turns out I'm not the right fit, I'll tell
-        you that and point you somewhere better.
-      </p>
-      <a class="lp-btn lp-btn-invert" href="forms/intake.html">
-        Start with a few questions
-      </a>
-      <p class="lp-reassure lp-reassure-light">
-        Ten minutes. No cost, no commitment.
-      </p>
+    <div class="cta-row stand" style="margin-top:30px;">
+      <a class="btn btn-primary" href="app.html?guest=1">Look round a real project &rarr;</a>
+      <span class="cta-note">A working demo, loaded with a made-up client. Nothing to sign up for.</span>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ============ WHAT'S IN THE BOX ============ -->
+<section class="dark" id="box">
+  <div class="wrap">
+    <p class="eyebrow stand">What is actually in it</p>
+    <h2 class="stand">Twelve phases, and nothing quietly skipped.</h2>
+    <p class="lead stand">The rigour is the point. Accessibility, testing and the fiddly bits are tasks
+      like any other, so they cannot get dropped the week everything runs late.</p>
+
+    <div class="stats">
+      <div class="stat stand"><div class="v" data-count="12">0</div><div class="k">Phases</div></div>
+      <div class="stat stand"><div class="v" data-count="69">0</div><div class="k">Guided tasks</div></div>
+      <div class="stat stand"><div class="v" data-count="72">0</div><div class="k">Templates</div></div>
+      <div class="stat stand"><div class="v" data-count="5">0</div><div class="k">Client forms</div></div>
+    </div>
+
+    <div class="chips stand">
+      <span class="chip">Installs to a phone</span>
+      <span class="chip">Works with no signal</span>
+      <span class="chip">No framework, no build step</span>
+      <span class="chip">Nothing that can rot</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE TEMPLATES ============ -->
+<section class="band alt" id="templates">
+  <div class="wrap">
+    <p class="eyebrow stand">The seventy-two templates</p>
+    <h2 class="stand">Not a folder of blank documents.</h2>
+    <p class="lead stand">Every one is written out in full, in plain English, ready to send. Here is the
+      actual list &mdash; grouped by the phase it belongs to.</p>
+
+    <div class="rows">
+      <div class="row stand">
+        <div><h3>Winning the work</h3>
+          <p>Client Intake Questionnaire &middot; Discovery Call Script &middot; Go / No-Go Scorecard &middot;
+            Competitive Audit &middot; Pitch &amp; Concept Deck Outline &middot; Estimating Worksheet &middot;
+            Proposal &middot; Statement of Work &middot; Contract Clause Checklist &middot; Kick-off Agenda &amp; Recap</p></div>
+        <div class="payoff"><em>Ten templates</em><b>From first enquiry to signed.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Research and discovery</h3>
+          <p>Research Plan &middot; Participant Screener &middot; Stakeholder Interview Guide &middot;
+            User Interview Guide &middot; Consent Form &middot; Analytics &amp; Data Audit &middot;
+            Heuristic Evaluation Sheet &middot; Research Report Structure &middot; Persona &middot;
+            Journey Map</p></div>
+        <div class="payoff"><em>Ten templates</em><b>Evidence instead of guessing.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Defining it</h3>
+          <p>Product Principles &amp; Metrics &middot; User Story &amp; Acceptance Criteria &middot;
+            Story Splitting Patterns &middot; MoSCoW Prioritisation Workshop &middot;
+            Information Architecture Kit &middot; User Flow Notation &amp; Checklist &middot;
+            Data Model &amp; Permissions &middot; API Contract</p></div>
+        <div class="payoff"><em>Eight templates</em><b>Everyone agreeing on the same thing.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Design</h3>
+          <p>Sketching &amp; Crazy 8s &middot; Figma File Setup Standard &middot; Wireframe Checklist &middot;
+            UX Copy Guide &middot; Visual Direction Presentation &middot; Design Tokens Specification &middot;
+            Component Library Specification &middot; Hi-Fi Screen Checklist &middot;
+            Accessibility Design Annotations &middot; Sign-off Request &middot;
+            Usability Test Plan &amp; Moderator Script &middot; Usability Findings &amp; Issue Log &middot;
+            Design &rarr; Development Handoff</p></div>
+        <div class="payoff"><em>Thirteen templates</em><b>Design that survives handover.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Build</h3>
+          <p>Git &amp; GitHub Workflow &middot; VS Code Project Configuration &middot;
+            Repository Structure &amp; README &middot; Backend Foundations Checklist &middot;
+            Frontend Standards &middot; Backend Standards &middot; CI/CD Pipeline &middot;
+            Pull Request Template &amp; Checklist &middot; Testing Strategy</p></div>
+        <div class="payoff"><em>Nine templates</em><b>The same standard every time.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Running the work</h3>
+          <p>Sprint Planning &amp; Cadence &middot; Definition of Ready &middot; Definition of Done &middot;
+            Daily Working Rhythm &middot; Sprint Review / Demo &middot; Retrospective</p></div>
+        <div class="payoff"><em>Six templates</em><b>A rhythm that holds under pressure.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Quality</h3>
+          <p>QA Test Matrix &middot; Bug Report Standard &middot; Accessibility Audit (Build) &middot;
+            Performance Optimisation &middot; Security Review Checklist &middot;
+            SEO, Content &amp; Analytics Readiness</p></div>
+        <div class="payoff"><em>Six templates</em><b>The careful version, not the rushed one.</b></div>
+      </div>
+
+      <div class="row stand">
+        <div><h3>Launch and after</h3>
+          <p>Production Environment Setup &middot; Deployment Runbook &middot; Launch Day Checklist &middot;
+            Handover Pack Contents &middot; Support &amp; Warranty Terms &middot; Project Closure &middot;
+            Content &amp; Assets Request &middot; Asking a Client for Results &middot;
+            Outcome Report &amp; Case Study &middot; Retainer &amp; Phase Two Proposal</p></div>
+        <div class="payoff"><em>Ten templates</em><b>Launch, then the work that pays twice.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE FORMS ============ -->
+<section class="band">
+  <div class="wrap">
+    <p class="eyebrow stand">The five client forms</p>
+    <h2 class="stand">Sent as a link. Answered on a phone. Straight back to you.</h2>
+    <p class="lead stand">Nothing to download, nothing to attach, nothing to lose in an inbox. Each one
+      saves as the client types, so they can close it and come back.</p>
+    <div class="rows">
+      <div class="row stand">
+        <div><h3>Project Enquiry</h3>
+          <p>The first conversation, in about five minutes. Budget band, deadline, who signs off.</p></div>
+        <div class="payoff"><em>Tells you</em><b>Whether to take the job at all.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>Screener &amp; Consent</h3>
+          <p>For research participants &mdash; who qualifies, and their consent on record.</p></div>
+        <div class="payoff"><em>Tells you</em><b>You are allowed to use what you learn.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>Content &amp; Assets Request</h3>
+          <p>The logo, the photos, the words. The thing every project actually waits on.</p></div>
+        <div class="payoff"><em>Tells you</em><b>Exactly what is still missing.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>Website Audit</h3>
+          <p>The structured review of an existing site, so nothing gets checked from memory.</p></div>
+        <div class="payoff"><em>Tells you</em><b>Where the site is losing them.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>Sign-off</h3>
+          <p>Written approval at the point it matters, so &ldquo;I thought we agreed&rdquo; never happens.</p></div>
+        <div class="payoff"><em>Tells you</em><b>You are safe to build.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STUDIO LICENCE ============ -->
+<section class="band alt" id="studio">
+  <div class="wrap">
+    <div class="studio stand">
+      <p class="split-label" style="margin-top:0;">If you're a studio &mdash; own it yourself</p>
+      <h3 class="studio-h">The whole process, rebranded as yours. <b>&pound;39.</b></h3>
+      <p class="studio-p">Twelve phases, sixty-nine guided tasks and all seventy-two templates &mdash;
+        the entire delivery system, with your name on it, your colours, and your clients signing in.
+        Buy it once and it is yours. No monthly fee, no per-seat cost, nothing to renew, nobody to ask
+        permission from.</p>
+
+      <div class="stats">
+        <div class="stat stand"><div class="v" data-count="12">0</div><div class="k">Phases</div></div>
+        <div class="stat stand"><div class="v" data-count="69">0</div><div class="k">Guided tasks</div></div>
+        <div class="stat stand"><div class="v" data-count="72">0</div><div class="k">Templates</div></div>
+        <div class="stat stand"><div class="v" data-count="39">0</div><div class="k">Pounds, once</div></div>
+      </div>
+
+      <div class="chips">
+        <span class="chip">Your branding</span>
+        <span class="chip">Your own Supabase, or none at all</span>
+        <span class="chip">No monthly fee</span>
+        <span class="chip">Yours outright</span>
+      </div>
+
+      <div class="cta-row" style="margin-top:26px;">
+        <a class="btn btn-primary" href="mailto:sarah@sarahjhill.com?subject=Dragon%20Fire%20Process%20licence">Licence it &mdash; &pound;39 &rarr;</a>
+        <a class="btn btn-ghost" href="app.html?guest=1">Try it first</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ UNDER THE BONNET ============ -->
+<section class="dark">
+  <div class="wrap">
+    <p class="eyebrow stand">Under the bonnet</p>
+    <h2 class="stand">Written by hand. Nothing that can rot.</h2>
+    <div class="rows">
+      <div class="row stand">
+        <div><h3>No framework, no build step</h3>
+          <p>Plain HTML, CSS and JavaScript. Progress lives in the browser. Accounts and client sharing
+            run on Supabase, with database-level rules deciding who sees what rather than the interface
+            politely hiding things.</p></div>
+        <div class="payoff"><em>Which means</em><b>No dependency that breaks in two years.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>Clients see a snapshot, never the working project</h3>
+          <p>You choose what gets published. Every client form submits straight to you.</p></div>
+        <div class="payoff"><em>Which means</em><b>You share the right things and only those.</b></div>
+      </div>
+      <div class="row stand">
+        <div><h3>It costs nothing to run</h3>
+          <p>It works with no backend at all, storing everything in the browser. Add Supabase only when
+            you want client sign-in &mdash; and the free tier is plenty.</p></div>
+        <div class="payoff"><em>Which means</em><b>No running cost to pass on.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 </main>
 
-<footer class="lp-foot">
-  <div class="lp-wrap lp-foot-inner">
-    <p class="lp-foot-brand">
-      <img src="icon.svg" alt="" class="lp-foot-mark">
-      Sarah J Hill
-    </p>
-    <p class="lp-foot-links">
-      <a href="https://sarahjhill.github.io/make-it-pop/">Make It Pop</a>
-      <span aria-hidden="true">·</span>
-      <a href="mailto:sarah@sarahjhill.com">sarah@sarahjhill.com</a>
-    </p>
-    <p class="lp-foot-copy">
-      &copy; <span id="lpYear">2026</span> Sarah J Hill. All rights reserved.
-    </p>
+<!-- ============ CLOSE ============ -->
+<section class="close" id="hello">
+  <div class="wrap">
+    <p class="eyebrow stand">Say hello</p>
+    <h2 class="stand">Questions before you buy?</h2>
+    <p class="lead stand">Ask me anything about it &mdash; how it works, whether it suits how you run
+      projects, or what it would take to put your own branding on it. Two working days, honest answer.</p>
+    <div class="cta-row stand" style="margin-top:32px;">
+      <a class="btn btn-primary" href="mailto:sarah@sarahjhill.com">Email me &rarr;</a>
+      <a class="btn btn-ghost" href="https://sarahjhill.com">Sarah J Hill &mdash; the studio</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; <span id="yr">2026</span> Sarah J Hill &middot; Dragon Fire Design &middot; Built by hand, yours to own.</span>
+    <span>Cardiff &amp; Birmingham &middot; <a href="mailto:sarah@sarahjhill.com">sarah@sarahjhill.com</a></span>
   </div>
 </footer>
 
-<script>
-  document.getElementById('lpYear').textContent = new Date().getFullYear();
-</script>
+<script src="assets/js/main.js" defer></script>
+<script src="assets/js/dragon.js" defer></script>
 </body>
 </html>

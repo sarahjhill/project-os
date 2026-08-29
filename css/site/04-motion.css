@@ -1,0 +1,14 @@
+/* ============================================================
+   04 · MOTION PREFERENCES
+   Loaded last so it overrides everything above.
+   Anyone with "reduce motion" on gets the finished state
+   immediately — no countdown, no reveals, no bobbing.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  .resolve{filter:none;opacity:1;}
+  .hero .sub,.hero .cta-row,.scrollcue{opacity:1;transform:none;}
+  .stand{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+}
