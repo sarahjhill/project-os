@@ -7,7 +7,7 @@
    start the conversation.
 
    Two routes lead into it:
-     inbound  — somebody fills in forms/audit.html off the Make It Pop
+     inbound  — somebody fills in forms/audit.html off the Dragon Fire Design
                 site and asks for one
      outbound — you pick a business, audit it unasked, and use what you
                 found as the reason for making contact
@@ -133,8 +133,8 @@ window.AUDIT = {
         'End with a question, not a pitch. "Does that match what you have noticed?" invites a reply. "I can fix this for £800" does not.',
         'Send it as a PDF attachment with the findings also in the body of the email, because plenty of people will never open the attachment.'
       ],
-      deliver: ['One-page PDF audit', 'Email version of the findings', 'Branded with Make It Pop'],
-      tools: ['The Make It Pop report template', 'Screenshots from the manual pass'],
+      deliver: ['One-page PDF audit', 'Email version of the findings', 'Branded with Dragon Fire Design'],
+      tools: ['The Dragon Fire Design report template', 'Screenshots from the manual pass'],
       dod: ['Fits on one page', 'Every claim traceable to a measurement', 'Ends with a question']
     },
 
@@ -224,7 +224,7 @@ window.AUDIT = {
       },
       {
         name: 'Community and good causes',
-        why: 'The audit is free for these as a matter of policy. A slow donate button or a broken contact form on a food bank site costs something that matters more than money, and this is the work Make It Pop was built for.',
+        why: 'The audit is free for these as a matter of policy. A slow donate button or a broken contact form on a food bank site costs something that matters more than money, and this is the work Dragon Fire Design was built for.',
         search: ['community centre Cardiff [district]', 'food bank Cardiff', 'mosque OR church Cardiff', 'charity shop Cardiff', 'community garden Cardiff']
       },
       {

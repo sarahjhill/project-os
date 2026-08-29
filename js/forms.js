@@ -251,7 +251,7 @@
     /* Build the flat object Formspree turns into a readable email. */
     function formspreeBody(payload) {
       var out = {};
-      out._subject = (F.studioName || 'The SJH Process') + ' — ' + F.title +
+      out._subject = (F.studioName || 'The SJH Dragon Fire Process') + ' — ' + F.title +
         (respondentName(payload) ? ' from ' + respondentName(payload) : '');
       payload.answers.forEach(function (a) {
         var key = a.section + ' — ' + a.label;
@@ -392,7 +392,7 @@
     data.formId = formId;
     data.endpoint = C.formspreeEndpoint || '';
     data.appUrl = C.appUrl || '';
-    data.studioName = C.studioName || 'The SJH Process';
+    data.studioName = C.studioName || 'The SJH Dragon Fire Process';
 
     var ty = C.thankYou || {};
     var thanksHTML =
@@ -427,7 +427,7 @@
       '<div class="wrap">\n' +
       '<header class="top">' +
       '<div class="brand"><img src="' + MARK + '" alt="">' +
-      '<div><div class="brandname">The SJH Process</div>' +
+      '<div><div class="brandname">The SJH Dragon Fire Process</div>' +
       '<div class="brandsub">Sarah J Hill</div></div></div>' +
       '<h1>' + esc(F.title) + '</h1>' +
       '<p class="intro">' + esc(F.intro) + '</p></header>\n' +
@@ -464,7 +464,7 @@
   function parseResponse(text) {
     var p = JSON.parse(text);
     if (!p || !p.projectOsForm || !p.answers) {
-      throw new Error('That does not look like a SJH Process answers file.');
+      throw new Error('That does not look like a SJH Dragon Fire Process answers file.');
     }
     return p;
   }

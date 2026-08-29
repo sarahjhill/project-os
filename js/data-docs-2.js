@@ -1835,7 +1835,7 @@ Two short emails. The first goes on launch day, the second about a month later. 
 >
 > No rush at all. Congratulations — it has been a genuine pleasure.
 >
-> Sarah Hill · Make It Pop
+> Sarah Hill · Dragon Fire Design
 
 **Why it is worded this way:** you are asking for their goal, not a testimonial. People answer that easily, and it sets up the second email without you having to ask twice.
 
@@ -1862,7 +1862,7 @@ Two short emails. The first goes on launch day, the second about a month later. 
 >
 > Either way, thank you for trusting me with it.
 >
-> Sarah Hill · Make It Pop
+> Sarah Hill · Dragon Fire Design
 
 ---
 

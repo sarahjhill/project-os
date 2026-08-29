@@ -71,7 +71,17 @@ details td{border-top:1px solid var(--border);padding:7px 6px;vertical-align:top
 details td:first-child{width:40%;color:var(--text-2)}
 footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
 @media(max-width:600px){.wrap{padding:24px 14px 70px}h1{font-size:23px}}
+
+/* studio mark on the client's own page — the one thing that tells them
+   whose project system they are looking at */
+header.top{align-items:center;flex-wrap:wrap}
+.brandmark{display:flex;align-items:center;gap:10px;flex:0 0 100%;margin-bottom:14px;
+  padding-bottom:12px;border-bottom:1px solid var(--border)}
+.brandmark img{display:block;border-radius:8px}
+.bm-name{font-weight:800;font-size:14.5px;letter-spacing:-.01em;line-height:1.15}
+.bm-sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
 </style>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
 </head>
 <body>
 <div class="wrap" id="app">
@@ -84,6 +94,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
 <script src="js/config.js"></script>
 <script src="js/cloud.js"></script>
 <script>
+var MARK = "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20role%3D%22img%22%20aria-label%3D%22Dragon%20Fire%22%3E%0A%20%20%3Ctitle%3EDragon%20Fire%3C%2Ftitle%3E%0A%20%20%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%230a0a0c%22%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23ffb020%22%20d%3D%22M40%2022%20Q49%2015%2057%2016%20Q48%2020%2043%2027%20Z%22%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23ff3b1f%22%20d%3D%22M20%2029%20L34%2023%20Q42%2020%2046%2026%20Q49%2030%2048%2036%20L34%2033%20L20%2031%20Z%22%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23c2260e%22%20d%3D%22M21%2036%20L35%2038%20L47%2039%20Q45%2047%2035%2047%20Q25%2045%2021%2038%20Z%22%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23f6f3ed%22%20d%3D%22M28%2031%20l2.6%203.6%201.8-3.6%20z%22%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23f6f3ed%22%20d%3D%22M37%2032%20l2.6%203.6%201.8-3.6%20z%22%2F%3E%0A%20%20%3Cpath%20fill%3D%22%23f6f3ed%22%20d%3D%22M32%2038%20l-2.6-3.6%20-1.8%203.6%20z%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2240%22%20cy%3D%2229%22%20r%3D%223%22%20fill%3D%22%23ffb020%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2241%22%20cy%3D%2229%22%20r%3D%221.3%22%20fill%3D%22%230a0a0c%22%2F%3E%0A%20%20%3Cg%20class%3D%22df-flame%22%3E%0A%20%20%20%20%3Cpath%20fill%3D%22%23ff3b1f%22%20d%3D%22M21%2033%20L3%2024%20Q9%2033%203%2042%20Z%22%2F%3E%0A%20%20%20%20%3Cpath%20fill%3D%22%23ff8a1f%22%20d%3D%22M21%2033%20L8%2027%20Q12%2033%208%2039%20Z%22%2F%3E%0A%20%20%20%20%3Cpath%20fill%3D%22%23ffd35c%22%20d%3D%22M21%2033%20L14%2030%20Q16%2033%2014%2036%20Z%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%0A%3C%2Fsvg%3E";
 (function () {
   'use strict';
   var app = document.getElementById('app');
@@ -137,7 +148,11 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       var sec = p.sections || {};
       var proj = p.project || {};
 
-      html += '<header class="top"><div>' +
+      html += '<header class="top">' +
+        '<div class="brandmark"><img src="' + MARK + '" alt="" width="34" height="34">' +
+        '<div><div class="bm-name">Sarah J Hill</div>' +
+        '<div class="bm-sub">Dragon Fire Design</div></div></div>' +
+        '<div>' +
         '<h1>' + esc(proj.name || 'Your project') + '</h1>' +
         '<p class="sub">Last updated ' + esc(d(proj.updated || (snap && snap.published_at))) + '</p>' +
         '</div><button type="button" class="btn" id="out">Sign out</button></header>';

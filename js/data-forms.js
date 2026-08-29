@@ -243,7 +243,7 @@ window.FORMS = {
 },
 
 /* The one form that arrives before there is a project at all. It is the front
-   door for the free website audit offered on Make It Pop, so it asks only what
+   door for the free website audit offered on Dragon Fire Design, so it asks only what
    is needed to run the audit and write the report — no budget, no sign-off, no
    deadline. Those belong in doc-intake, which comes later and only if the
    audit turns into work. */

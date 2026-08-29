@@ -281,7 +281,7 @@
 
     h += '<div class="card" style="margin-top:16px">' +
       '<h3 style="margin:0 0 8px;font-size:15px">The inbound route</h3>' +
-      '<p class="tiny muted" style="margin:0 0 10px">Anyone who asks for an audit through the Make It Pop site fills this in. ' +
+      '<p class="tiny muted" style="margin:0 0 10px">Anyone who asks for an audit through the Dragon Fire Design site fills this in. ' +
       'It collects the same things you would otherwise have to estimate — including their real numbers, which makes the costing exact rather than a range.</p>' +
       '<a class="btn sm" href="forms/audit.html" target="_blank" rel="noopener">Open the audit request form</a>' +
       '</div>';
@@ -1237,8 +1237,8 @@
      ------------------------------------------------------------------- */
   function brandedDoc(d) {
     return [
-      '**SJ Development** — Make It Pop',
-      'sarahjhill.github.io/make-it-pop · hantaah21@gmail.com',
+      '**Sarah J Hill** — Dragon Fire Design',
+      'sarahjhill.com · sarah@sarahjhill.com',
       '',
       '---',
       '',
@@ -1246,9 +1246,9 @@
       '',
       '---',
       '',
-      'Prepared by Sarah Hill · SJ Development',
+      'Prepared by Sarah Hill · Dragon Fire Design',
       '',
-      '© ' + new Date().getFullYear() + ' SJ Development. Prepared for this project — please do not redistribute.'
+      '© ' + new Date().getFullYear() + ' Sarah J Hill · Dragon Fire Design. Prepared for this project — please do not redistribute.'
     ].join('\n');
   }
 
@@ -1802,7 +1802,7 @@
   }
 
   window.addEventListener('error', function (e) {
-    console.error('SJ Development Process error:', e.error || e.message);
+    console.error('The SJH Dragon Fire Process error:', e.error || e.message);
     var main = document.getElementById('main');
     if (main && !main.innerHTML.trim()) {
       bootError('A script error stopped the app from starting.', (e.message || '') + '\n' + (e.filename || '') + ':' + (e.lineno || ''));

@@ -53,8 +53,8 @@ window.PHASES_GROWTH = [
       id: 'g1-1', title: 'Create the Google Business Profile', role: 'Marketing', est: 0.5, pri: 1, pts: 3,
       why: 'This is the panel beside Google results and in Maps. For a local service business it is the single biggest ranking factor there is, and it is free. You do not need premises to have one.',
       how: [
-        'Go to business.google.com and sign in with hantaah21@gmail.com — the account you actually read. Verification codes and every review notification land there, and a profile owned by an account you never open is a profile you stop noticing. Ownership can be transferred to another Google account later if you ever want to.',
-        'Business name: Make It Pop. Use exactly this wording everywhere — Google cross-checks it against other listings.',
+        'Go to business.google.com and sign in with sarah@sarahjhill.com — the account you actually read. Verification codes and every review notification land there, and a profile owned by an account you never open is a profile you stop noticing. Ownership can be transferred to another Google account later if you ever want to.',
+        'Business name: Dragon Fire Design. Use exactly this wording everywhere — Google cross-checks it against other listings.',
         'When asked whether customers visit you at an address, say NO. Choose service area business, area = Cardiff.',
         'Primary category: Website Designer. Add Internet Marketing Service and Graphic Designer as secondary.',
         'Website: https://sarahjhill.com. There is no reliable public email field on a Business Profile — the contact routes are the website, the phone number and Google messaging — so put sarah@sarahjhill.com on the site, not here. Note that Cloudflare Email Routing only receives — it has no SMTP server, so Gmail send-as cannot use it. Replying from the Gmail is fine for now; branded sending needs either a free SMTP relay or a paid mailbox, and is not worth doing until enquiries are regular.',
@@ -72,7 +72,7 @@ window.PHASES_GROWTH = [
       how: [
         'Wait until the Business Profile is verified — you cannot receive reviews before that.',
         'In the profile, find "Ask for reviews" and copy the short link.',
-        'Message each person individually: "Hi Kate — I have just set up a Google listing for Make It Pop. Would you mind copying what you kindly said about the site onto it? Takes about a minute: [link]"',
+        'Message each person individually: "Hi Kate — I have just set up a Google listing for Dragon Fire Design. Would you mind copying what you kindly said about the site onto it? Takes about a minute: [link]"',
         'Ask one at a time over a few weeks. Three reviews on the same afternoon looks staged; three over a month looks normal.',
         'Reply to every review, even one-liners. Google counts the replies.',
         'NEVER offer anything in exchange for a review — not a discount, not a free hour. It breaches Google policy and can get the profile suspended.'
