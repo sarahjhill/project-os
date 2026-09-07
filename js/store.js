@@ -45,7 +45,15 @@
     return window.phasesFor ? window.phasesFor(p && p.track) : (window.PHASES || []);
   }
 
-  /* ---------- load / save ---------- */
+  /* ---------- load / save ----------
+     Local storage is always kept as an instant, offline-safe copy. When
+     someone is signed in (Cloud.user()), the SIGNED-IN copy in Supabase is
+     the one that is actually authoritative — syncFromCloud() below pulls it
+     down on sign-in, on tab focus, and whenever auth state changes, and
+     every save also pushes the active project up to its row. Two tabs open
+     at once can still race on the very last few seconds of typing, but a
+     fresh load, a refocused tab, or a fresh sign-in will always land on
+     what is really saved, instead of quietly overwriting it. */
   var state = null;
 
   function load() {
@@ -64,17 +72,66 @@
     return state;
   }
 
+  function cloudReady() {
+    return !!(window.Cloud && window.Cloud.configured() && window.Cloud.user());
+  }
+
+  /* Pull every cloud-saved project down and merge it over whatever is
+     local, keyed by the project's own id (not the database row id — that
+     stays attached as _cloudId so later saves know which row to update).
+     Returns a promise of true/false: whether anything actually changed. */
+  function syncFromCloud() {
+    if (!cloudReady()) return Promise.resolve(false);
+    return window.Cloud.listProjects().then(function (rows) {
+      var changed = false;
+      (rows || []).forEach(function (row) {
+        var proj = row.data && row.data.id ? row.data : null;
+        if (!proj) return;
+        proj._cloudId = row.id;
+        proj.name = row.name || proj.name;
+        proj.client = row.client_name || proj.client || '';
+        state.projects[proj.id] = proj;
+        changed = true;
+      });
+      if (changed && !state.projects[state.activeId]) {
+        state.activeId = Object.keys(state.projects)[0];
+      }
+      if (changed) saveLocalOnly();
+      return changed;
+    }).catch(function (e) { console.warn('Cloud sync failed', e); return false; });
+  }
+
+  /* Push whichever project is active up to its row. Silently does nothing
+     for a project that has not been created in the cloud yet (no
+     _cloudId) — addProject() below is what creates that row. */
+  function pushActiveToCloud() {
+    if (!cloudReady()) return;
+    var p = project();
+    if (!p || !p._cloudId) return;
+    window.Cloud.saveProject(p._cloudId, {
+      data: p, name: p.name, client_name: p.client || '',
+      updated_at: new Date().toISOString()
+    }).catch(function (e) { console.warn('Cloud save failed', e); });
+  }
+
+  function saveLocalOnly() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+    catch (e) { console.warn(e); }
+  }
+
   var saveTimer = null;
   function save() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function () {
       try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
       catch (e) { alert('Could not save — browser storage may be full.\n' + e.message); }
+      pushActiveToCloud();
     }, 120);
   }
   function saveNow() {
     clearTimeout(saveTimer);
     try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) { console.warn(e); }
+    pushActiveToCloud();
   }
 
   /* ---------- projects ---------- */
@@ -84,10 +141,20 @@
   }
   function addProject(name, client, track) {
     var p = newProject(name, client, track);
-    state.projects[p.id] = p; state.activeId = p.id; saveNow(); return p;
+    state.projects[p.id] = p; state.activeId = p.id; saveNow();
+    if (cloudReady()) {
+      window.Cloud.createProject(name, client, p).then(function (row) {
+        p._cloudId = row.id; saveNow();
+      }).catch(function (e) { console.warn('Cloud create failed', e); });
+    }
+    return p;
   }
   function setActive(id) { if (state.projects[id]) { state.activeId = id; saveNow(); } }
   function deleteProject(id) {
+    var p = state.projects[id];
+    if (p && p._cloudId && cloudReady()) {
+      window.Cloud.deleteProject(p._cloudId).catch(function (e) { console.warn(e); });
+    }
     delete state.projects[id];
     try { deleteProjectFiles(id); } catch (e) { /* files DB unavailable */ }
     if (state.activeId === id) {
@@ -462,6 +529,7 @@
   /* ---------- expose ---------- */
   window.Store = {
     load: load, save: save, saveNow: saveNow, uid: uid, today: today,
+    cloudReady: cloudReady, syncFromCloud: syncFromCloud,
     get filesAvailable() { return filesAvailable; },
     get state() { return state; },
     project: project, projectList: projectList, addProject: addProject,

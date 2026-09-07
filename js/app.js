@@ -1875,12 +1875,26 @@
 
     // Start the sign-in check straight away so a magic link is picked up
     // on arrival, whichever tab happens to be open.
+    function pullCloudAndRefresh() {
+      if (!window.Cloud || !window.Cloud.user()) return;
+      S.syncFromCloud().then(function (changed) {
+        if (changed) { renderProjectSelect(); render(); }
+      });
+    }
     if (window.Cloud && window.Cloud.configured()) {
       window.Cloud.init().then(function () {
+        pullCloudAndRefresh();
         if (view === 'clients') render();
       });
       window.Cloud.onChange(function () {
+        pullCloudAndRefresh();
         if (view === 'clients') render();
+      });
+      // Coming back to an old tab (or switching back from another app)
+      // re-checks the cloud copy before you keep working on it, so a
+      // stale tab can no longer silently overwrite a newer save.
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') pullCloudAndRefresh();
       });
     }
   } catch (err) {
