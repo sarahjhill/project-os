@@ -579,7 +579,9 @@
     h += '<h2 class="section">Phase progress</h2><div class="card">';
     window.PHASES.forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
-      h += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:11px">' +
+      h += '<div class="phase-progress-row" data-gotophase="' + ph.id + '" ' +
+        'style="display:flex;align-items:center;gap:14px;margin-bottom:11px;cursor:pointer" ' +
+        'title="Go to next task in this phase">' +
         '<div style="width:150px;flex:0 0 auto"><strong style="font-size:13px">' + ph.num + '. ' + esc(ph.short) + '</strong></div>' +
         '<div class="bar' + (ps.pct === 100 ? ' ok' : '') + '" style="flex:1"><span style="width:' + ps.pct + '%"></span></div>' +
         '<div class="tiny muted" style="width:64px;text-align:right">' + ps.done + '/' + ps.total + '</div>' +
@@ -1597,6 +1599,20 @@
     // tabs
     el = e.target.closest('.tab');
     if (el) { view = el.dataset.view; $$('.tab').forEach(function (t) { t.classList.toggle('active', t === el); }); render(); return; }
+
+    // phase-progress bar (Dashboard) -> jump to that phase's next task in Process
+    el = e.target.closest('[data-gotophase]');
+    if (el) {
+      var gpid = el.dataset.gotophase;
+      view = 'phases';
+      $$('.tab').forEach(function (t) { t.classList.toggle('active', t.dataset.view === 'phases'); });
+      state.openPhases[gpid] = true;
+      S.saveNow();
+      render();
+      var sec = document.querySelector('[data-phase="' + gpid + '"]');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
 
     // checklist step toggle (Today)
     el = e.target.closest('[data-check]');
