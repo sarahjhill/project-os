@@ -14,7 +14,7 @@ window.TRACKS = {
     id: 'client',
     name: 'Client website',
     short: 'Client',
-    blurb: 'The SJH Dragon Fire Process — twelve phases from first enquiry to handover.',
+    blurb: 'The SJH Process — twelve phases from first enquiry to handover.',
     phases: window.PHASES || []
   },
   growth: {
