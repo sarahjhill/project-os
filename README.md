@@ -1,34 +1,24 @@
-# The SJH Dragon Fire Process
 
-**Nobody should have to type "any update?"**
+# [project-os](https://sarahjhill.github.io/project-os/)
 
-Twelve phases, sixty-nine guided tasks, seventy-two templates and a client
-sign-in. Clients watch every phase as it happens. Studios can licence the whole
-thing, rebranded as theirs, for **£39**.
+Developer: Sarah Hill ([sarahjhill](https://www.github.com/sarahjhill))
 
-**Try it:** [open the guest demo](https://sarahjhill.github.io/project-os/app.html?guest=1)
-— the real app, loaded with a fictional project. No sign-up, nothing saved
-anywhere but your own browser.
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/t/sarahjhill/project-os)](https://www.github.com/sarahjhill/project-os/commits/main)
+[![GitHub last commit](https://img.shields.io/github/last-commit/sarahjhill/project-os)](https://www.github.com/sarahjhill/project-os/commits/main)
+[![GitHub repo size](https://img.shields.io/github/repo-size/sarahjhill/project-os)](https://www.github.com/sarahjhill/project-os)
+[![badge](https://img.shields.io/badge/deployment-GitHub_Pages-purple)](https://sarahjhill.github.io/project-os/)
 
-Built and licensed by [Sarah J Hill · Dragon Fire Design](https://sarahjhill.com)
-· sarah@sarahjhill.com
+# The SJH Process — a delivery system for a studio of one
 
----
+Project OS is the tool I actually run my work on. It holds two processes: the twelve-phase, sixty-nine-task process I follow for every client website, and a five-phase growth process for my own projects. Every task carries the reasoning behind it, the steps to do it, what it should produce, and the conditions that make it finished.
 
-## The design
+It exists because working alone removes the one thing that keeps agency work honest — somebody else noticing what you skipped. There is no account manager to ask whether the contract was signed, no lead who checks the accessibility pass actually happened. Under deadline pressure the steps that get dropped are always the invisible ones, and they are always the ones that cost you later.
 
-The app was already themed entirely from CSS custom properties, which is why
-re-skinning it to the Dragon Fire brand took **one file** —
-[`css/dragon-fire.css`](css/dragon-fire.css) — and no change to `app.js` at all.
-It loads after `styles.css` and overrides the tokens for both light and dark.
+So the process is written down and made into a checklist, with the reasoning attached to each step rather than kept in my head. On a good week it is a plan. On a bad week it is the thing that stops me cutting a corner I will pay for at handover.
 
-Every colour in it was contrast-checked against the surface it actually sits on;
-the ratios are written in the comments. The Google Fonts request was removed from
-every page at the same time — the app now uses the system stack, which was the
-single slowest thing it loaded.
+**Have a look first:** [open the guest demo](https://sarahjhill.github.io/project-os/app.html?guest=1) — the real app, loaded with a fictional project. No sign-up, and nothing saved anywhere but your own browser.
 
-The landing page (`index.html`) shares its stylesheets with sarahjhill.com, so
-the studio and the product look like one thing. It scores 100/100/100/100.
+![screenshot](documentation/images/dashboard.webp)
 
 ---
 
