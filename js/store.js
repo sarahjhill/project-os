@@ -21,12 +21,18 @@
   function today() { return new Date().toISOString().slice(0, 10); }
 
   /* ---------- default project ---------- */
-  function newProject(name, client, track) {
+  function newProject(name, client, track, customPhases) {
+    var t = track || window.DEFAULT_TRACK || 'client';
     return {
       id: uid('proj'),
       name: name || 'New project',
       client: client || '',
-      track: track || window.DEFAULT_TRACK || 'client',
+      track: t,
+      /* Only a 'personal' project carries its own phases — everything else
+         (client/growth/audit) reads its phases from window.TRACKS via
+         phasesFor() below, same template shared by every project on that
+         track. */
+      customPhases: t === 'personal' ? (customPhases || []) : undefined,
       created: today(),
       sprintLength: 7,
       capacity: 20,
@@ -42,6 +48,7 @@
      already worked changes. */
   function phases() {
     var p = project();
+    if (p && p.track === 'personal') return p.customPhases || [];
     return window.phasesFor ? window.phasesFor(p && p.track) : (window.PHASES || []);
   }
 
@@ -139,14 +146,29 @@
   function projectList() {
     return Object.keys(state.projects).map(function (k) { return state.projects[k]; });
   }
-  function addProject(name, client, track) {
-    var p = newProject(name, client, track);
+  function addProject(name, client, track, customPhases) {
+    var p = newProject(name, client, track, customPhases);
     state.projects[p.id] = p; state.activeId = p.id; saveNow();
     if (cloudReady()) {
       window.Cloud.createProject(name, client, p).then(function (row) {
         p._cloudId = row.id; saveNow();
       }).catch(function (e) { console.warn('Cloud create failed', e); });
     }
+    return p;
+  }
+  /* Switch an EXISTING project onto the personal track with its own plan —
+     used when retro-fitting a project that started on a shared template
+     (e.g. one created before this existed) onto its own bespoke phases.
+     removeCustomIds lets the caller promote matching project.custom
+     entries into the new phases without them appearing twice. */
+  function setPersonalPlan(customPhases, removeCustomIds) {
+    var p = project();
+    p.track = 'personal';
+    p.customPhases = customPhases || [];
+    if (removeCustomIds && removeCustomIds.length) {
+      p.custom = (p.custom || []).filter(function (t) { return removeCustomIds.indexOf(t.id) === -1; });
+    }
+    saveNow();
     return p;
   }
   function setActive(id) { if (state.projects[id]) { state.activeId = id; saveNow(); } }
@@ -292,6 +314,76 @@
       if (m && m.status === 'done') done++;
     });
     return { total: ts.length, done: done, pct: ts.length ? Math.round(done / ts.length * 100) : 0 };
+  }
+
+  /* ---------- pace: are we on target? ----------
+     Reads only tasks that have a due date — everything else has no plan
+     to be ahead or behind against. Four views, cheapest first:
+       day   — is anything actually overdue right now, and by how long
+       week  — this Mon-Sun's dated tasks, done vs total
+       month — this calendar month's dated tasks, done vs total
+       whole — every dated task in the project: actual % done vs the %
+               you'd expect to have done by today (due date <= today),
+               which is what lets "ahead" mean something rather than
+               just "nothing overdue yet". */
+  function paceSummary() {
+    var todayStr = today();
+    var dated = allTasks().filter(function (t) { return meta(t.id).due; });
+    function isDone(t) { return meta(t.id).status === 'done'; }
+    function dueOf(t) { return meta(t.id).due; }
+    function daysBetween(a, b) {
+      return Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
+    }
+    function iso(d) { return d.toISOString().slice(0, 10); }
+
+    var overdue = dated.filter(function (t) { return dueOf(t) < todayStr && !isDone(t); })
+      .sort(function (a, b) { return dueOf(a) < dueOf(b) ? -1 : 1; });
+
+    function bucket(list) {
+      var total = list.length, done = list.filter(isDone).length;
+      var late = list.filter(function (t) { return dueOf(t) < todayStr && !isDone(t); });
+      return { total: total, done: done, late: late.length, state: late.length ? 'behind' : 'ontrack' };
+    }
+
+    var day = {
+      overdueCount: overdue.length,
+      oldest: overdue[0] ? { id: overdue[0].id, title: overdue[0].title, due: dueOf(overdue[0]), daysLate: daysBetween(dueOf(overdue[0]), todayStr) } : null,
+      state: overdue.length ? 'behind' : 'ontrack'
+    };
+
+    var now = new Date(todayStr + 'T00:00:00');
+    var dow = (now.getDay() + 6) % 7; // 0 = Monday
+    var monday = new Date(now); monday.setDate(now.getDate() - dow);
+    var sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+    var weekList = dated.filter(function (t) { var d = dueOf(t); return d >= iso(monday) && d <= iso(sunday); });
+    var week = bucket(weekList);
+    week.start = iso(monday); week.end = iso(sunday);
+
+    var monthStart = todayStr.slice(0, 7) + '-01';
+    var monthEndDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    var monthEnd = iso(monthEndDate);
+    var monthList = dated.filter(function (t) { var d = dueOf(t); return d >= monthStart && d <= monthEnd; });
+    var month = bucket(monthList);
+    month.start = monthStart; month.end = monthEnd;
+
+    var expected = dated.filter(function (t) { return dueOf(t) <= todayStr; });
+    var expectedPct = dated.length ? Math.round(expected.length / dated.length * 100) : 0;
+    var actualDone = dated.filter(isDone);
+    var actualPct = dated.length ? Math.round(actualDone.length / dated.length * 100) : 0;
+    var dueDates = dated.map(dueOf).sort();
+    var planEnd = dueDates.length ? dueDates[dueDates.length - 1] : null;
+    var daysLeft = planEnd ? daysBetween(todayStr, planEnd) : null;
+    var wholeState = overdue.length ? 'behind'
+      : (actualPct > expectedPct + 3 ? 'ahead' : (actualPct < expectedPct - 3 ? 'behind' : 'ontrack'));
+
+    return {
+      day: day, week: week, month: month,
+      whole: {
+        total: dated.length, done: actualDone.length,
+        expectedPct: expectedPct, actualPct: actualPct,
+        planEnd: planEnd, daysLeft: daysLeft, state: wholeState
+      }
+    };
   }
 
   /* ---------- IndexedDB attachments ---------- */
@@ -534,12 +626,13 @@
     get state() { return state; },
     project: project, projectList: projectList, addProject: addProject,
     setActive: setActive, deleteProject: deleteProject, resetProgress: resetProgress,
+    setPersonalPlan: setPersonalPlan,
     allTasks: allTasks, taskById: taskById, phaseTasks: phaseTasks,
     phases: phases, track: function () { var p = project(); return window.trackFor(p && p.track); },
     addCustomTask: addCustomTask, deleteCustomTask: deleteCustomTask,
     meta: meta, setMeta: setMeta, toggleDone: toggleDone, toggleDod: toggleDod,
     addSprint: addSprint, updateSprint: updateSprint, deleteSprint: deleteSprint,
-    stats: stats, phaseStats: phaseStats,
+    stats: stats, phaseStats: phaseStats, paceSummary: paceSummary,
     addFile: addFile, listFiles: listFiles, listAllFiles: listAllFiles,
     fileCounts: fileCounts, deleteFile: deleteFile, deleteProjectFiles: deleteProjectFiles,
     openFile: openFile, downloadFile: downloadFile,

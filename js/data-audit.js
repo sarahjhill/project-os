@@ -289,3 +289,44 @@ window.AUDIT = {
   }
 };
 try { window.__bootStage = 'audit-loaded'; } catch (e) { }
+
+/* =====================================================================
+   Audit steps reshaped into the same {phases:[{tasks:[]}]} shape as
+   PHASES / PHASES_GROWTH, so an Audit project can be tracked with its
+   own progress bar, due dates and board — same engine, one more track.
+   Task ids are prefixed pa- to keep them distinct from client/growth ids. Field
+   names line up 1:1 with AUDIT.steps (see schema note above); `role` is
+   blank because the audit steps never used one.
+   ===================================================================== */
+window.PHASES_AUDIT = (function () {
+  var byId = {};
+  window.AUDIT.steps.forEach(function (s) { byId[s.id] = s; });
+  function step(id) {
+    var s = byId[id];
+    return {
+      id: 'pa-' + s.id, title: s.title, role: '', est: s.est, pri: s.pri,
+      pts: Math.max(1, Math.round(s.est)), why: s.why, how: s.how,
+      deliver: s.deliver, tools: s.tools, dod: s.dod, docs: s.docs || []
+    };
+  }
+  return [
+    {
+      id: 'pa0', num: 0, name: 'Find & scan', short: 'Find & scan',
+      goal: 'Build a list of local businesses worth auditing and run the automated scan across all of them.',
+      exit: ['Target list built', 'Every site scanned and dated', 'Shortlist of the worst producing'],
+      tasks: ['a-1', 'a-2'].map(step)
+    },
+    {
+      id: 'pa1', num: 1, name: 'Analyse & report', short: 'Analyse',
+      goal: 'Turn the scan into a specific, evidenced, one-page report for a single prospect.',
+      exit: ['A named local benchmark found', 'Manual pass done on a real phone', 'Costed range written with every input shown', 'One-page report written'],
+      tasks: ['a-3', 'a-4', 'a-5', 'a-6'].map(step)
+    },
+    {
+      id: 'pa2', num: 2, name: 'Contact & convert', short: 'Contact',
+      goal: 'Get the report in front of the business, follow up once, and move a genuine reply into the normal client process.',
+      exit: ['First contact made and logged', 'One follow-up sent (or none needed)', 'A reply is either moved to Phase 0 of the client process, or the prospect is marked dormant'],
+      tasks: ['a-7', 'a-8', 'a-9'].map(step)
+    }
+  ];
+})();

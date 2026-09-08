@@ -23,6 +23,26 @@ window.TRACKS = {
     short: 'Growth',
     blurb: 'For your own projects: getting found, getting listed, and keeping it going.',
     phases: window.PHASES_GROWTH || []
+  },
+  audit: {
+    id: 'audit',
+    name: 'Website audit',
+    short: 'Audit',
+    blurb: 'The outbound website-audit programme, tracked per prospect: find, scan, report, contact.',
+    phases: window.PHASES_AUDIT || []
+  },
+  personal: {
+    id: 'personal',
+    name: 'Personal project',
+    short: 'Personal',
+    blurb: 'Your own plan, your own phases and tasks — nothing pre-loaded. Build it when you create the project.',
+    /* Personal projects don't share one template the way client/growth/audit
+       do — each one carries its own phases on the project itself
+       (project.customPhases). This entry exists so the track picker and
+       any code that lists window.TRACKS finds it; store.js’s phases()
+       reads project.customPhases directly for track === 'personal' and
+       never looks at this empty array. */
+    phases: []
   }
 };
 

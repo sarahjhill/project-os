@@ -342,7 +342,7 @@
           return '<div class="filerow"><div class="fileicon">' + (c.revoked ? '✕' : '👤') + '</div>' +
             '<div class="fname"><strong>' + esc(c.display_name || c.email) + '</strong>' +
             '<div class="tiny muted">' + esc(c.email) +
-            (c.last_seen_at ? ' · last opened ' + new Date(c.last_seen_at).toLocaleDateString() : ' · not opened yet') +
+            (c.last_seen_at ? ' · last opened ' + new Date(c.last_seen_at).toLocaleDateString('en-GB') : ' · not opened yet') +
             '</div></div>' +
             '<button class="btn sm danger" data-clrm="' + c.id + '">Remove</button></div>';
         }).join('') : '<p class="tiny muted">Nobody invited yet.</p>';

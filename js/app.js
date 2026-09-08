@@ -37,6 +37,16 @@
     var m = /\.([a-z0-9]+)$/i.exec(name || '');
     return m ? m[1].toUpperCase().slice(0, 4) : 'FILE';
   }
+  /* UK date display everywhere a stored date (always YYYY-MM-DD) is shown
+     to the user: day/month/year, e.g. 09/09/2026. <input type="date">
+     fields keep the ISO value untouched — the browser needs that — this
+     only affects what gets printed as text. */
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+    if (m) return m[3] + '/' + m[2] + '/' + m[1];
+    try { return new Date(iso).toLocaleDateString('en-GB'); } catch (e) { return iso; }
+  }
 
   /* ================= Markdown ================= */
   function inline(t) {
@@ -151,10 +161,15 @@
       return '<option value="' + p.id + '"' + (p.id === state.activeId ? ' selected' : '') + '>' +
         esc(p.name) + (p.client ? ' — ' + esc(p.client) : '') + '</option>';
     }).join('');
+    var badge = $('#trackBadge');
+    if (badge) {
+      var tr = S.track();
+      badge.textContent = tr ? tr.short : '';
+    }
   }
   function renderPhaseFilter() {
     $('#filterPhase').innerHTML = '<option value="">All phases</option>' +
-      window.PHASES.map(function (p) {
+      S.phases().map(function (p) {
         return '<option value="' + p.id + '"' + (filters.phase === p.id ? ' selected' : '') + '>' +
           p.num + '. ' + esc(p.short) + '</option>';
       }).join('');
@@ -461,9 +476,9 @@
       statCard(String(open.length), 'Still to do',
         doing.length + ' in progress' + (blocked.length ? ', ' + blocked.length + ' blocked' : '')) +
       statCard(String(overdue.length), 'Overdue',
-        overdue.length ? 'oldest ' + esc(metaOf(overdue[0]).due) : 'nothing late') +
+        overdue.length ? 'oldest ' + esc(fmtDate(metaOf(overdue[0]).due)) : 'nothing late') +
       statCard(toEnd === null ? '—' : (toEnd < 0 ? 'past' : toEnd + 'd'), 'Until project end',
-        lastEnd ? 'ends ' + esc(lastEnd) : 'no sprint dates set') +
+        lastEnd ? 'ends ' + esc(fmtDate(lastEnd)) : 'no sprint dates set') +
       '</div>';
 
     /* ---- where you are ---- */
@@ -539,7 +554,7 @@
 
     /* ---- phases at a glance ---- */
     h += '<h2 class="section">The process at a glance</h2><div class="card">';
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
       var complete = ps.total && ps.done === ps.total;
       h += '<div style="display:flex;align-items:center;gap:12px;padding:4px 0">' +
@@ -568,16 +583,29 @@
     var blocked = S.allTasks().filter(function (t) { return (p.tasks[t.id] || {}).status === 'blocked'; });
     var doing = S.allTasks().filter(function (t) { return (p.tasks[t.id] || {}).status === 'doing'; });
 
+    var pace = S.paceSummary();
     var h = '';
     h += '<div class="grid k4">' +
       statCard(st.pct + '%', 'Overall complete', st.done + ' of ' + st.total + ' tasks') +
-      statCard(String(doing.length), 'In progress', blocked.length + ' blocked') +
-      statCard(st.ptsDone + '/' + st.pts, 'Story points', 'delivered') +
-      statCard(Math.round(st.hrs - st.hrsDone) + 'h', 'Effort remaining', 'of ' + Math.round(st.hrs) + 'h estimated') +
+      statCardClick(
+        pace.day.state === 'behind' ? (pace.day.overdueCount + ' overdue') : 'On track',
+        'Today',
+        pace.day.state === 'behind' ? 'oldest ' + pace.day.oldest.daysLate + 'd late' : 'nothing overdue',
+        'day', pace.day.state) +
+      statCardClick(
+        pace.week.total ? (pace.week.done + '/' + pace.week.total) : '—',
+        'This week',
+        pace.week.total ? (pace.week.late ? pace.week.late + ' overdue' : 'on track') : 'nothing due',
+        'week', pace.week.state) +
+      statCardClick(
+        pace.whole.daysLeft == null ? '—' : (pace.whole.daysLeft < 0 ? Math.abs(pace.whole.daysLeft) + 'd past' : pace.whole.daysLeft + 'd left'),
+        'Whole plan',
+        pace.whole.total ? (pace.whole.actualPct + '% done · expect ~' + pace.whole.expectedPct + '%') : 'no dated tasks',
+        'whole', pace.whole.state) +
       '</div>';
 
     h += '<h2 class="section">Phase progress</h2><div class="card">';
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       var ps = S.phaseStats(ph.id);
       h += '<div class="phase-progress-row" data-gotophase="' + ph.id + '" ' +
         'style="display:flex;align-items:center;gap:14px;margin-bottom:11px;cursor:pointer" ' +
@@ -616,6 +644,61 @@
     return '<div class="card"><div class="stat">' + esc(big) + '</div><div class="stat-label">' + esc(label) + '</div>' +
       (sub ? '<div class="tiny muted" style="margin-top:6px">' + esc(sub) + '</div>' : '') + '</div>';
   }
+  /* Same look as statCard, but clickable — opens the pace comparison
+     modal, coloured by whether that bucket is behind/ahead/on track. */
+  function statCardClick(big, label, sub, section, state) {
+    var color = state === 'behind' ? 'var(--danger)' : state === 'ahead' ? 'var(--ok,#2f6b4f)' : 'inherit';
+    return '<div class="card" data-openpace="' + esc(section) + '" style="cursor:pointer" ' +
+      'role="button" tabindex="0" aria-label="' + esc(label) + ': see how this compares">' +
+      '<div class="stat" style="color:' + color + '">' + esc(big) + '</div><div class="stat-label">' + esc(label) + '</div>' +
+      (sub ? '<div class="tiny muted" style="margin-top:6px">' + esc(sub) + '</div>' : '') + '</div>';
+  }
+  function pacePill(state) {
+    var cls = state === 'behind' ? 'blocked' : state === 'ahead' ? 'done' : 'todo';
+    var label = state === 'behind' ? 'Behind' : state === 'ahead' ? 'Ahead' : 'On track';
+    return '<span class="pill ' + cls + '">' + label + '</span>';
+  }
+  /* "Where you stand" — the detail behind the dashboard's pace tiles.
+     Four rows, same shape, so day/week/month/whole read as one
+     comparison rather than four separate numbers. `section` highlights
+     whichever tile was clicked. */
+  function paceModal(section) {
+    var pace = S.paceSummary();
+    function row(key, label, b, extra) {
+      var hi = key === section;
+      return '<div style="display:flex;align-items:flex-start;gap:14px;padding:12px 0;' +
+        'border-top:1px solid rgba(128,128,128,.15)' + (hi ? ';background:rgba(127,127,127,.06);margin:0 -14px;padding-left:14px;padding-right:14px' : '') + '">' +
+        '<div style="width:92px;flex:0 0 auto"><strong>' + esc(label) + '</strong></div>' +
+        '<div style="flex:1;min-width:0" class="tiny muted">' + extra + '</div>' +
+        '<div style="flex:0 0 auto">' + pacePill(b.state) + '</div></div>';
+    }
+    var dayExtra = pace.day.overdueCount
+      ? pace.day.overdueCount + (pace.day.overdueCount === 1 ? ' task' : ' tasks') + ' overdue — oldest "' +
+        esc(pace.day.oldest.title) + '", due ' + esc(fmtDate(pace.day.oldest.due)) + ' (' + pace.day.oldest.daysLate + 'd late)'
+      : 'Nothing overdue right now.';
+    var weekExtra = pace.week.total
+      ? pace.week.done + ' of ' + pace.week.total + ' due this week (' + esc(fmtDate(pace.week.start)) + '–' + esc(fmtDate(pace.week.end)) + ') done' +
+        (pace.week.late ? ', ' + pace.week.late + ' overdue' : '')
+      : 'Nothing due this week.';
+    var monthExtra = pace.month.total
+      ? pace.month.done + ' of ' + pace.month.total + ' due this month done' + (pace.month.late ? ', ' + pace.month.late + ' overdue' : '')
+      : 'Nothing due this month.';
+    var wholeExtra = pace.whole.total
+      ? pace.whole.actualPct + '% actually done vs ~' + pace.whole.expectedPct + '% expected by today' +
+        (pace.whole.planEnd ? ' · plan ends ' + esc(fmtDate(pace.whole.planEnd)) +
+          (pace.whole.daysLeft != null ? ' (' + (pace.whole.daysLeft < 0 ? Math.abs(pace.whole.daysLeft) + 'd past' : pace.whole.daysLeft + 'd left') + ')' : '') : '')
+      : 'No dated tasks yet — pace only tracks tasks with a due date.';
+
+    modal('<h3>Where you stand</h3>' +
+      '<p class="tiny muted" style="margin:0 0 4px">Compared against the due dates on your own tasks — not a guess.</p>' +
+      '<div>' +
+      row('day', 'Today', pace.day, dayExtra) +
+      row('week', 'This week', pace.week, weekExtra) +
+      row('month', 'This month', pace.month, monthExtra) +
+      row('whole', 'Whole plan', pace.whole, wholeExtra) +
+      '</div>' +
+      '<div class="actions" style="margin-top:14px"><button class="btn" id="closeModal">Close</button></div>');
+  }
 
   /* ---- Task row ---- */
   function taskRow(t) {
@@ -632,7 +715,7 @@
       (t.role ? '<span>' + esc(t.role) + '</span>' : '') +
       (t.est ? '<span>' + t.est + 'h</span>' : '') +
       ((m.pts != null ? m.pts : t.pts) ? '<span>' + (m.pts != null ? m.pts : t.pts) + ' pts</span>' : '') +
-      (m.due ? '<span>due ' + esc(m.due) + '</span>' : '') +
+      (m.due ? '<span>due ' + esc(fmtDate(m.due)) + '</span>' : '') +
       (fc ? '<span class="attach-dot">📎 ' + fc + '</span>' : '') +
       (links ? '<span class="attach-dot">🔗 ' + links + '</span>' : '') +
       ((t.docs || []).length ? '<span>📄 ' + t.docs.length + '</span>' : '') +
@@ -651,7 +734,7 @@
   function viewPhases() {
     var h = '';
     var any = false;
-    window.PHASES.forEach(function (ph) {
+    S.phases().forEach(function (ph) {
       var ts = S.phaseTasks(ph.id).filter(matches);
       var ps = S.phaseStats(ph.id);
       var open = state.openPhases[ph.id] || (filters.q && ts.length);
@@ -1079,7 +1162,7 @@
       .map(function (r) {
         return '<div class="filerow"><div class="fileicon">✓</div>' +
           '<div class="fname"><strong>' + esc(r.from) + '</strong>' +
-          '<span class="muted tiny"> · ' + esc(new Date(r.completed).toLocaleDateString()) + '</span></div>' +
+          '<span class="muted tiny"> · ' + esc(fmtDate(String(r.completed || '').slice(0, 10))) + '</span></div>' +
           '<button class="btn sm" data-tresp="' + r.id + '">Read answers</button>' +
           '<button class="btn sm danger" data-trm="' + r.id + '">✕</button></div>';
       }).join('');
@@ -1370,7 +1453,7 @@
         .map(function (r) {
           return '<div class="filerow"><div class="fileicon">✓</div>' +
             '<div class="fname"><strong>' + esc(r.from) + '</strong>' +
-            '<span class="muted tiny"> · ' + esc(new Date(r.completed).toLocaleDateString()) + '</span></div>' +
+            '<span class="muted tiny"> · ' + esc(fmtDate(String(r.completed || '').slice(0, 10))) + '</span></div>' +
             '<button class="btn sm" data-viewresp="' + r.id + '">Read</button>' +
             '<button class="btn sm" data-dlresp="' + r.id + '">↓</button>' +
             '<button class="btn sm danger" data-rmresp="' + r.id + '">✕</button></div>';
@@ -1461,23 +1544,234 @@
 
   function newProjectModal() {
     modal('<h3>New project</h3>' +
+      '<p class="tiny muted" style="margin:0 0 14px">What kind of project is this? It decides which steps you get.</p>' +
+      '<div class="trackpick">' +
+      trackTypeCard('client', 'Client website', 'The full 12-phase process — discovery through handover.', (window.PHASES || []).length + ' phases') +
+      trackTypeCard('personal', 'Personal project', 'Your own plan. Paste it or build it — you only get those steps.', 'your own phases') +
+      trackTypeCard('audit', 'Website audit', 'The outbound audit programme — find, scan, report, contact.', '3 phases') +
+      '</div>' +
+      '<div class="actions" style="margin-top:16px"><button class="btn" id="closeModal">Cancel</button></div>', function () {
+        $$('.trackcard').forEach(function (c) {
+          c.onclick = function () {
+            var t = c.dataset.tracktype;
+            if (t === 'client') newClientProjectModal();
+            else if (t === 'audit') newAuditProjectModal();
+            else newPersonalProjectModal();
+          };
+        });
+      });
+  }
+  function trackTypeCard(id, name, blurb, count) {
+    return '<label class="trackcard" data-tracktype="' + id + '">' +
+      '<input type="radio" name="tracktype" value="' + id + '">' +
+      '<span class="trackcard-body">' +
+      '<span class="trackcard-name">' + esc(name) + '</span>' +
+      '<span class="trackcard-blurb">' + esc(blurb) + '</span>' +
+      '<span class="trackcard-count">' + esc(count) + '</span>' +
+      '</span></label>';
+  }
+
+  function newClientProjectModal() {
+    modal('<h3>New client project</h3>' +
       '<div class="fieldrow">' +
       field('Project name', '<input class="input" id="npName" placeholder="Bright Salon booking system">') +
       field('Client', '<input class="input" id="npClient" placeholder="Bright Salon Ltd">') +
       '</div>' +
       '<p class="tiny muted" style="margin-top:12px">You get a fresh copy of the full 12-phase process with its own progress, files and sprints.</p>' +
-      '<div class="actions"><button class="btn" id="closeModal">Cancel</button>' +
+      '<div class="actions"><button class="btn" id="npBack">Back</button>' +
       '<button class="btn btn-primary" id="npGo">Create project</button></div>', function () {
         $('#npName').focus();
+        $('#npBack').onclick = newProjectModal;
         $('#npGo').onclick = function () {
-          S.addProject($('#npName').value.trim() || 'New project', $('#npClient').value.trim());
+          S.addProject($('#npName').value.trim() || 'New project', $('#npClient').value.trim(), 'client');
           closeModal(); renderProjectSelect(); refreshCounts();
         };
       });
   }
 
+  function newAuditProjectModal() {
+    modal('<h3>New audit</h3>' +
+      '<div class="fieldrow">' +
+      field('Project name', '<input class="input" id="npName" placeholder="Canton cafe audit">') +
+      field('Business (optional)', '<input class="input" id="npClient" placeholder="who you are auditing">') +
+      '</div>' +
+      '<p class="tiny muted" style="margin-top:12px">You get the full audit programme — find, scan, report, contact — tracked as its own project, so you can run more than one audit at a time.</p>' +
+      '<div class="actions"><button class="btn" id="npBack">Back</button>' +
+      '<button class="btn btn-primary" id="npGo">Create audit</button></div>', function () {
+        $('#npName').focus();
+        $('#npBack').onclick = newProjectModal;
+        $('#npGo').onclick = function () {
+          S.addProject($('#npName').value.trim() || 'New audit', $('#npClient').value.trim(), 'audit');
+          closeModal(); renderProjectSelect(); refreshCounts();
+        };
+      });
+  }
+
+  /* Personal project: no shared template — you write the plan, one phase
+     and its tasks at a time, either by typing into the boxes below or by
+     pasting a plan in the tiny "# phase / - task" format and importing it.
+     Both feed the same draft, so you can import, then tidy up by hand. */
+  function newPersonalProjectModal() {
+    var draft = { name: '', phases: [{ name: 'Getting started', tasks: [{ title: '', due: '', est: '', pts: '' }] }] };
+
+    function parsePlanText(text) {
+      var phases = [], cur = null;
+      (text || '').split('\n').forEach(function (raw) {
+        var line = raw.trim();
+        if (!line) return;
+        if (/^#+\s*/.test(line)) {
+          cur = { name: line.replace(/^#+\s*/, ''), tasks: [] };
+          phases.push(cur);
+        } else if (/^-\s*/.test(line)) {
+          if (!cur) { cur = { name: 'Plan', tasks: [] }; phases.push(cur); }
+          var parts = line.replace(/^-\s*/, '').split('|').map(function (s) { return s.trim(); });
+          var due = '', est = '', pts = '';
+          parts.slice(1).forEach(function (tok) {
+            var mIso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(tok);
+            var mUk = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(tok);
+            var mH = /^(\d+(\.\d+)?)\s*h$/i.exec(tok);
+            var mP = /^(\d+)\s*pts?$/i.exec(tok);
+            if (mIso) due = tok;
+            else if (mUk) due = mUk[3] + '-' + ('0' + mUk[2]).slice(-2) + '-' + ('0' + mUk[1]).slice(-2);
+            else if (mH) est = mH[1];
+            else if (mP) pts = mP[1];
+          });
+          cur.tasks.push({ title: parts[0], due: due, est: est, pts: pts });
+        }
+      });
+      return phases;
+    }
+
+    function syncFromDom() {
+      var wrap = $('#ppPhases');
+      if (!wrap) return;
+      $$('.pp-phase', wrap).forEach(function (phEl, pi) {
+        var nameInput = $('.pp-phase-name', phEl);
+        if (nameInput && draft.phases[pi]) draft.phases[pi].name = nameInput.value;
+        $$('.pp-task', phEl).forEach(function (tEl, ti) {
+          var t = draft.phases[pi] && draft.phases[pi].tasks[ti];
+          if (!t) return;
+          t.title = $('.pp-t-title', tEl).value;
+          t.due = $('.pp-t-due', tEl).value;
+          t.est = $('.pp-t-est', tEl).value;
+          t.pts = $('.pp-t-pts', tEl).value;
+        });
+      });
+      var nameField = $('#npName');
+      if (nameField) draft.name = nameField.value;
+    }
+
+    function renderBuilder() {
+      var body = '<h3>New personal project</h3>' +
+        '<div class="fieldrow">' + field('Project name', '<input class="input" id="npName" value="' + esc(draft.name) + '" placeholder="My side project">') + '</div>';
+
+      body += '<details style="margin:14px 0"><summary class="tiny muted" style="cursor:pointer">Paste a plan instead of typing it in below</summary>' +
+        '<p class="tiny muted" style="margin:8px 0 6px">One phase per line starting with <code># </code>, one task per line starting with <code>- </code>. ' +
+        'Add <code>| 09/09/2026</code> for a due date, <code>| 3h</code> for hours, <code>| 5pts</code> for points, in any order, separated by <code>|</code>.</p>' +
+        '<textarea id="ppPaste" rows="6" class="input" style="width:100%;font-family:monospace;font-size:12px" ' +
+        'placeholder="# Setup&#10;- Create the repo | 08/09/2026&#10;- Write user stories | 08/09/2026 | 1.5h | 3pts&#10;&#10;# Build&#10;- Models and migrations | 09/09/2026 | 3h | 5pts"></textarea>' +
+        '<button class="btn sm" id="ppImport" style="margin-top:8px">Import into the plan below</button></details>';
+
+      body += '<div id="ppPhases">';
+      draft.phases.forEach(function (ph, pi) {
+        body += '<div class="pp-phase card" data-pi="' + pi + '" style="margin-bottom:12px">' +
+          '<div style="display:flex;gap:8px;align-items:center">' +
+          '<input class="input pp-phase-name" value="' + esc(ph.name) + '" style="flex:1;font-weight:600">' +
+          '<button class="btn sm btn-ghost" data-ppdelphase="' + pi + '">Remove phase</button></div>';
+        ph.tasks.forEach(function (t, ti) {
+          body += '<div class="pp-task" data-ti="' + ti + '" style="display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap">' +
+            '<input class="input pp-t-title" value="' + esc(t.title || '') + '" placeholder="Task" style="flex:1;min-width:160px">' +
+            '<input class="input pp-t-due" type="date" value="' + esc(t.due || '') + '" style="width:150px">' +
+            '<input class="input pp-t-est" value="' + esc(t.est || '') + '" placeholder="hrs" style="width:56px">' +
+            '<input class="input pp-t-pts" value="' + esc(t.pts || '') + '" placeholder="pts" style="width:56px">' +
+            '<button class="btn sm btn-ghost" data-ppdeltask="' + pi + ':' + ti + '">✕</button></div>';
+        });
+        body += '<button class="btn sm btn-ghost" data-ppaddtask="' + pi + '" style="margin-top:8px">+ Add task</button></div>';
+      });
+      body += '</div><button class="btn sm" id="ppAddPhase">+ Add phase</button>';
+
+      var totalTasks = draft.phases.reduce(function (n, ph) { return n + ph.tasks.filter(function (t) { return t.title && t.title.trim(); }).length; }, 0);
+      body += '<p class="tiny muted" style="margin-top:14px">' + draft.phases.length + ' phase' + (draft.phases.length === 1 ? '' : 's') +
+        ', ' + totalTasks + ' task' + (totalTasks === 1 ? '' : 's') + ' with a title so far.</p>';
+
+      body += '<div class="actions"><button class="btn" id="npBack">Back</button>' +
+        '<button class="btn btn-primary" id="npGo">Create project</button></div>';
+
+      modal(body, wire);
+    }
+
+    function wire() {
+      $('#npBack').onclick = newProjectModal;
+      $('#ppImport').onclick = function () {
+        syncFromDom();
+        var parsed = parsePlanText($('#ppPaste').value);
+        if (!parsed.length) return;
+        /* If nothing has been typed into the starter phase yet, replace it
+           rather than leaving an empty "Getting started" sitting above
+           whatever was just imported. */
+        var onlyEmptyDefault = draft.phases.length === 1 &&
+          draft.phases[0].tasks.every(function (t) { return !t.title || !t.title.trim(); });
+        draft.phases = onlyEmptyDefault ? parsed : draft.phases.concat(parsed);
+        renderBuilder();
+      };
+      $('#ppAddPhase').onclick = function () {
+        syncFromDom();
+        draft.phases.push({ name: 'New phase', tasks: [] });
+        renderBuilder();
+      };
+      $$('[data-ppaddtask]').forEach(function (b) {
+        b.onclick = function () {
+          syncFromDom();
+          draft.phases[Number(b.dataset.ppaddtask)].tasks.push({ title: '', due: '', est: '', pts: '' });
+          renderBuilder();
+        };
+      });
+      $$('[data-ppdelphase]').forEach(function (b) {
+        b.onclick = function () {
+          syncFromDom();
+          draft.phases.splice(Number(b.dataset.ppdelphase), 1);
+          renderBuilder();
+        };
+      });
+      $$('[data-ppdeltask]').forEach(function (b) {
+        b.onclick = function () {
+          syncFromDom();
+          var parts = b.dataset.ppdeltask.split(':');
+          draft.phases[Number(parts[0])].tasks.splice(Number(parts[1]), 1);
+          renderBuilder();
+        };
+      });
+      $('#npGo').onclick = function () {
+        syncFromDom();
+        var name = draft.name.trim() || 'New project';
+        var keptPhases = draft.phases.map(function (ph) {
+          return { name: ph.name, tasks: ph.tasks.filter(function (t) { return t.title && t.title.trim(); }) };
+        }).filter(function (ph) { return ph.tasks.length; });
+        if (!keptPhases.length) { alert('Add at least one task with a title before creating the project.'); return; }
+        var customPhases = keptPhases.map(function (ph, pi) {
+          return {
+            id: S.uid('ph'), num: pi, name: ph.name || ('Phase ' + (pi + 1)),
+            short: (ph.name || 'Phase').slice(0, 18), goal: '', exit: [],
+            tasks: ph.tasks.map(function (t) {
+              return { id: S.uid('pt'), title: t.title.trim(), role: '', est: Number(t.est) || 0, pri: 3, pts: Number(t.pts) || 0, why: '', how: [], deliver: [], tools: [], dod: [] };
+            })
+          };
+        });
+        S.addProject(name, '', 'personal', customPhases);
+        keptPhases.forEach(function (ph, pi) {
+          ph.tasks.forEach(function (t, ti) {
+            if (t.due) S.setMeta(customPhases[pi].tasks[ti].id, { due: t.due });
+          });
+        });
+        closeModal(); renderProjectSelect(); refreshCounts();
+      };
+    }
+
+    renderBuilder();
+  }
+
   function addTaskModal(phaseId) {
-    var ph = window.PHASES.filter(function (p) { return p.id === phaseId; })[0];
+    var ph = S.phases().filter(function (p) { return p.id === phaseId; })[0];
     modal('<h3>Add task to ' + esc(ph.name) + '</h3>' +
       '<div class="fieldrow">' +
       field('Title', '<input class="input" id="ctTitle" placeholder="Write the migration script">') +
@@ -1599,6 +1893,10 @@
     // tabs
     el = e.target.closest('.tab');
     if (el) { view = el.dataset.view; $$('.tab').forEach(function (t) { t.classList.toggle('active', t === el); }); render(); return; }
+
+    // pace tile (Dashboard) -> open the "Where you stand" comparison
+    el = e.target.closest('[data-openpace]');
+    if (el) { paceModal(el.dataset.openpace); return; }
 
     // phase-progress bar (Dashboard) -> jump to that phase's next task in Process
     el = e.target.closest('[data-gotophase]');
@@ -1801,6 +2099,10 @@
       e.preventDefault(); view = view === 'dashboard' || view === 'summary' || view === 'today' || view === 'docs' || view === 'files' ? 'phases' : view;
       $$('.tab').forEach(function (t) { t.classList.toggle('active', t.dataset.view === view); });
       render(); $('#search').focus();
+    }
+    if (e.key === 'Enter' || e.key === ' ') {
+      var pc = e.target.closest && e.target.closest('[data-openpace]');
+      if (pc) { e.preventDefault(); paceModal(pc.dataset.openpace); }
     }
   });
 
