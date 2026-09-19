@@ -273,6 +273,81 @@
     });
   }
 
+  /* ---------- messages (two-way thread per project) ---------- */
+  function listMessages(projectId) {
+    return init().then(function () {
+      if (!sb) return [];
+      return sb.from('client_messages').select('*')
+        .eq('project_id', projectId).order('created_at', { ascending: true })
+        .then(function (r) { if (r.error) throw r.error; return r.data || []; });
+    });
+  }
+  function sendOwnerMessage(projectId, body) {
+    return init().then(function () {
+      if (!sb || !user()) throw new Error('Not signed in.');
+      return sb.from('client_messages').insert({
+        project_id: projectId, from_owner: true, sender: '', body: String(body || '').trim()
+      }).select().single().then(function (r) { if (r.error) throw r.error; return r.data; });
+    });
+  }
+  function sendClientMessage(projectId, body) {
+    return init().then(function () {
+      if (!sb || !user()) throw new Error('Not signed in.');
+      return sb.from('client_messages').insert({
+        project_id: projectId, from_owner: false, sender: email(), body: String(body || '').trim()
+      }).select().single().then(function (r) { if (r.error) throw r.error; return r.data; });
+    });
+  }
+
+  /* ---------- client uploads (client writes, owner reads) ---------- */
+  function listClientUploads(projectId) {
+    return init().then(function () {
+      if (!sb) return [];
+      return sb.from('client_uploads').select('*')
+        .eq('project_id', projectId).order('created_at', { ascending: false })
+        .then(function (r) { if (r.error) throw r.error; return r.data || []; });
+    });
+  }
+  function uploadClientFile(projectId, file) {
+    return init().then(function () {
+      if (!sb || !user()) throw new Error('Not signed in.');
+      var safe = file.name.replace(/[^\w.\- ]+/g, '_');
+      var path = projectId + '/' + Date.now() + '-' + safe;
+      return sb.storage.from('client-uploads').upload(path, file, { upsert: false })
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return sb.from('client_uploads').insert({
+            project_id: projectId, path: path, name: file.name,
+            size: file.size, mime: file.type || '', sender: email()
+          }).select().single();
+        }).then(function (r) {
+          if (r.error) throw r.error;
+          return r.data;
+        });
+    });
+  }
+  function clientUploadUrl(path, seconds) {
+    return init().then(function () {
+      if (!sb) throw new Error('Cloud is not configured.');
+      return sb.storage.from('client-uploads').createSignedUrl(path, seconds || 300)
+        .then(function (r) {
+          if (r.error) throw r.error;
+          return r.data.signedUrl;
+        });
+    });
+  }
+  function deleteClientUpload(rec) {
+    return init().then(function () {
+      if (!sb) throw new Error('Cloud is not configured.');
+      return sb.storage.from('client-uploads').remove([rec.path]).then(function () {
+        return sb.from('client_uploads').delete().eq('id', rec.id);
+      }).then(function (r) {
+        if (r && r.error) throw r.error;
+        return true;
+      });
+    });
+  }
+
   window.Cloud = {
     configured: configured,
     isReady: function () { return initialised; },
@@ -286,7 +361,11 @@
     publishSnapshot: publishSnapshot, getSnapshot: getSnapshot,
     myClientProjects: myClientProjects, touchClientSeen: touchClientSeen,
     listSharedFiles: listSharedFiles, uploadSharedFile: uploadSharedFile,
-    sharedFileUrl: sharedFileUrl, deleteSharedFile: deleteSharedFile
+    sharedFileUrl: sharedFileUrl, deleteSharedFile: deleteSharedFile,
+    listMessages: listMessages, sendOwnerMessage: sendOwnerMessage,
+    sendClientMessage: sendClientMessage,
+    listClientUploads: listClientUploads, uploadClientFile: uploadClientFile,
+    clientUploadUrl: clientUploadUrl, deleteClientUpload: deleteClientUpload
   };
 })();
 try { window.__bootStage = 'cloud-loaded'; } catch (e) { }

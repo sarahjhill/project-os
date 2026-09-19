@@ -212,3 +212,121 @@ create policy shared_client_read on storage.objects
 --   select tablename, rowsecurity from pg_tables
 --   where schemaname = 'public'
 --     and tablename in ('projects','project_clients','client_snapshots','shared_files');
+
+-- =====================================================================
+-- 9. CLIENT MESSAGES + CLIENT UPLOADS
+-- Added so a client can reply to the owner from their client page, and
+-- attach a file, without being able to see or touch anything else.
+-- Run this block once in Supabase → SQL Editor → New query → Run.
+-- Safe to run again: everything here is idempotent, same as above.
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- 9a. MESSAGES  (a two-way thread per project)
+-- ---------------------------------------------------------------------
+create table if not exists public.client_messages (
+  id          uuid primary key default gen_random_uuid(),
+  project_id  uuid not null references public.projects(id) on delete cascade,
+  from_owner  boolean not null default false,
+  sender      citext default '',   -- the client's email, or '' for the owner
+  body        text not null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists client_messages_project_idx on public.client_messages(project_id);
+
+alter table public.client_messages enable row level security;
+
+drop policy if exists cm_owner_all on public.client_messages;
+create policy cm_owner_all on public.client_messages
+  for all using (public.is_owner_of(project_id))
+  with check (public.is_owner_of(project_id));
+
+drop policy if exists cm_client_read on public.client_messages;
+create policy cm_client_read on public.client_messages
+  for select using (public.is_client_of(project_id));
+
+-- A client may only ever post as themselves, never impersonating the owner.
+drop policy if exists cm_client_insert on public.client_messages;
+create policy cm_client_insert on public.client_messages
+  for insert with check (
+    public.is_client_of(project_id)
+    and from_owner = false
+    and sender = public.current_email()
+  );
+
+-- ---------------------------------------------------------------------
+-- 9b. CLIENT UPLOADS  (metadata; the bytes live in Storage)
+-- ---------------------------------------------------------------------
+create table if not exists public.client_uploads (
+  id         uuid primary key default gen_random_uuid(),
+  project_id uuid not null references public.projects(id) on delete cascade,
+  path       text not null,
+  name       text not null,
+  size       bigint default 0,
+  mime       text default '',
+  sender     citext default '',
+  created_at timestamptz not null default now()
+);
+create index if not exists client_uploads_project_idx on public.client_uploads(project_id);
+
+alter table public.client_uploads enable row level security;
+
+drop policy if exists cu_owner_all on public.client_uploads;
+create policy cu_owner_all on public.client_uploads
+  for all using (public.is_owner_of(project_id))
+  with check (public.is_owner_of(project_id));
+
+drop policy if exists cu_client_read on public.client_uploads;
+create policy cu_client_read on public.client_uploads
+  for select using (public.is_client_of(project_id));
+
+drop policy if exists cu_client_insert on public.client_uploads;
+create policy cu_client_insert on public.client_uploads
+  for insert with check (
+    public.is_client_of(project_id)
+    and sender = public.current_email()
+  );
+
+-- ---------------------------------------------------------------------
+-- 9c. STORAGE  (private bucket; files live under <project_id>/<filename>)
+-- The reverse of the 'shared' bucket: here the CLIENT writes and the
+-- owner reads, rather than the other way round.
+-- ---------------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('client-uploads', 'client-uploads', false)
+on conflict (id) do nothing;
+
+drop policy if exists client_uploads_owner_all on storage.objects;
+create policy client_uploads_owner_all on storage.objects
+  for all to authenticated
+  using (
+    bucket_id = 'client-uploads'
+    and public.is_owner_of((storage.foldername(name))[1]::uuid)
+  )
+  with check (
+    bucket_id = 'client-uploads'
+    and public.is_owner_of((storage.foldername(name))[1]::uuid)
+  );
+
+drop policy if exists client_uploads_client_write on storage.objects;
+create policy client_uploads_client_write on storage.objects
+  for insert to authenticated
+  with check (
+    bucket_id = 'client-uploads'
+    and public.is_client_of((storage.foldername(name))[1]::uuid)
+  );
+
+drop policy if exists client_uploads_client_read on storage.objects;
+create policy client_uploads_client_read on storage.objects
+  for select to authenticated
+  using (
+    bucket_id = 'client-uploads'
+    and public.is_client_of((storage.foldername(name))[1]::uuid)
+  );
+
+-- ---------------------------------------------------------------------
+-- 9d. CHECK IT WORKED
+-- ---------------------------------------------------------------------
+--   select tablename, rowsecurity from pg_tables
+--   where schemaname = 'public'
+--     and tablename in ('client_messages','client_uploads');

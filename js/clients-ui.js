@@ -24,13 +24,14 @@
         note: '',
         actions: [],      // { id, title, detail, due, done }
         milestones: [],   // { id, name, date, status }
-        include: { progress: true, actions: true, milestones: true, files: true, answers: false },
+        include: { progress: true, actions: true, milestones: true, files: true, answers: false, messages: true },
         cloudId: ''       // the Supabase project id, once linked
       };
       S.saveNow();
     }
     var b = p.clientBoard;
-    if (!b.include) b.include = { progress: true, actions: true, milestones: true, files: true, answers: false };
+    if (!b.include) b.include = { progress: true, actions: true, milestones: true, files: true, answers: false, messages: true };
+    if (b.include.messages === undefined) b.include.messages = true;
     if (!b.actions) b.actions = [];
     if (!b.milestones) b.milestones = [];
     return b;
@@ -54,7 +55,8 @@
       note: b.note || '',
       sections: {
         progress: !!inc.progress, actions: !!inc.actions,
-        milestones: !!inc.milestones, files: !!inc.files, answers: !!inc.answers
+        milestones: !!inc.milestones, files: !!inc.files, answers: !!inc.answers,
+        messages: !!inc.messages
       }
     };
 
@@ -142,7 +144,8 @@
       ['actions', 'What you need from them'],
       ['milestones', 'Milestone dates'],
       ['files', 'Files you have shared'],
-      ['answers', 'Their submitted form answers']].map(function (x) {
+      ['answers', 'Their submitted form answers'],
+      ['messages', 'Messages (they can reply and attach files)']].map(function (x) {
         return '<label class="checkline" style="margin-bottom:8px;font-size:14px">' +
           '<input type="checkbox" data-inc="' + x[0] + '"' + (b.include[x[0]] ? ' checked' : '') + '> ' +
           esc(x[1]) + '</label>';
@@ -188,6 +191,16 @@
     h += '<h2 class="section">Files shared with the client</h2><div class="card">' +
       '<div id="sfList"><p class="tiny muted">Loading…</p></div>' +
       '<button class="btn sm" id="sfAdd" style="margin-top:10px">Upload a file to share</button></div>';
+
+    /* messages from/to the client */
+    h += '<h2 class="section">Messages</h2><div class="card">' +
+      '<div id="msgList" style="max-height:280px;overflow-y:auto;margin-bottom:10px"><p class="tiny muted">Loading…</p></div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+      '<textarea class="input" id="msgBody" rows="2" placeholder="Reply to the client…" style="flex:1;min-width:220px"></textarea>' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' +
+      '<button class="btn btn-primary sm" id="msgSend">Send</button></div></div>' +
+      '<p class="tiny muted" style="margin-top:10px">Files the client attaches from their page turn up below — nothing is emailed to you, so check back here.</p>' +
+      '<div id="cuList" style="margin-top:8px"></div></div>';
 
     /* people */
     h += '<h2 class="section">People with access</h2><div class="card">' +
@@ -413,6 +426,54 @@
       };
       picker.click();
     };
+
+    /* messages */
+    function drawMessages() {
+      C.listMessages(b.cloudId).then(function (rows) {
+        var el = $('#msgList');
+        if (!el) return;
+        el.innerHTML = rows.length ? rows.map(function (m) {
+          return '<div class="row" style="padding:8px 0"><div class="body">' +
+            '<strong>' + (m.from_owner ? 'You' : esc(m.sender || 'Client')) + '</strong>' +
+            ' <span class="tiny muted">' + new Date(m.created_at).toLocaleString('en-GB') + '</span>' +
+            '<div>' + esc(m.body) + '</div></div></div>';
+        }).join('') : '<p class="tiny muted">No messages yet.</p>';
+        el.scrollTop = el.scrollHeight;
+      }).catch(function () { if ($('#msgList')) $('#msgList').innerHTML = '<p class="tiny muted">Could not load messages.</p>'; });
+    }
+    drawMessages();
+
+    if ($('#msgSend')) $('#msgSend').onclick = function () {
+      var body = $('#msgBody').value.trim();
+      if (!body) return;
+      $('#msgSend').disabled = true;
+      C.sendOwnerMessage(b.cloudId, body).then(function () {
+        $('#msgBody').value = ''; $('#msgSend').disabled = false;
+        drawMessages();
+      }).catch(function (e) { $('#msgSend').disabled = false; alert('Could not send: ' + e.message); });
+    };
+
+    /* files the client has attached */
+    function drawClientUploads() {
+      C.listClientUploads(b.cloudId).then(function (rows) {
+        var el = $('#cuList');
+        if (!el) return;
+        el.innerHTML = rows.length ? rows.map(function (f) {
+          return '<div class="filerow"><div class="fileicon">📎</div>' +
+            '<div class="fname">' + esc(f.name) +
+            '<div class="tiny muted">from ' + esc(f.sender || 'the client') + '</div></div>' +
+            '<button class="btn sm" data-cuopen="' + f.id + '">Open</button></div>';
+        }).join('') : '';
+        $$('[data-cuopen]', el).forEach(function (x) {
+          x.onclick = function () {
+            var rec = rows.filter(function (r) { return r.id === x.dataset.cuopen; })[0];
+            C.clientUploadUrl(rec.path).then(function (u) { window.open(u, '_blank'); })
+              .catch(function (e) { alert(e.message); });
+          };
+        });
+      }).catch(function () { });
+    }
+    drawClientUploads();
   }
 
   window.ClientsUI = { view: view, wire: wire, buildSnapshot: buildSnapshot, board: board };

@@ -95,6 +95,21 @@ window.PHASES = [
       tools: ['Figma Slides / Pitch / Keynote'],
       dod: ['Deck reviewed once away from the screen', 'Presented live, not emailed'],
       docs: ['doc-pitch']
+    },
+    {
+      id: 'p0-6', title: 'Onboard client to the client space', role: 'Lead', est: 0.5, pri: 1, pts: 1,
+      why: 'Once the intake answers are filed, the client needs their own sign-in to Project OS so they can see progress without emailing you for updates. Nothing is visible to them until this is done.',
+      how: [
+        'Go to the Clients tab for this project.',
+        'If it says "This project is local only", click "Link this project" first (uploads it to your account so a client can be invited).',
+        'Under "What clients can see", tick the boxes for what this client should see (progress, what you need from them, milestones, files, submitted form answers) and leave off anything you do not want them to see.',
+        'Add a short note for them if useful, then click "Publish update".',
+        'Scroll to "People with access", enter the client email (and name, optional), then click "Invite".',
+        'Tell the client to expect a sign-in email and to use "Client sign-in" on sarahjhill.com/project-os — no password needed, it is a magic link.'
+      ],
+      deliver: ['Client invited and signed in', 'Client-visible summary published'],
+      tools: ['Clients tab (this app)'],
+      dod: ['Project is linked (no longer local only)', 'Client visibility settings reviewed and published', 'Client invited under People with access', 'Client has confirmed they can sign in']
     }
   ]
 },
