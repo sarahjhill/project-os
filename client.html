@@ -180,7 +180,10 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
             '<div class="ic' + (a.done ? ' done' : late ? ' late' : '') + '">' +
             (a.done ? '✓' : late ? '!' : '·') + '</div>' +
             '<div class="body"><strong>' + esc(a.title) + '</strong>' +
-            (a.detail ? '<div class="d">' + esc(a.detail) + '</div>' : '') + '</div>' +
+            (a.detail ? '<div class="d">' + esc(a.detail) + '</div>' : '') +
+            (a.confirm ? '<div class="d" id="confirmWrap-' + i + '-' + a.id + '"><label style="cursor:pointer">' +
+              '<input type="checkbox" id="confirmTick-' + i + '-' + a.id + '" data-confirm-action="' + a.id + '" data-confirm-row="' + i + '" style="width:auto;vertical-align:middle;margin-right:6px"> ' +
+              'I confirm</label></div>' : '') + '</div>' +
             (a.due ? '<div class="when">' + (a.done ? '' : 'by ') + esc(d(a.due)) + '</div>' : '') +
             '</div>';
         }).join('') : '<p class="empty">Nothing needed from you right now.</p>';
@@ -265,6 +268,36 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       var snap = snapshots[i];
       var p = (snap && snap.payload) || {};
       var sec = p.sections || {};
+
+      if (sec.actions) {
+        var confirmBoxes = document.querySelectorAll('[data-confirm-row="' + i + '"]');
+        if (confirmBoxes.length) {
+          window.Cloud.listActionConfirms(row.project_id).then(function (confirms) {
+            var done = {};
+            confirms.forEach(function (cRec) { done[cRec.action_id] = true; });
+            Array.prototype.forEach.call(confirmBoxes, function (box) {
+              var actionId = box.dataset.confirmAction;
+              if (done[actionId]) {
+                box.checked = true;
+                box.disabled = true;
+                box.parentNode.innerHTML = '✓ You confirmed this';
+              } else {
+                box.onchange = function () {
+                  if (!box.checked) return;
+                  box.disabled = true;
+                  window.Cloud.confirmAction(row.project_id, actionId).then(function () {
+                    box.parentNode.innerHTML = '✓ You confirmed this';
+                  }).catch(function (e) {
+                    box.disabled = false; box.checked = false;
+                    alert('Could not confirm: ' + e.message);
+                  });
+                };
+              }
+            });
+          }).catch(function () { });
+        }
+      }
+
       if (!sec.messages) return;
 
       var mhost = document.getElementById('msgs-' + i);

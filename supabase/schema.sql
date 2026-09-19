@@ -330,3 +330,39 @@ create policy client_uploads_client_read on storage.objects
 --   select tablename, rowsecurity from pg_tables
 --   where schemaname = 'public'
 --     and tablename in ('client_messages','client_uploads');
+-- =====================================================================
+-- 10. CLIENT ACTION CONFIRMATIONS
+-- Lets a client tick off a specific "what we need from you" item
+-- themselves, without giving them any write access to the project's
+-- own data. Purely additive bookkeeping: the owner still ticks the
+-- real task checklist herself, using this as a clear signal that the
+-- client has responded. Run this block once in Supabase -> SQL Editor.
+-- Safe to run again.
+-- =====================================================================
+create table if not exists public.client_action_confirms (
+  id          uuid primary key default gen_random_uuid(),
+  project_id  uuid not null references public.projects(id) on delete cascade,
+  action_id   text not null,
+  confirmed_by citext default '',
+  created_at  timestamptz not null default now(),
+  unique (project_id, action_id)
+);
+create index if not exists client_action_confirms_project_idx on public.client_action_confirms(project_id);
+
+alter table public.client_action_confirms enable row level security;
+
+drop policy if exists cac_owner_all on public.client_action_confirms;
+create policy cac_owner_all on public.client_action_confirms
+  for all using (public.is_owner_of(project_id))
+  with check (public.is_owner_of(project_id));
+
+drop policy if exists cac_client_read on public.client_action_confirms;
+create policy cac_client_read on public.client_action_confirms
+  for select using (public.is_client_of(project_id));
+
+drop policy if exists cac_client_insert on public.client_action_confirms;
+create policy cac_client_insert on public.client_action_confirms
+  for insert with check (
+    public.is_client_of(project_id)
+    and confirmed_by = public.current_email()
+  );

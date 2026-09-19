@@ -17,12 +17,23 @@
   function today() { return new Date().toISOString().slice(0, 10); }
 
   /* ---------- the client board lives inside the project ---------- */
+  /* Every project gets this action by default, so a client is always
+     asked (and can tick to confirm) that their sign-in works. Fixed id
+     so we can tell whether a given project already has it. */
+  function defaultSignInAction() {
+    return {
+      id: 'act-confirm-signin',
+      title: 'Please send me a message to confirm you are able to sign in.',
+      detail: '', due: '', done: false, confirm: true
+    };
+  }
+
   function board() {
     var p = S.project();
     if (!p.clientBoard) {
       p.clientBoard = {
         note: '',
-        actions: [],      // { id, title, detail, due, done }
+        actions: [defaultSignInAction()],      // { id, title, detail, due, done, confirm }
         milestones: [],   // { id, name, date, status }
         include: { progress: true, actions: true, milestones: true, files: true, answers: false, messages: true },
         cloudId: ''       // the Supabase project id, once linked
@@ -33,6 +44,10 @@
     if (!b.include) b.include = { progress: true, actions: true, milestones: true, files: true, answers: false, messages: true };
     if (b.include.messages === undefined) b.include.messages = true;
     if (!b.actions) b.actions = [];
+    /* backfill: projects created before this existed don't have it yet */
+    if (!b.actions.some(function (a) { return a.id === 'act-confirm-signin'; })) {
+      b.actions.unshift(defaultSignInAction());
+    }
     if (!b.milestones) b.milestones = [];
     return b;
   }
@@ -159,15 +174,18 @@
       (b.actions.length ? b.actions.map(function (a) {
         return '<div class="filerow"><div class="fileicon">' + (a.done ? '✓' : '!') + '</div>' +
           '<div class="fname"><strong>' + esc(a.title) + '</strong>' +
-          (a.detail ? '<div class="tiny muted">' + esc(a.detail) + '</div>' : '') + '</div>' +
+          (a.detail ? '<div class="tiny muted">' + esc(a.detail) + '</div>' : '') +
+          (a.confirm ? '<div class="tiny" id="actConfirm-' + a.id + '"></div>' : '') + '</div>' +
           (a.due ? '<span class="fsize">by ' + esc(a.due) + '</span>' : '') +
           '<button class="btn sm" data-actdone="' + a.id + '">' + (a.done ? 'Reopen' : 'Done') + '</button>' +
           '<button class="btn sm danger" data-actrm="' + a.id + '">✕</button></div>';
       }).join('') : '<p class="tiny muted">Nothing outstanding.</p>') + '</div>' +
-      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">' +
+      '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">' +
       '<input class="input" id="actTitle" placeholder="Send final copy for the About page" style="flex:2;min-width:180px">' +
       '<input class="input" id="actDue" type="date" style="flex:0 0 auto">' +
-      '<button class="btn sm" id="actAdd">Add</button></div></div>';
+      '<button class="btn sm" id="actAdd">Add</button></div>' +
+      '<label class="tiny muted" style="display:flex;gap:6px;align-items:center;margin-top:8px">' +
+      '<input type="checkbox" id="actConfirmNew"> Let the client tick this off themselves, as well as replying</label></div>';
 
     /* milestones */
     h += '<h2 class="section">Milestones</h2><div class="card"><div id="msList">' +
@@ -284,7 +302,8 @@
     if ($('#actAdd')) $('#actAdd').onclick = function () {
       var t = $('#actTitle').value.trim();
       if (!t) return;
-      b.actions.push({ id: S.uid('act'), title: t, detail: '', due: $('#actDue').value, done: false });
+      var wantConfirm = !!($('#actConfirmNew') && $('#actConfirmNew').checked);
+      b.actions.push({ id: S.uid('act'), title: t, detail: '', due: $('#actDue').value, done: false, confirm: wantConfirm });
       S.saveNow(); rerender();
     };
     $$('[data-actdone]').forEach(function (el) {
@@ -299,6 +318,19 @@
         S.saveNow(); rerender();
       };
     });
+
+    /* show which "what we need from you" items the client has ticked */
+    function drawActionConfirms() {
+      if (!b.cloudId) return;
+      C.listActionConfirms(b.cloudId).then(function (rows) {
+        rows.forEach(function (r) {
+          var el = document.getElementById('actConfirm-' + r.action_id);
+          if (el) el.innerHTML = '<span style="color:var(--ok,#1e7a5a)">✓ Client confirmed' +
+            (r.confirmed_by ? ' (' + esc(r.confirmed_by) + ')' : '') + '</span>';
+        });
+      }).catch(function () { });
+    }
+    drawActionConfirms();
 
     /* milestones */
     if ($('#msAdd')) $('#msAdd').onclick = function () {

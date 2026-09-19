@@ -348,6 +348,25 @@
     });
   }
 
+  /* ---------- client action confirmations ---------- */
+  function listActionConfirms(projectId) {
+    return init().then(function () {
+      if (!sb) return [];
+      return sb.from('client_action_confirms').select('*')
+        .eq('project_id', projectId)
+        .then(function (r) { if (r.error) throw r.error; return r.data || []; });
+    });
+  }
+  function confirmAction(projectId, actionId) {
+    return init().then(function () {
+      if (!sb || !user()) throw new Error('Not signed in.');
+      return sb.from('client_action_confirms')
+        .upsert({ project_id: projectId, action_id: actionId, confirmed_by: email() },
+          { onConflict: 'project_id,action_id' })
+        .select().single().then(function (r) { if (r.error) throw r.error; return r.data; });
+    });
+  }
+
   window.Cloud = {
     configured: configured,
     isReady: function () { return initialised; },
@@ -365,7 +384,8 @@
     listMessages: listMessages, sendOwnerMessage: sendOwnerMessage,
     sendClientMessage: sendClientMessage,
     listClientUploads: listClientUploads, uploadClientFile: uploadClientFile,
-    clientUploadUrl: clientUploadUrl, deleteClientUpload: deleteClientUpload
+    clientUploadUrl: clientUploadUrl, deleteClientUpload: deleteClientUpload,
+    listActionConfirms: listActionConfirms, confirmAction: confirmAction
   };
 })();
 try { window.__bootStage = 'cloud-loaded'; } catch (e) { }
