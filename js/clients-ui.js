@@ -139,7 +139,8 @@
     var h = '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">' +
       '<div><strong>Signed in as ' + esc(u.email) + '</strong>' +
       '<div class="tiny muted">' + (linked ? 'This project is synced to the cloud.' :
-        'This project is local only — link it to share with a client.') + '</div></div>' +
+        'This project is local only — link it to share with a client.') + '</div>' +
+      (linked ? '<div class="tiny muted" id="pubWhen">Checking\u2026</div>' : '') + '</div>' +
       '<div style="display:flex;gap:8px">' +
       (linked ? '<button class="btn sm" id="publishBtn">Publish update</button>' :
         '<button class="btn btn-primary sm" id="linkBtn">Link this project</button>') +
@@ -352,12 +353,33 @@
       };
     });
 
+    /* ---------- when was this last published? ----------
+       The button used to flash "Published ✓" for two seconds and reset, which
+       is indistinguishable from nothing happening. This line stays put. */
+    function drawPublished() {
+      var el = $('#pubWhen');
+      if (!el || !b.cloudId) return;
+      C.getSnapshot(b.cloudId).then(function (snap) {
+        var x = $('#pubWhen');
+        if (!x) return;
+        x.textContent = snap && snap.published_at
+          ? 'Last published ' + new Date(snap.published_at)
+              .toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : 'Never published \u2014 your client sees nothing until you do.';
+      }).catch(function () {
+        var x = $('#pubWhen');
+        if (x) x.textContent = '';
+      });
+    }
+    drawPublished();
+
     /* publish */
     if ($('#publishBtn')) $('#publishBtn').onclick = function () {
       var btn = $('#publishBtn');
       btn.disabled = true; btn.textContent = 'Publishing…';
       C.publishSnapshot(b.cloudId, buildSnapshot()).then(function () {
         btn.textContent = 'Published ✓';
+        drawPublished();
         setTimeout(function () {
           var x = $('#publishBtn');
           if (x) { x.disabled = false; x.textContent = 'Publish update'; }
@@ -369,7 +391,7 @@
     };
 
     /* portal link */
-    var portal = window.location.href.split('#')[0].replace(/[^/]*$/, '') + 'client.html';
+    var portal = portalLink();
     if ($('#portalUrl')) $('#portalUrl').textContent = portal;
     if ($('#copyPortal')) $('#copyPortal').onclick = function () {
       navigator.clipboard.writeText(portal).then(function () {
@@ -377,6 +399,38 @@
         setTimeout(function () { var x = $('#copyPortal'); if (x) x.textContent = 'Copy'; }, 2000);
       });
     };
+
+    /* The portal address, used by both the copy row and the invite email. */
+    function portalLink() {
+      return window.location.href.split('#')[0].replace(/[^/]*$/, '') + 'client.html';
+    }
+
+    /* Clicking Invite only adds someone to the allow-list \u2014 nothing is emailed.
+       This opens a pre-written message in your own mail app so the invitation
+       comes from you, which lands better than anything automated would. */
+    function inviteMailto(c) {
+      var who  = (c.display_name || '').split(' ')[0] || 'there';
+      var proj = (S.project() && S.project().name) || 'your project';
+      var subj = 'Your project page for ' + proj;
+      var body = [
+        'Hi ' + who + ',',
+        '',
+        'Your project page is ready. You can see where things are up to, anything',
+        'I need from you, and any files I have shared:',
+        '',
+        portalLink(),
+        '',
+        'Sign in with this exact address: ' + c.email,
+        'There is no password \u2014 it emails you a link to click.',
+        '',
+        'Any questions, just reply to this.',
+        '',
+        'Sarah'
+      ].join('\n');
+      return 'mailto:' + encodeURIComponent(c.email) +
+             '?subject=' + encodeURIComponent(subj) +
+             '&body=' + encodeURIComponent(body);
+    }
 
     /* people */
     function drawClients() {
@@ -389,6 +443,7 @@
             '<div class="tiny muted">' + esc(c.email) +
             (c.last_seen_at ? ' · last opened ' + new Date(c.last_seen_at).toLocaleDateString('en-GB') : ' · not opened yet') +
             '</div></div>' +
+            (c.revoked ? '' : '<a class="btn sm" href="' + inviteMailto(c) + '">Email invite</a>') +
             '<button class="btn sm danger" data-clrm="' + c.id + '">Remove</button></div>';
         }).join('') : '<p class="tiny muted">Nobody invited yet.</p>';
         $$('[data-clrm]', el).forEach(function (x) {
@@ -411,6 +466,14 @@
         drawClients();
       }).catch(function (e) { alert('Could not invite: ' + e.message); });
     };
+
+    /* Enter submits, because a field that silently ignores Enter reads as broken. */
+    ['#clEmail', '#clName'].forEach(function (sel) {
+      if (!$(sel)) return;
+      $(sel).addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter') { ev.preventDefault(); if ($('#clAdd')) $('#clAdd').click(); }
+      });
+    });
 
     /* shared files */
     function drawFiles() {
