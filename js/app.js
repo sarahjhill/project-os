@@ -1322,8 +1322,8 @@
      ------------------------------------------------------------------- */
   function brandedDoc(d) {
     return [
-      '**SJ Development** — Make It Pop',
-      'sarahjhill.github.io/make-it-pop · hantaah21@gmail.com',
+      '**Sarah J Hill** — Dragon Fire Design',
+      'sarahjhill.com · sarah@sarahjhill.com',
       '',
       '---',
       '',
@@ -1331,9 +1331,9 @@
       '',
       '---',
       '',
-      'Prepared by Sarah Hill · SJ Development',
+      'Prepared by Sarah Hill · Dragon Fire Design',
       '',
-      '© ' + new Date().getFullYear() + ' SJ Development. Prepared for this project — please do not redistribute.'
+      '© ' + new Date().getFullYear() + ' Sarah J Hill · Dragon Fire Design. Prepared for this project — please do not redistribute.'
     ].join('\n');
   }
 
@@ -2120,7 +2120,7 @@
   }
 
   window.addEventListener('error', function (e) {
-    console.error('SJ Development Process error:', e.error || e.message);
+    console.error('Dragon Fire Process by Sarah J Hill error:', e.error || e.message);
     var main = document.getElementById('main');
     if (main && !main.innerHTML.trim()) {
       bootError('A script error stopped the app from starting.', (e.message || '') + '\n' + (e.filename || '') + ':' + (e.lineno || ''));

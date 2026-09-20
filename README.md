@@ -8,7 +8,7 @@ Developer: Sarah Hill ([sarahjhill](https://www.github.com/sarahjhill))
 [![GitHub repo size](https://img.shields.io/github/repo-size/sarahjhill/project-os)](https://www.github.com/sarahjhill/project-os)
 [![badge](https://img.shields.io/badge/deployment-GitHub_Pages-purple)](https://sarahjhill.github.io/project-os/)
 
-# The SJH Process — a delivery system for a studio of one
+# The Dragon Fire Process — a delivery system for a studio of one
 
 Project OS is the tool I actually run my work on. It holds two processes: the twelve-phase, sixty-nine-task process I follow for every client website, and a five-phase growth process for my own projects. Every task carries the reasoning behind it, the steps to do it, what it should produce, and the conditions that make it finished.
 
