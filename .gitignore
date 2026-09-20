@@ -4,3 +4,6 @@ node_modules/
 *.log
 backups/
 *-backup-*.json
+
+# Files Claude could not delete from the sandbox — safe to remove by hand
+_to_delete/
