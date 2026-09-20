@@ -84,6 +84,27 @@
         phaseTotal: S.phases().length,
         phasePct: current ? current.ps.pct : 100
       };
+
+      /* The whole journey, so the client page can show every stage and
+         mark where it has got to. The client page maps these ids onto
+         plain-English descriptions in data-journey.js — the internal
+         phase goals are never sent. */
+      var phaseList = S.phases();
+      var curIdx = -1;
+      phaseList.forEach(function (ph, idx) {
+        if (curIdx === -1 && current && ph.id === current.phase.id) curIdx = idx;
+      });
+      payload.track = p.track || 'client';
+      payload.phases = phaseList.map(function (ph, idx) {
+        var ps = S.phaseStats(ph.id);
+        var state = curIdx === -1 ? 'done'
+                  : idx < curIdx ? 'done'
+                  : idx === curIdx ? 'current' : 'upcoming';
+        return {
+          id: ph.id, num: ph.num, name: ph.name,
+          done: ps.done, total: ps.total, pct: ps.pct, state: state
+        };
+      });
     }
     if (inc.actions) {
       payload.actions = b.actions.map(function (a) {

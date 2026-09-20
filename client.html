@@ -22,11 +22,20 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);line-height:1.55;font-size:16px;
  font-family:'Lato',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-.wrap{max-width:760px;margin:0 auto;padding:36px 20px 90px}
+.wrap{max-width:1140px;margin:0 auto;padding:36px 20px 90px}
 header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
- flex-wrap:wrap;margin-bottom:28px}
+ flex-wrap:wrap;margin-bottom:24px}
 h1{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:-.025em;margin:0 0 4px}
 .sub{color:var(--text-2);margin:0;font-size:14px}
+
+/* Two columns on a real screen: the project on the left, the
+   conversation pinned on the right where it is always in view. */
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:20px;align-items:start}
+.layout.solo{grid-template-columns:minmax(0,1fr)}
+.rail{position:sticky;top:16px}
+.rail .card{margin-bottom:0}
+.msgscroll{max-height:44vh;overflow-y:auto;overscroll-behavior:contain}
+
 .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px}
 h2{font-size:15px;margin:0 0 14px;letter-spacing:.02em;text-transform:uppercase;
  color:var(--text-3);font-weight:700}
@@ -34,10 +43,19 @@ h2{font-size:15px;margin:0 0 14px;letter-spacing:.02em;text-transform:uppercase;
 .bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-bright));
  border-radius:99px;transition:width .4s}
 .pct{font-family:var(--display);font-size:34px;font-weight:700;letter-spacing:-.03em;line-height:1}
-.phase{font-size:15px;margin:14px 0 4px;font-weight:600}
-.goal{color:var(--text-2);font-size:14px;margin:0}
+.stageline{font-size:13px;color:var(--text-3);margin:6px 0 0;letter-spacing:.02em;
+ text-transform:uppercase;font-weight:700}
+.phase{font-size:17px;margin:12px 0 4px;font-weight:700;font-family:var(--display);letter-spacing:-.01em}
+.goal{color:var(--text-2);font-size:14.5px;margin:0}
+
+/* Welcome */
+.welcome h1{font-size:23px;margin-bottom:8px}
+.welcome p{margin:0 0 10px;font-size:15.5px;color:var(--text-2)}
+.welcome p:last-child{margin-bottom:0}
 .note{background:var(--sunken);border-left:3px solid var(--accent);padding:14px 16px;
- border-radius:0 10px 10px 0;font-size:15px;margin:0}
+ border-radius:0 10px 10px 0;font-size:15px;margin:0;white-space:pre-wrap}
+.noteempty{border-left-color:var(--strong);color:var(--text-3);font-style:italic}
+
 .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
 .row:last-child{border-bottom:0}
 .row .ic{width:26px;height:26px;border-radius:8px;background:var(--sunken);display:grid;
@@ -49,6 +67,25 @@ h2{font-size:15px;margin:0 0 14px;letter-spacing:.02em;text-transform:uppercase;
 .row .body .d{color:var(--text-2);font-size:13.5px;margin-top:2px}
 .row .when{font-size:12.5px;color:var(--text-3);flex:0 0 auto;text-align:right}
 .done-row strong{text-decoration:line-through;color:var(--text-3)}
+
+/* The journey */
+.step{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.step:last-child{border-bottom:0}
+.step .num{width:30px;height:30px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+ font-size:13px;font-weight:700;background:var(--sunken);color:var(--text-3);
+ font-family:var(--display)}
+.step.done .num{background:var(--ok-soft);color:var(--ok)}
+.step.current .num{background:var(--accent);color:#fff}
+.step .t{font-size:16px;font-weight:700;font-family:var(--display);letter-spacing:-.01em;
+ margin:2px 0 0;display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+.step.done .t{color:var(--text-2)}
+.step .did{color:var(--text-2);font-size:14.5px;margin:5px 0 0}
+.step .yours{margin:9px 0 0;font-size:14.5px;padding:9px 12px;border-radius:9px;
+ background:var(--sunken)}
+.step .yours b{font-family:var(--display);font-size:12.5px;text-transform:uppercase;
+ letter-spacing:.03em;color:var(--accent);display:block;margin-bottom:2px}
+.step .yours.none{background:transparent;padding:6px 0 0;color:var(--text-3);font-size:13.5px}
+
 button.btn{padding:11px 18px;border-radius:10px;border:1px solid var(--strong);
  background:var(--surface);font:inherit;cursor:pointer}
 button.btn:hover{background:var(--sunken)}
@@ -73,6 +110,8 @@ input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--accent);
 .pill.done{background:var(--ok-soft);color:var(--ok)}
 .pill.slipped{background:var(--warn-soft);color:var(--warn)}
 .pill.planned{background:var(--sunken);color:var(--text-2)}
+.pill.now{background:var(--accent);color:#fff}
+.pill.soon{background:var(--sunken);color:var(--text-3)}
 details{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;
  background:var(--surface)}
 summary{cursor:pointer;font-weight:600;font-size:14.5px}
@@ -80,6 +119,13 @@ details table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5
 details td{border-top:1px solid var(--border);padding:7px 6px;vertical-align:top}
 details td:first-child{width:40%;color:var(--text-2)}
 footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static}
+  .rail .card{margin-bottom:16px}
+  .msgscroll{max-height:none}
+}
 @media(max-width:600px){.wrap{padding:24px 14px 70px}h1{font-size:23px}}
 </style>
 </head>
@@ -92,6 +138,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
 </div>
 
 <script src="js/config.js"></script>
+<script src="js/data-journey.js"></script>
 <script src="js/cloud.js"></script>
 <script>
 (function () {
@@ -102,6 +149,25 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function d(x){ if(!x) return ''; var t=new Date(x); return isNaN(t)?String(x):
     t.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}); }
+
+  /* "Kay Williams" -> "Kay". Used only to make the welcome sound like a
+     person wrote it. Falls back to no name at all rather than guessing. */
+  function firstName(s){
+    s = String(s || '').trim();
+    if (!s) return '';
+    var bit = s.split(/[\s,]+/)[0];
+    return (bit && bit.length < 20) ? bit : '';
+  }
+
+  function isPreview(){
+    try { return !!new URLSearchParams(location.search).get('preview'); }
+    catch (e) { return false; }
+  }
+
+  function journey(id, fallback){
+    return (window.journeyFor ? window.journeyFor(id, fallback)
+      : { name: fallback || 'This stage', did: '', needs: false, you: '' });
+  }
 
   function signInView(msg, isErr) {
     app.innerHTML =
@@ -139,8 +205,123 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
     };
   }
 
+  /* ---------- the pieces of the page ---------- */
+
+  function welcomeCard(proj, note) {
+    var who = firstName(proj.client);
+    var h = '<div class="card welcome">' +
+      '<h1>' + (who ? 'Welcome, ' + esc(who) + '.' : 'Welcome.') + '</h1>' +
+      '<p>This is your project page. It is private to you, and it is where you can see ' +
+      'exactly what has been done so far, what happens next, and anything I need from you.</p>' +
+      '<p>Nothing here is public, and you do not need a password — you sign in with a link sent ' +
+      'to your email. Have a look round, and use the messages on this page whenever you want to ' +
+      'ask something. There is no such thing as a daft question.</p>';
+
+    if (note) {
+      h += '<p style="margin-top:16px;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;' +
+        'color:var(--text-3);font-weight:700">Latest update</p>' +
+        '<p class="note">' + esc(note) + '</p>';
+    } else if (isPreview()) {
+      h += '<p style="margin-top:16px;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;' +
+        'color:var(--text-3);font-weight:700">Latest update</p>' +
+        '<p class="note noteempty">You have not written an update for this client yet. ' +
+        'Add one in Clients &rarr; the note field, and it appears here. ' +
+        'Your client does not see this box while it is empty.</p>';
+    }
+    return h + '</div>';
+  }
+
+  function progressCard(pr, phases) {
+    var cur = null;
+    (phases || []).forEach(function (ph) { if (!cur && ph.state === 'current') cur = ph; });
+
+    var total = (phases && phases.length) || pr.phaseTotal || 0;
+    var idx = 0;
+    if (cur && phases) { phases.forEach(function (ph, i) { if (ph.id === cur.id) idx = i + 1; }); }
+
+    var j = cur ? journey(cur.id, cur.name) : null;
+
+    var h = '<div class="card"><h2>Progress</h2>' +
+      '<div class="pct">' + (pr.pct || 0) + '%</div>' +
+      '<div class="bar"><span style="width:' + (pr.pct || 0) + '%"></span></div>';
+
+    if (total) {
+      h += '<p class="stageline">' + (cur ? 'Stage ' + idx + ' of ' + total
+        : 'All ' + total + ' stages complete') + '</p>';
+    }
+
+    if (j) {
+      h += '<p class="phase">' + esc(j.name) + '</p>' +
+        (j.did ? '<p class="goal">' + esc(j.did) + '</p>' : '');
+    } else {
+      h += '<p class="phase">Finished</p>' +
+        '<p class="goal">All the planned work on this project is done.</p>';
+    }
+    return h + '</div>';
+  }
+
+  function doneCard(phases) {
+    var done = (phases || []).filter(function (ph) { return ph.state === 'done'; });
+    var h = '<div class="card"><h2>What has been done so far</h2>';
+    if (!done.length) {
+      h += '<p class="empty">We are right at the beginning — nothing finished to report yet. ' +
+        'The stages below show what is coming.</p>';
+      return h + '</div>';
+    }
+    h += done.map(function (ph) {
+      var j = journey(ph.id, ph.name);
+      return '<div class="row"><div class="ic done">✓</div><div class="body">' +
+        '<strong>' + esc(j.name) + '</strong>' +
+        (j.did ? '<div class="d">' + esc(j.did) + '</div>' : '') +
+        '</div></div>';
+    }).join('');
+    return h + '</div>';
+  }
+
+  function journeyCard(phases) {
+    if (!phases || !phases.length) return '';
+    var h = '<div class="card"><h2>The whole journey, and what you do</h2>' +
+      '<p class="sub" style="margin:-6px 0 16px">Every stage of the project, start to finish, ' +
+      'so you know what to expect and when you will be needed.</p>';
+
+    h += phases.map(function (ph, i) {
+      var j = journey(ph.id, ph.name);
+      var pill = ph.state === 'done' ? '<span class="pill done">Done</span>'
+               : ph.state === 'current' ? '<span class="pill now">Happening now</span>'
+               : '<span class="pill soon">To come</span>';
+      var mark = ph.state === 'done' ? '✓' : String(i + 1);
+
+      return '<div class="step ' + ph.state + '">' +
+        '<div class="num">' + mark + '</div>' +
+        '<div class="body" style="flex:1;min-width:0">' +
+        '<p class="t">' + esc(j.name) + ' ' + pill + '</p>' +
+        (j.did ? '<p class="did">' + esc(j.did) + '</p>' : '') +
+        (j.needs
+          ? '<div class="yours"><b>What you do</b>' + esc(j.you) + '</div>'
+          : (j.you ? '<div class="yours none">' + esc(j.you) + '</div>' : '')) +
+        '</div></div>';
+    }).join('');
+
+    return h + '</div>';
+  }
+
+  function messagesCard(i) {
+    return '<div class="card"><h2>Messages</h2>' +
+      '<p class="sub" style="margin:-8px 0 12px">Ask me anything, any time.</p>' +
+      '<div class="msgscroll" id="msgs-' + i + '"><p class="empty">Loading…</p></div>' +
+      '<div style="margin-top:14px"><textarea id="msgBody-' + i + '" placeholder="Write a message…"></textarea>' +
+      '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">' +
+      '<button type="button" class="btn primary" id="msgSend-' + i + '">Send</button>' +
+      '<button type="button" class="btn" id="msgAttach-' + i + '">Attach a file</button>' +
+      '<input type="file" id="msgFile-' + i + '" style="display:none"></div>' +
+      '<div id="cuList-' + i + '" style="margin-top:10px"></div></div></div>';
+  }
+
+  /* ---------- the page ---------- */
+
   function render(rows, snapshots) {
     var html = '';
+
     rows.forEach(function (row, i) {
       var snap = snapshots[i];
       var p = (snap && snap.payload) || {};
@@ -158,23 +339,19 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
         return;
       }
 
-      if (p.note) html += '<div class="card"><h2>Where things are</h2><p class="note">' + esc(p.note) + '</p></div>';
+      var main = '';
 
-      if (sec.progress && p.progress) {
-        var pr = p.progress;
-        html += '<div class="card"><h2>Progress</h2>' +
-          '<div class="pct">' + (pr.pct || 0) + '%</div>' +
-          '<div class="bar"><span style="width:' + (pr.pct || 0) + '%"></span></div>' +
-          '<p class="phase">Currently: ' + esc(pr.phaseName || '') + '</p>' +
-          '<p class="goal">' + esc(pr.phaseGoal || '') + '</p></div>';
-      }
+      main += welcomeCard(proj, p.note || '');
+
+      if (sec.progress && p.progress) main += progressCard(p.progress, p.phases);
+      if (sec.progress && p.phases)   main += doneCard(p.phases);
 
       if (sec.actions) {
         var acts = p.actions || [];
         var open = acts.filter(function (a) { return !a.done; });
-        html += '<div class="card"><h2>What we need from you' +
+        main += '<div class="card"><h2>What I need from you right now' +
           (open.length ? ' (' + open.length + ')' : '') + '</h2>';
-        html += acts.length ? acts.map(function (a) {
+        main += acts.length ? acts.map(function (a) {
           var late = !a.done && a.due && new Date(a.due) < new Date();
           return '<div class="row' + (a.done ? ' done-row' : '') + '">' +
             '<div class="ic' + (a.done ? ' done' : late ? ' late' : '') + '">' +
@@ -187,13 +364,15 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
             (a.due ? '<div class="when">' + (a.done ? '' : 'by ') + esc(d(a.due)) + '</div>' : '') +
             '</div>';
         }).join('') : '<p class="empty">Nothing needed from you right now.</p>';
-        html += '</div>';
+        main += '</div>';
       }
+
+      if (sec.progress && p.phases) main += journeyCard(p.phases);
 
       if (sec.milestones) {
         var ms = p.milestones || [];
-        html += '<div class="card"><h2>Key dates</h2>';
-        html += ms.length ? ms.map(function (m) {
+        main += '<div class="card"><h2>Key dates</h2>';
+        main += ms.length ? ms.map(function (m) {
           return '<div class="row"><div class="ic' + (m.status === 'done' ? ' done' :
             m.status === 'slipped' ? ' late' : '') + '">' +
             (m.status === 'done' ? '✓' : m.status === 'slipped' ? '!' : '·') + '</div>' +
@@ -202,11 +381,11 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
             esc(m.status || 'planned') + '</span></div></div>' +
             '<div class="when">' + esc(d(m.date)) + '</div></div>';
         }).join('') : '<p class="empty">No dates set yet.</p>';
-        html += '</div>';
+        main += '</div>';
       }
 
       if (sec.answers && (p.answers || []).length) {
-        html += '<div class="card"><h2>Your answers</h2>' + p.answers.map(function (a) {
+        main += '<div class="card"><h2>Your answers</h2>' + p.answers.map(function (a) {
           return '<details><summary>' + esc(a.formTitle) + ' — ' + esc(d(a.completed)) + '</summary>' +
             '<table>' + (a.answers || []).map(function (x) {
               return '<tr><td>' + esc(x.label) + '</td><td>' +
@@ -216,19 +395,15 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       }
 
       if (sec.files) {
-        html += '<div class="card"><h2>Shared files</h2><div id="files-' + i + '">' +
+        main += '<div class="card"><h2>Shared files</h2><div id="files-' + i + '">' +
           '<p class="empty">Loading…</p></div></div>';
       }
 
       if (sec.messages) {
-        html += '<div class="card"><h2>Messages</h2>' +
-          '<div id="msgs-' + i + '"><p class="empty">Loading…</p></div>' +
-          '<div style="margin-top:14px"><textarea id="msgBody-' + i + '" placeholder="Write a reply…"></textarea>' +
-          '<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">' +
-          '<button type="button" class="btn primary" id="msgSend-' + i + '">Send</button>' +
-          '<button type="button" class="btn" id="msgAttach-' + i + '">Attach a file</button>' +
-          '<input type="file" id="msgFile-' + i + '" style="display:none"></div>' +
-          '<div id="cuList-' + i + '" style="margin-top:10px"></div></div></div>';
+        html += '<div class="layout"><div>' + main + '</div>' +
+          '<aside class="rail">' + messagesCard(i) + '</aside></div>';
+      } else {
+        html += '<div class="layout solo"><div>' + main + '</div></div>';
       }
     });
 
@@ -307,10 +482,10 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
         window.Cloud.listMessages(row.project_id).then(function (msgs) {
           mhost.innerHTML = msgs.length ? msgs.map(function (m) {
             return '<div class="msgrow' + (m.from_owner ? '' : ' mine') + '">' +
-              '<div class="who">' + (m.from_owner ? 'Them' : 'You') + ' · ' +
+              '<div class="who">' + (m.from_owner ? 'Sarah' : 'You') + ' · ' +
               esc(new Date(m.created_at).toLocaleString(undefined,{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})) + '</div>' +
               '<div>' + esc(m.body) + '</div></div>';
-          }).join('') : '<p class="empty">No messages yet.</p>';
+          }).join('') : '<p class="empty">No messages yet. Say hello.</p>';
           mhost.scrollTop = mhost.scrollHeight;
         }).catch(function () { mhost.innerHTML = '<p class="empty">Could not load messages.</p>'; });
       }
@@ -394,9 +569,9 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
           bar.style.cssText = 'position:sticky;top:0;z-index:50;background:#0a0a0c;color:#f6f3ed;' +
             'padding:10px 16px;font:600 14px/1.4 system-ui,-apple-system,sans-serif;' +
             'display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap';
-          bar.innerHTML = '<span>Preview \u2014 this is exactly what your client sees. ' +
+          bar.innerHTML = '<span>Preview — this is exactly what your client sees. ' +
             'Nothing here is recorded against them.</span>' +
-            '<a href="app.html" style="color:#ffb020">\u2190 Back to the app</a>';
+            '<a href="app.html" style="color:#ffb020">← Back to the app</a>';
           document.body.insertBefore(bar, document.body.firstChild);
         }).catch(function (e) {
           app.innerHTML = '<div class="signin card"><h1>Could not preview</h1>' +
