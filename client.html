@@ -86,6 +86,11 @@ h2{font-size:15px;margin:0 0 14px;letter-spacing:.02em;text-transform:uppercase;
  letter-spacing:.03em;color:var(--accent);display:block;margin-bottom:2px}
 .step .yours.none{background:transparent;padding:6px 0 0;color:var(--text-3);font-size:13.5px}
 
+a.btnlink{display:inline-block;text-decoration:none;padding:10px 17px;border-radius:10px;
+ background:var(--accent);color:#fff;font-weight:600;border:1px solid var(--accent);
+ font-size:14.5px;margin-top:9px}
+a.btnlink:hover{filter:brightness(1.07)}
+a.btnlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button.btn{padding:11px 18px;border-radius:10px;border:1px solid var(--strong);
  background:var(--surface);font:inherit;cursor:pointer}
 button.btn:hover{background:var(--sunken)}
@@ -157,6 +162,15 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
     if (!s) return '';
     var bit = s.split(/[\s,]+/)[0];
     return (bit && bit.length < 20) ? bit : '';
+  }
+
+  /* An action can carry a link the client clicks — a booking page, a form.
+     It is typed by the project owner, but a link is the one field on this
+     page that becomes executable, so only http(s) is ever rendered.
+     Anything else (javascript:, data:) is dropped rather than shown. */
+  function safeUrl(u){
+    u = String(u == null ? '' : u).trim();
+    return /^https?:\/\//i.test(u) ? u : '';
   }
 
   function isPreview(){
@@ -412,6 +426,9 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
             (a.done ? '✓' : late ? '!' : '·') + '</div>' +
             '<div class="body"><strong>' + esc(a.title) + '</strong>' +
             (a.detail ? '<div class="d">' + esc(a.detail) + '</div>' : '') +
+            (safeUrl(a.link) ? '<div><a class="btnlink" href="' + esc(safeUrl(a.link)) + '" ' +
+              'target="_blank" rel="noopener noreferrer">' +
+              esc(a.linkLabel || 'Open') + '</a></div>' : '') +
             (a.confirm ? '<div class="d" id="confirmWrap-' + i + '-' + a.id + '"><label style="cursor:pointer">' +
               '<input type="checkbox" id="confirmTick-' + i + '-' + a.id + '" data-confirm-action="' + a.id + '" data-confirm-row="' + i + '" style="width:auto;vertical-align:middle;margin-right:6px"> ' +
               'I confirm</label></div>' : '') + '</div>' +

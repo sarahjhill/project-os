@@ -31,6 +31,17 @@
     };
   }
 
+  /* The booking link is the same for every client, so it lives with the
+     app rather than the project. Kept on this computer only \u2014 it is just
+     a URL Sarah already hands out publicly. */
+  var BOOK_KEY = 'sjh.bookingUrl';
+  function savedBookingUrl() {
+    try { return localStorage.getItem(BOOK_KEY) || ''; } catch (e) { return ''; }
+  }
+  function rememberBookingUrl(u) {
+    try { localStorage.setItem(BOOK_KEY, u); } catch (e) { /* private window */ }
+  }
+
   function board() {
     var p = S.project();
     if (!p.clientBoard) {
@@ -126,7 +137,14 @@
     }
     if (inc.actions) {
       payload.actions = b.actions.map(function (a) {
-        return { title: a.title, detail: a.detail || '', due: a.due || '', done: !!a.done };
+        /* id and confirm were being dropped here, so the "I confirm" tick
+           the client page tries to draw never had anything to draw from —
+           no client has ever been able to tick one off. */
+        return {
+          id: a.id, title: a.title, detail: a.detail || '', due: a.due || '',
+          done: !!a.done, confirm: !!a.confirm,
+          link: a.link || '', linkLabel: a.linkLabel || ''
+        };
       });
     }
     if (inc.milestones) {
@@ -217,7 +235,8 @@
         return '<div class="filerow"><div class="fileicon">' + (a.done ? '✓' : '!') + '</div>' +
           '<div class="fname"><strong>' + esc(a.title) + '</strong>' +
           (a.detail ? '<div class="tiny muted">' + esc(a.detail) + '</div>' : '') +
-          (a.confirm ? '<div class="tiny" id="actConfirm-' + a.id + '"></div>' : '') + '</div>' +
+          (a.confirm ? '<div class="tiny" id="actConfirm-' + a.id + '"></div>' : '') +
+          (a.link ? '<div class="tiny muted">\u2192 ' + esc(a.linkLabel || 'Link') + ': ' + esc(a.link) + '</div>' : '') + '</div>' +
           (a.due ? '<span class="fsize">by ' + esc(a.due) + '</span>' : '') +
           '<button class="btn sm" data-actdone="' + a.id + '">' + (a.done ? 'Reopen' : 'Done') + '</button>' +
           '<button class="btn sm danger" data-actrm="' + a.id + '">✕</button></div>';
@@ -227,7 +246,16 @@
       '<input class="input" id="actDue" type="date" style="flex:0 0 auto">' +
       '<button class="btn sm" id="actAdd">Add</button></div>' +
       '<label class="tiny muted" style="display:flex;gap:6px;align-items:center;margin-top:8px">' +
-      '<input type="checkbox" id="actConfirmNew"> Let the client tick this off themselves, as well as replying</label></div>';
+      '<input type="checkbox" id="actConfirmNew"> Let the client tick this off themselves, as well as replying</label>' +
+      '<div class="field" style="margin-top:16px;border-top:1px solid var(--line, #DFE6E5);padding-top:14px">' +
+      '<label>Your booking link</label>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+      '<input class="input" id="bookUrl" placeholder="https://calendar.app.google/\u2026" ' +
+      'style="flex:2;min-width:220px" value="' + esc(savedBookingUrl()) + '">' +
+      '<button class="btn sm" id="bookAdd">Add a \u201cbook a call\u201d step</button></div>' +
+      '<p class="tiny muted" style="margin-top:6px">Paste the link from your Google Calendar ' +
+      'appointment schedule. It is remembered on this computer and reused for every client, ' +
+      'so you only ever paste it once.</p></div></div>';
 
     /* milestones */
     h += '<h2 class="section">Milestones</h2><div class="card"><div id="msList">' +
@@ -341,11 +369,36 @@
     if ($('#cbNote')) $('#cbNote').oninput = function () { b.note = this.value; S.save(); };
 
     /* actions */
+    if ($('#bookUrl')) $('#bookUrl').onchange = function () {
+      rememberBookingUrl(this.value.trim());
+    };
+
+    if ($('#bookAdd')) $('#bookAdd').onclick = function () {
+      var url = ($('#bookUrl').value || '').trim();
+      if (!/^https?:\/\//i.test(url)) {
+        alert('Paste your booking link first. It needs to start with https://');
+        return;
+      }
+      rememberBookingUrl(url);
+      b.actions.push({
+        id: S.uid('act'),
+        title: 'Choose a time for our first call',
+        detail: 'Pick whichever slot suits you \u2014 the times shown are ones I am genuinely ' +
+          'free, so there is no back and forth. When you book you can choose a video call or ' +
+          'ask me to ring you instead, and leave your number.',
+        due: '', done: false, confirm: false,
+        link: url, linkLabel: 'Choose a time'
+      });
+      S.saveNow();
+      rerender();
+    };
+
     if ($('#actAdd')) $('#actAdd').onclick = function () {
       var t = $('#actTitle').value.trim();
       if (!t) return;
       var wantConfirm = !!($('#actConfirmNew') && $('#actConfirmNew').checked);
-      b.actions.push({ id: S.uid('act'), title: t, detail: '', due: $('#actDue').value, done: false, confirm: wantConfirm });
+      b.actions.push({ id: S.uid('act'), title: t, detail: '', due: $('#actDue').value,
+        done: false, confirm: wantConfirm, link: '', linkLabel: '' });
       S.saveNow(); rerender();
     };
     $$('[data-actdone]').forEach(function (el) {
