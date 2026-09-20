@@ -23,8 +23,11 @@
   function defaultSignInAction() {
     return {
       id: 'act-confirm-signin',
-      title: 'Please send me a message to confirm you are able to sign in.',
-      detail: '', due: '', done: false, confirm: true
+      title: 'Send me a message to say you arrived here safely.',
+      detail: 'The messages box is on the right of this page \u2014 on a phone it sits just below. ' +
+        'Use it whenever you like: it is the easiest way to reach me, and there is no such thing ' +
+        'as a daft question.',
+      due: '', done: false, confirm: true
     };
   }
 
@@ -48,6 +51,21 @@
     if (!b.actions.some(function (a) { return a.id === 'act-confirm-signin'; })) {
       b.actions.unshift(defaultSignInAction());
     }
+    /* Projects created before the wording changed keep the old sentence
+       otherwise, so every client space says the same thing. Only the
+       untouched default is replaced \u2014 anything Sarah has edited herself
+       is left exactly as she wrote it. */
+    var OLD_SIGNIN = 'Please send me a message to confirm you are able to sign in.';
+    var migrated = false;
+    b.actions.forEach(function (a) {
+      if (a.id === 'act-confirm-signin' && a.title === OLD_SIGNIN && !a.detail) {
+        var fresh = defaultSignInAction();
+        a.title = fresh.title;
+        a.detail = fresh.detail;
+        migrated = true;
+      }
+    });
+    if (migrated) S.saveNow();
     if (!b.milestones) b.milestones = [];
     return b;
   }

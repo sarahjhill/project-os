@@ -109,6 +109,32 @@ window.CLIENT_JOURNEY = {
   }
 };
 
+/* The internal phase names, in order. Used only to recognise a snapshot
+   published before the journey existed: those carry no track, so without
+   this a Growth or Audit project could have the website journey wrongly
+   applied to it — an audit prospect being told their wireframes are done.
+   A match here means the snapshot really is a client website project. */
+window.CLIENT_PHASE_NAMES = [
+  'Discovery & Qualification',
+  'Proposal, Pricing & Agreement',
+  'UX Research',
+  'Strategy, Requirements & User Stories',
+  'Wireframes & Prototyping',
+  'UI Design & Design System',
+  'Usability Testing & Iteration',
+  'Technical Setup: Repo, Environments & Handoff',
+  'Build — Agile Sprints',
+  'QA, Accessibility & Pre-launch Hardening',
+  'Deployment & Launch',
+  'Handover, Closure & Growth'
+];
+
+window.isClientTrackSnapshot = function (pr) {
+  if (!pr || pr.phaseTotal !== window.CLIENT_PHASE_NAMES.length) return false;
+  if (pr.phaseName === 'Complete') return true;
+  return window.CLIENT_PHASE_NAMES.indexOf(pr.phaseName) !== -1;
+};
+
 /* What a stage row says when the project is on a track with no
    client-facing translation (growth, audit, personal). Better a bare
    honest name than inventing a description for work this file has

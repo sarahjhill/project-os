@@ -169,6 +169,43 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       : { name: fallback || 'This stage', did: '', needs: false, you: '' });
   }
 
+  /* Snapshots published before the journey existed carry no phases array,
+     only the old progress block. Rebuild the stage list from that rather
+     than showing nothing — and never treat missing data as "finished",
+     which is what an earlier version of this page did.
+
+     The old block gives phaseNum (the index of the stage in flight) and
+     phaseTotal. A genuinely finished project is the one case where the
+     app wrote phaseName: 'Complete'. */
+  function inferPhases(pr) {
+    if (!pr || !pr.phaseTotal) return null;
+    /* Only for a client website project. Everything else keeps its own
+       phase names and gets no invented journey. */
+    if (!(window.isClientTrackSnapshot && window.isClientTrackSnapshot(pr))) return null;
+    var total = pr.phaseTotal;
+    var finished = pr.phaseName === 'Complete';
+    var curNum = typeof pr.phaseNum === 'number' ? pr.phaseNum : null;
+    if (!finished && curNum === null) return null;   // not enough to say anything honest
+
+    var out = [];
+    for (var i = 0; i < total; i++) {
+      out.push({
+        id: 'p' + i, num: i, name: 'Stage ' + (i + 1),
+        done: 0, total: 0, pct: 0,
+        state: finished ? 'done'
+             : i < curNum ? 'done'
+             : i === curNum ? 'current' : 'upcoming'
+      });
+    }
+    return out;
+  }
+
+  function allComplete(phases) {
+    return !!(phases && phases.length && phases.every(function (ph) {
+      return ph.state === 'done';
+    }));
+  }
+
   function signInView(msg, isErr) {
     app.innerHTML =
       '<div class="signin card">' +
@@ -239,23 +276,35 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
     var idx = 0;
     if (cur && phases) { phases.forEach(function (ph, i) { if (ph.id === cur.id) idx = i + 1; }); }
 
+    var finished = allComplete(phases);
     var j = cur ? journey(cur.id, cur.name) : null;
 
     var h = '<div class="card"><h2>Progress</h2>' +
       '<div class="pct">' + (pr.pct || 0) + '%</div>' +
       '<div class="bar"><span style="width:' + (pr.pct || 0) + '%"></span></div>';
 
-    if (total) {
-      h += '<p class="stageline">' + (cur ? 'Stage ' + idx + ' of ' + total
-        : 'All ' + total + ' stages complete') + '</p>';
-    }
+    /* Only ever claim a position we actually know. No stage data means no
+       stage line — not an invented one, and never "complete". */
+    var line = cur ? 'Stage ' + idx + ' of ' + total
+             : finished ? 'All ' + total + ' stages complete'
+             : '';
+    if (line) h += '<p class="stageline">' + line + '</p>';
 
     if (j) {
       h += '<p class="phase">' + esc(j.name) + '</p>' +
         (j.did ? '<p class="goal">' + esc(j.did) + '</p>' : '');
-    } else {
+    } else if (finished) {
       h += '<p class="phase">Finished</p>' +
         '<p class="goal">All the planned work on this project is done.</p>';
+    } else {
+      /* Only promise a stage list when there is actually one underneath.
+         A project on a track with no journey (an audit, say) gets an
+         honest line instead of pointing at nothing. */
+      h += '<p class="phase">Under way</p>' +
+        ((phases && phases.length)
+          ? '<p class="goal">The stages below show what has been done and what is still to come.</p>'
+          : '<p class="goal">Ask me any time for an update on where things stand — ' +
+            'the messages box is right there.</p>');
     }
     return h + '</div>';
   }
@@ -343,8 +392,13 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
 
       main += welcomeCard(proj, p.note || '');
 
-      if (sec.progress && p.progress) main += progressCard(p.progress, p.phases);
-      if (sec.progress && p.phases)   main += doneCard(p.phases);
+      /* New snapshots carry the stage list. Older ones are rebuilt from the
+         progress block so a client who has not had an update published since
+         the journey shipped still sees a truthful page. */
+      var phases = (p.phases && p.phases.length) ? p.phases : inferPhases(p.progress);
+
+      if (sec.progress && p.progress) main += progressCard(p.progress, phases);
+      if (sec.progress && phases)     main += doneCard(phases);
 
       if (sec.actions) {
         var acts = p.actions || [];
@@ -367,7 +421,7 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
         main += '</div>';
       }
 
-      if (sec.progress && p.phases) main += journeyCard(p.phases);
+      if (sec.progress && phases) main += journeyCard(phases);
 
       if (sec.milestones) {
         var ms = p.milestones || [];
