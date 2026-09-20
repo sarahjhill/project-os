@@ -377,6 +377,32 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
       var u = window.Cloud.user();
       if (!u) { signInView(); return; }
 
+      /* ---------- Preview as client ----------
+         ?preview=<projectId> renders this page from the project's published
+         snapshot, read as the OWNER. Row-level security already lets an owner
+         read their own snapshot, so no client sign-in and no magic link is
+         needed. Nothing is written: last_seen_at is deliberately not touched,
+         so a preview never shows up as the client having opened it. */
+      var previewId = null;
+      try { previewId = new URLSearchParams(location.search).get('preview'); } catch (e) { previewId = null; }
+      if (previewId) {
+        window.Cloud.getSnapshot(previewId).then(function (snap) {
+          render([{ id: 'preview', project_id: previewId, display_name: 'Preview' }], [snap]);
+          var bar = document.createElement('div');
+          bar.style.cssText = 'position:sticky;top:0;z-index:50;background:#0a0a0c;color:#f6f3ed;' +
+            'padding:10px 16px;font:600 14px/1.4 system-ui,-apple-system,sans-serif;' +
+            'display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap';
+          bar.innerHTML = '<span>Preview \u2014 this is exactly what your client sees. ' +
+            'Nothing here is recorded against them.</span>' +
+            '<a href="app.html" style="color:#ffb020">\u2190 Back to the app</a>';
+          document.body.insertBefore(bar, document.body.firstChild);
+        }).catch(function (e) {
+          app.innerHTML = '<div class="signin card"><h1>Could not preview</h1>' +
+            '<p class="sub err">' + esc(e.message) + '</p></div>';
+        });
+        return;
+      }
+
       window.Cloud.myClientProjects().then(function (rows) {
         if (!rows.length) { notInvited(u.email); return; }
         rows.forEach(function (r) { window.Cloud.touchClientSeen(r.id); });

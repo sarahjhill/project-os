@@ -142,6 +142,8 @@
         'This project is local only — link it to share with a client.') + '</div>' +
       (linked ? '<div class="tiny muted" id="pubWhen">Checking\u2026</div>' : '') + '</div>' +
       '<div style="display:flex;gap:8px">' +
+      (linked ? '<a class="btn sm" id="previewBtn" href="client.html?preview=' +
+        encodeURIComponent(b.cloudId) + '" target="_blank" rel="noopener">Preview as client</a>' : '') +
       (linked ? '<button class="btn sm" id="publishBtn">Publish update</button>' :
         '<button class="btn btn-primary sm" id="linkBtn">Link this project</button>') +
       '<button class="btn sm" id="signOutBtn">Sign out</button></div></div>';
@@ -443,7 +445,13 @@
             '<div class="tiny muted">' + esc(c.email) +
             (c.last_seen_at ? ' · last opened ' + new Date(c.last_seen_at).toLocaleDateString('en-GB') : ' · not opened yet') +
             '</div></div>' +
-            (c.revoked ? '' : '<a class="btn sm" href="' + inviteMailto(c) + '">Email invite</a>') +
+            (c.revoked ? '' : (c.last_seen_at
+              /* last_seen_at is stamped the first time they open the portal,
+                 so it is the only honest signal that the invite was accepted. */
+              ? '<span class="btn sm" style="pointer-events:none;background:var(--ok,#1e7a5a);' +
+                'color:#fff;border-color:transparent">Accepted \u2713</span>' +
+                '<a class="btn sm" href="' + inviteMailto(c) + '" title="Send the link again">Resend</a>'
+              : '<a class="btn sm" href="' + inviteMailto(c) + '">Email invite</a>')) +
             '<button class="btn sm danger" data-clrm="' + c.id + '">Remove</button></div>';
         }).join('') : '<p class="tiny muted">Nobody invited yet.</p>';
         $$('[data-clrm]', el).forEach(function (x) {
