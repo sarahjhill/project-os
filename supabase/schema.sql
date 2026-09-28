@@ -366,3 +366,45 @@ create policy cac_client_insert on public.client_action_confirms
     public.is_client_of(project_id)
     and confirmed_by = public.current_email()
   );
+
+-- =====================================================================
+-- 11. PAGE REQUESTS
+-- Lets a client tell you what pages they want and the copy for each,
+-- from a new "Tell us about your pages" card under "What I need from
+-- you right now". Files that go with it use the client-uploads table
+-- and bucket already set up in section 9 — nothing new needed there.
+-- Run this block once in Supabase -> SQL Editor. Safe to run again.
+-- =====================================================================
+create table if not exists public.page_requests (
+  id          uuid primary key default gen_random_uuid(),
+  project_id  uuid not null references public.projects(id) on delete cascade,
+  page_name   text not null,
+  copy_needed text default '',
+  sender      citext default '',
+  created_at  timestamptz not null default now()
+);
+create index if not exists page_requests_project_idx on public.page_requests(project_id);
+
+alter table public.page_requests enable row level security;
+
+drop policy if exists pr_owner_all on public.page_requests;
+create policy pr_owner_all on public.page_requests
+  for all using (public.is_owner_of(project_id))
+  with check (public.is_owner_of(project_id));
+
+drop policy if exists pr_client_read on public.page_requests;
+create policy pr_client_read on public.page_requests
+  for select using (public.is_client_of(project_id));
+
+drop policy if exists pr_client_insert on public.page_requests;
+create policy pr_client_insert on public.page_requests
+  for insert with check (
+    public.is_client_of(project_id)
+    and sender = public.current_email()
+  );
+
+-- ---------------------------------------------------------------------
+-- CHECK IT WORKED
+-- ---------------------------------------------------------------------
+--   select tablename, rowsecurity from pg_tables
+--   where schemaname = 'public' and tablename = 'page_requests';

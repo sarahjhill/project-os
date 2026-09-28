@@ -367,6 +367,25 @@
     });
   }
 
+
+  /* ---------- page requests (client tells you what pages + copy) ---------- */
+  function listPageRequests(projectId) {
+    return init().then(function () {
+      if (!sb) return [];
+      return sb.from('page_requests').select('*')
+        .eq('project_id', projectId).order('created_at', { ascending: true })
+        .then(function (r) { if (r.error) throw r.error; return r.data || []; });
+    });
+  }
+  function submitPageRequest(projectId, pageName, copyNeeded) {
+    return init().then(function () {
+      if (!sb || !user()) throw new Error('Not signed in.');
+      return sb.from('page_requests').insert({
+        project_id: projectId, page_name: pageName, copy_needed: copyNeeded || '', sender: email()
+      }).select().single().then(function (r) { if (r.error) throw r.error; return r.data; });
+    });
+  }
+
   window.Cloud = {
     configured: configured,
     isReady: function () { return initialised; },
@@ -385,7 +404,8 @@
     sendClientMessage: sendClientMessage,
     listClientUploads: listClientUploads, uploadClientFile: uploadClientFile,
     clientUploadUrl: clientUploadUrl, deleteClientUpload: deleteClientUpload,
-    listActionConfirms: listActionConfirms, confirmAction: confirmAction
+    listActionConfirms: listActionConfirms, confirmAction: confirmAction,
+    listPageRequests: listPageRequests, submitPageRequest: submitPageRequest
   };
 })();
 try { window.__bootStage = 'cloud-loaded'; } catch (e) { }

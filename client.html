@@ -438,6 +438,11 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
         main += '</div>';
       }
 
+      main += '<div class="card"><h2>Tell us about your pages</h2>' +
+        '<p class="sub" style="margin:-8px 0 12px">List the pages you would like, and the copy (words) ' +
+        'needed for each one — add as many as you like, any time. You can attach any images or files too.</p>' +
+        '<div id="pagereq-' + i + '"><p class="empty">Loading…</p></div></div>';
+
       if (sec.progress && phases) main += journeyCard(phases);
 
       if (sec.milestones) {
@@ -611,6 +616,145 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
         });
       };
     });
+
+    rows.forEach(function (row, i) { pageRequestsSection(row, i); });
+  }
+
+  function pageRequestsSection(row, i) {
+    var host = document.getElementById('pagereq-' + i);
+    if (!host) return;
+    var pid = row.project_id;
+
+    function load() {
+      Promise.all([
+        window.Cloud.listPageRequests(pid).catch(function () { return []; }),
+        window.Cloud.listClientUploads(pid).catch(function () { return []; })
+      ]).then(function (res) { draw(res[0], res[1]); });
+    }
+
+    function draw(existing, uploads) {
+      var html = '';
+      if (existing.length) {
+        html += '<div style="margin-bottom:16px">' + existing.map(function (r) {
+          return '<div class="row"><div class="ic done">✓</div><div class="body">' +
+            '<strong>' + esc(r.page_name) + '</strong>' +
+            (r.copy_needed ? '<div class="d">' + esc(r.copy_needed) + '</div>' : '') +
+            '</div><div class="when">' + esc(d(r.created_at)) + '</div></div>';
+        }).join('') + '</div>';
+      }
+      if (uploads.length) {
+        html += '<div style="margin-bottom:16px">' + uploads.map(function (f) {
+          return '<div class="row"><div class="ic">📎</div><div class="body">' +
+            '<strong>' + esc(f.name) + '</strong></div>' +
+            '<button type="button" class="btn" data-cu2="' + f.id + '" style="padding:7px 13px;font-size:14px">Open</button></div>';
+        }).join('') + '</div>';
+      }
+      html += '<div id="pr-form-' + i + '"></div>';
+      host.innerHTML = html;
+
+      Array.prototype.forEach.call(host.querySelectorAll('[data-cu2]'), function (b) {
+        b.onclick = function () {
+          var rec = uploads.filter(function (x) { return x.id === b.dataset.cu2; })[0];
+          b.textContent = 'Opening…';
+          window.Cloud.clientUploadUrl(rec.path, 300).then(function (u) {
+            b.textContent = 'Open';
+            window.open(u, '_blank');
+          }).catch(function (e) { b.textContent = 'Open'; alert(e.message); });
+        };
+      });
+
+      buildForm();
+    }
+
+    function buildForm() {
+      var formHost = document.getElementById('pr-form-' + i);
+      if (!formHost) return;
+      var rowsWrap = document.createElement('div');
+      var pendingFiles = [];
+
+      function addPageRow() {
+        var r = document.createElement('div');
+        r.style.cssText = 'border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px';
+        r.innerHTML =
+          '<input type="text" placeholder="Page name (e.g. About us)" class="pr-name" style="margin-bottom:8px">' +
+          '<textarea class="pr-copy" placeholder="Copy needed for this page — paste text, or describe what should go here" style="width:100%;min-height:80px;padding:11px 13px;border:1px solid var(--strong);border-radius:9px;font:inherit"></textarea>' +
+          '<button type="button" class="btn" style="margin-top:8px;padding:7px 13px;font-size:13.5px" data-remove>Remove this page</button>';
+        r.querySelector('[data-remove]').onclick = function () { r.remove(); };
+        rowsWrap.appendChild(r);
+      }
+      addPageRow();
+
+      var addBtn = document.createElement('button');
+      addBtn.type = 'button'; addBtn.className = 'btn'; addBtn.textContent = '+ Add another page';
+      addBtn.style.cssText = 'margin-bottom:14px';
+      addBtn.onclick = function () { addPageRow(); };
+
+      var fileLabel = document.createElement('div');
+      fileLabel.className = 'tiny'; fileLabel.style.cssText = 'margin-bottom:6px';
+      fileLabel.textContent = 'Images or files for these pages (optional):';
+
+      var fileInput = document.createElement('input');
+      fileInput.type = 'file'; fileInput.multiple = true;
+      fileInput.accept = 'image/*,.pdf,.doc,.docx,.zip';
+      fileInput.style.cssText = 'margin-bottom:8px';
+
+      var fileList = document.createElement('div');
+      fileList.className = 'tiny';
+      fileInput.onchange = function () {
+        pendingFiles = Array.prototype.slice.call(fileInput.files);
+        fileList.textContent = pendingFiles.length ?
+          pendingFiles.length + ' file(s) selected: ' + pendingFiles.map(function (f) { return f.name; }).join(', ') : '';
+      };
+
+      var msg = document.createElement('p');
+      msg.className = 'msg';
+
+      var sendBtn = document.createElement('button');
+      sendBtn.type = 'button'; sendBtn.className = 'btn primary'; sendBtn.textContent = 'Send to Sarah';
+      sendBtn.style.cssText = 'margin-top:14px';
+      sendBtn.onclick = function () {
+        var pageEntries = Array.prototype.map.call(rowsWrap.children, function (r) {
+          return {
+            name: r.querySelector('.pr-name').value.trim(),
+            copy: r.querySelector('.pr-copy').value.trim()
+          };
+        }).filter(function (e) { return e.name; });
+
+        if (!pageEntries.length && !pendingFiles.length) {
+          msg.className = 'msg err';
+          msg.textContent = 'Add at least one page, or choose a file to send.';
+          return;
+        }
+
+        sendBtn.disabled = true;
+        msg.className = 'msg'; msg.textContent = 'Sending…';
+
+        var work = pageEntries.map(function (e) {
+          return window.Cloud.submitPageRequest(pid, e.name, e.copy);
+        }).concat(pendingFiles.map(function (f) {
+          return window.Cloud.uploadClientFile(pid, f);
+        }));
+
+        Promise.all(work).then(function () {
+          load();
+        }).catch(function (e) {
+          sendBtn.disabled = false;
+          msg.className = 'msg err';
+          msg.textContent = 'Could not send: ' + e.message;
+        });
+      };
+
+      formHost.innerHTML = '';
+      formHost.appendChild(rowsWrap);
+      formHost.appendChild(addBtn);
+      formHost.appendChild(fileLabel);
+      formHost.appendChild(fileInput);
+      formHost.appendChild(fileList);
+      formHost.appendChild(sendBtn);
+      formHost.appendChild(msg);
+    }
+
+    load();
   }
 
   function start() {
