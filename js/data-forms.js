@@ -7,68 +7,113 @@
 window.FORMS = {
 
 'doc-intake': {
-  task: 'p0-1',
-  title: 'Project Enquiry Form',
-  intro: 'Thanks for getting in touch. Just enough to understand what you need and come back to you properly — about five minutes. There are no wrong answers, and a rough guess is far better than a blank. The detail can wait until we speak.',
-  sections: [
+  "task": "p0-1",
+  "title": "Light the fire",
+  "intro": "Ten minutes, a few honest answers, and we'll both know if we're the right fit. A rough answer beats a blank, and if something stumps you, just say so. We can work it out together.",
+  "sections": [
     {
-      name: 'About you',
-      fields: [
-        { id: 'name', label: 'Your name', type: 'text', required: true },
-        { id: 'role', label: 'Your role', type: 'text' },
-        { id: 'email', label: 'Email address', type: 'email', required: true },
-        { id: 'phone', label: 'Phone number', type: 'tel' },
-        { id: 'company', label: 'Company or organisation name', type: 'text' },
-        { id: 'website', label: 'Current website (if you have one)', type: 'text', placeholder: 'https://' },
-        { id: 'business', label: 'In a sentence or two, what does your business do and who for?', type: 'textarea', required: true }
-      ]
-    },
-    /* The 'problem' section and most of the audience questions were cut: this
-       is first contact, and the detail belongs in the discovery call rather
-       than a form someone fills in before they have even spoken to me.
-       The two questions kept here had to be reworded — they said "they" and
-       "them", which referred to the deleted question about who would use it. */
-    /* Ids changed with the questions. 'access' used to be a yes/no about
-       meeting users and 'alternatives' about current workarounds — reusing
-       those ids for entirely different questions would have made old and new
-       submissions impossible to tell apart in the answers file. */
-    {
-      name: 'What good looks like',
-      fields: [
-        { id: 'likes', label: 'Can you give me up to three sites that you like, or want to be better than?',
-          type: 'textarea',
-          help: 'Links are ideal, but names are fine. A line on what you like about each one helps even more.' },
-        { id: 'competitors', label: 'Who are your main competitors?', type: 'textarea',
-          help: 'Whoever your customers would go to instead of you.' }
-      ]
-    },
-    {
-      name: 'Scope',
-      fields: [
-        { id: 'mustdo', label: 'What are your expectations once it is launched?', type: 'textarea', required: true,
-          help: 'What should be different for you or your customers once it is live?' },
-        { id: 'nicetohave', label: 'What would be good to have eventually, but can wait?', type: 'textarea' }
+      "name": "You and your business",
+      "fields": [
+        {
+          "id": "name",
+          "label": "Your name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "id": "email",
+          "label": "Email address",
+          "type": "email",
+          "required": true
+        },
+        {
+          "id": "business",
+          "label": "What does your business do, and who for?",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "id": "website",
+          "label": "Your current website, if you have one",
+          "type": "text",
+          "placeholder": "https://"
+        },
+        {
+          "id": "source",
+          "label": "Who sent you my way, or how did you find me?",
+          "type": "text",
+          "help": "If someone recommended me, tell me who. I like to say thank you."
+        }
       ]
     },
     {
-      name: 'Practicalities',
-      note: 'These three are the ones that let me tell you quickly and honestly whether I can help.',
-      fields: [
-        { id: 'budget', label: 'Which budget band are you working within?', type: 'radio', required: true,
-          options: ['Under £5,000', '£5,000 – £15,000', '£15,000 – £40,000', 'Over £40,000', 'I genuinely do not know yet'],
-          help: 'This is not a commitment. It tells me what is realistic so I do not waste your time.' },
-        { id: 'deadline', label: 'Is there a date this must be live by?', type: 'text', placeholder: 'e.g. before the spring season, or no fixed date' },
-        { id: 'deadlinewhy', label: 'If yes, what happens on that date?', type: 'textarea',
-          help: 'A trade show, a contract ending, a busy season — it helps me judge what is genuinely fixed.' },
-        { id: 'approver', label: 'Who gives final sign-off on the work?', type: 'text', required: true },
-        { id: 'others', label: 'Who else needs to be consulted along the way?', type: 'textarea' }
+      "name": "What you want",
+      "fields": [
+        {
+          "id": "goals",
+          "label": "What do you want your website to do for you?",
+          "type": "textarea",
+          "required": true,
+          "help": "Be specific: ‘10 more bookings a month by spring’ beats ‘more customers’. Up to three goals is perfect."
+        },
+        {
+          "id": "customer",
+          "label": "Who is your ideal customer, and what do they need from your site?",
+          "type": "textarea"
+        },
+        {
+          "id": "feel",
+          "label": "How should people feel when they land on your site?",
+          "type": "textarea",
+          "help": "Any sites you love (or want to beat) are really useful too. Links are great."
+        }
       ]
     },
     {
-      name: 'Finally',
-      fields: [
-        { id: 'source', label: 'How did you hear about me?', type: 'text' },
-        { id: 'anything', label: 'Anything else I should know before we speak?', type: 'textarea' }
+      "name": "Practicalities",
+      "note": "These let me tell you quickly and honestly whether I can help.",
+      "fields": [
+        {
+          "id": "budget",
+          "label": "Which budget are you working with?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            "Under £300",
+            "£300 – £600",
+            "£600 – £1,200",
+            "£1,200 – £2,500",
+            "£2,500 – £4,500",
+            "£4,500 +",
+            "I genuinely don't know yet"
+          ],
+          "help": "Not a commitment. It just stops either of us wasting time."
+        },
+        {
+          "id": "deadline",
+          "label": "Is there a date it must be live by? If so, why?",
+          "type": "text",
+          "placeholder": "e.g. before the spring season, or no fixed date"
+        },
+        {
+          "id": "approver",
+          "label": "Who has the final say on decisions?",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g. just me, or me and my business partner"
+        }
+      ]
+    },
+    {
+      "name": "The big one",
+      "fields": [
+        {
+          "id": "success",
+          "label": "Picture us celebrating a year after launch. What has your website done for you?",
+          "type": "textarea",
+          "required": true,
+          "help": "This is the question that matters most. A few lines is plenty."
+        }
       ]
     }
   ]
