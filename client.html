@@ -54,6 +54,10 @@ h2{font-size:15px;margin:0 0 14px;letter-spacing:.02em;text-transform:uppercase;
 .welcome p:last-child{margin-bottom:0}
 .note{background:var(--sunken);border-left:3px solid var(--accent);padding:14px 16px;
  border-radius:0 10px 10px 0;font-size:15px;margin:0;white-space:pre-wrap}
+.nowcard{border-left:4px solid var(--accent)}
+.nowgrid{display:grid;gap:14px}
+.nowk{margin:0 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;color:var(--text-3)}
+.nowv{margin:0}
 .noteempty{border-left-color:var(--strong);color:var(--text-3);font-style:italic}
 
 .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
@@ -323,6 +327,30 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
     return h + '</div>';
   }
 
+  /* Right now: where things are this week, what the client does, and what
+     happens next. Task-level when CLIENT_STEPS knows the task; otherwise
+     the current stage's own "you" line. Nothing invented. */
+  function nowCard(step, phases) {
+    var s = step && window.clientStepFor ? window.clientStepFor(step.id) : null;
+    if (!s) {
+      var cur = null;
+      (phases || []).forEach(function (ph) { if (!cur && ph.state === 'current') cur = ph; });
+      if (!cur) return '';
+      var j = journey(cur.id, cur.name);
+      if (!j.you) return '';
+      s = { now: j.name, you: j.you, next: '' };
+    }
+    var link = safeUrl(s.link);
+    return '<div class="card nowcard"><h2>Right now</h2>' +
+      '<div class="nowgrid">' +
+      '<div><p class="nowk">Where we are</p><p class="nowv">' + esc(s.now) + '</p></div>' +
+      '<div><p class="nowk">What you do</p><p class="nowv"><strong>' + esc(s.you) + '</strong></p>' +
+        (link ? '<p><a class="btnlink" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">' +
+          esc(s.label || 'Open') + '</a></p>' : '') + '</div>' +
+      (s.next ? '<div><p class="nowk">What happens next</p><p class="nowv">' + esc(s.next) + '</p></div>' : '') +
+      '</div></div>';
+  }
+
   function doneCard(phases) {
     var done = (phases || []).filter(function (ph) { return ph.state === 'done'; });
     var h = '<div class="card"><h2>What has been done so far</h2>';
@@ -411,6 +439,11 @@ footer{text-align:center;color:var(--text-3);font-size:12.5px;margin-top:34px}
          the journey shipped still sees a truthful page. */
       var phases = (p.phases && p.phases.length) ? p.phases : inferPhases(p.progress);
 
+      /* The intake steps are for client website projects only. Growth,
+         audit and personal projects get no "right now" card at all. */
+      var isClient = p.track ? p.track === 'client'
+        : !!(window.isClientTrackSnapshot && window.isClientTrackSnapshot(p.progress));
+      if (sec.progress && p.progress && isClient) main += nowCard(p.step, phases);
       if (sec.progress && p.progress) main += progressCard(p.progress, phases);
       if (sec.progress && phases)     main += doneCard(phases);
 

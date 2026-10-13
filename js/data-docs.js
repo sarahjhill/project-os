@@ -4,53 +4,38 @@
    ===================================================================== */
 window.DOCS = {
 
-'doc-intake': { title: 'Client Intake Questionnaire', cat: 'Sales', body: `
-# Client Intake Questionnaire
+'doc-intake': { title: 'Light the fire form (intake)', cat: 'Sales', body: `
+# Light the fire: the intake form
 
-Send within 4 hours of first contact. 15 questions, no more.
+Link to send: **sarahjhill.com/start** (goes to forms/intake.html). Ten minutes for them, 12 questions, 7 required.
 
-## About you
-1. Your name, role, and the best email/phone for you.
-2. Company name and website (if you have one).
-3. In one or two sentences, what does your business do and who for?
+## You and your business
+1. Your name *
+2. Email address *
+3. What does your business do, and who for? *
+4. Your current website, if you have one
+5. Who sent you my way, or how did you find me? (thank referrers)
 
-## The problem
-4. What is the problem you are trying to solve right now?
-5. What happens today when a customer tries to do this? Walk me through it.
-6. What have you already tried? What did or didn't work?
-7. How is this costing you — lost sales, wasted hours, complaints, something else?
+## What you want
+6. What do you want your website to do for you? * (coached to be specific)
+7. Who is your ideal customer, and what do they need from your site?
+8. How should people feel when they land on your site? (plus sites they love)
 
-## The users
-8. Who will use this? Roughly how many people, and how often?
-9. What do they use today instead (including spreadsheets, phone calls, competitors)?
+## Practicalities
+9. Budget * — Under £300 / £300–£600 / £600–£1,200 / £1,200–£2,500 / £2,500–£4,500 / £4,500+ / Don't know yet
+10. Is there a date it must be live by? If so, why?
+11. Who has the final say on decisions? *
 
-## Scope and constraints
-10. What must this do on day one to be worth doing at all?
-11. What existing systems must it connect to? (payments, CRM, email, accounting, stock, calendar…)
-12. Do you have brand guidelines, a logo, existing designs, or are we starting fresh?
-13. Who will provide the written content and images?
-
-## Practicalities — please answer all three
-14. **Budget:** which band are you working within?
-    - Under £5k / £5–15k / £15–40k / £40k+ / Not sure yet
-15. **Timeline:** is there a fixed date this must be live by, and what happens on that date?
-16. **Decisions:** who signs off on the work, and who else needs to be consulted?
-
-## Finally
-17. How did you hear about me?
-18. Anything else I should know before we speak?
+## The big one
+12. Picture us celebrating a year after launch. What has your website done for you? *
 
 ---
 
-### Scoring the answers (internal — do not send)
-
-| Signal | Green | Amber | Red |
-|---|---|---|---|
-| Budget | Band given, matches scope | "Not sure yet" but engaged | Refuses to answer twice |
-| Problem | Specific, quantified | Vague but real | "We just need a website" |
-| Deadline | Real reason, realistic | Soft target | Impossible / unexplained |
-| Decision-maker | One named person | Two, one clearly leads | A committee, no lead |
-| Content | Owned and ready | Needs help, budgeted | Assumes you'll write it free |
+### Reading the answers (internal — do not send)
+- Answers arrive by email from Formspree. Click **File these answers** to attach them to the project.
+- Do not reply the same day. Sleep on it, then score them on the **Client Scorecard**.
+- Can't answer 6 or 12? They're not ready for a build. Offer a paid session to fill it in together.
+- "Under £300": almost always a polite no and a referral.
 ` },
 
 'doc-discovery-script': { title: 'Discovery Call Script', cat: 'Sales', body: `
@@ -93,29 +78,95 @@ Send within 4 hours of first contact. 15 questions, no more.
 - Talks only in features, never outcomes • Speaks badly about their last three suppliers
 ` },
 
-'doc-qualify': { title: 'Go / No-Go Scorecard', cat: 'Sales', body: `
-# Go / No-Go Scorecard
+'doc-qualify': { title: 'Client Scorecard', cat: 'Sales', body: `
+# Client Scorecard
 
-Score 1–5. Below 18 = decline or restructure as a paid discovery sprint.
+Read the form. **Sleep on it.** Read it again, then score. Never score on the day it arrives.
 
-| Criterion | Weight | Score | Notes |
+| Score | Question | 5 means | 1 means |
 |---|---|---|---|
-| Budget matches the real scope | x2 | | |
-| Single clear decision-maker | x2 | | |
-| Timeline realistic | x1 | | |
-| Problem type I've solved before | x1 | | |
-| Client responsive and prepared | x1 | | |
-| Work I want in my portfolio | x1 | | |
-| Payment terms acceptable | x1 | | |
+| **Budget** | Is their budget realistic for what they want? Cost it honestly (copywriter, plugins, licences, your hours). | Yes, and I make a profit | No chance at that budget |
+| **Project** | Does it excite me, fit my values, make a great portfolio piece, open the right doors? | I'd almost do it for free | Only if the money's good |
+| **Respect** | Have they respected my process so far? Pushback on the form is a warning. | Did everything I asked | Tried to boss the process |
 
-**Total: ___ / 45**
+**Total: ___ / 15**
 
-## Decline email template
-> Hi [name], thanks for taking the time to talk this through — the problem you're solving is a good one. Having thought about it, I don't think I'm the right fit for this piece of work, mainly because [honest, short, non-negotiable reason]. I'd rather tell you now than halfway through. [Name] at [link] does this kind of work well and I'd be happy to introduce you. Best of luck with it — do come back to me if [circumstance changes].
+| Total | Decision | Send |
+|---|---|---|
+| 12–15 | Yes. Five-star client. | Email 5 (or ring) |
+| 7–11 | Maybe. Budget short → Email 6. Respect a 3 → set expectations firmly from day one. A 4 + 4 + 3 can still be a yes. | Email 6 or 5 |
+| 3–6 | No. Refer them on. | Email 7 |
 
-## Paid discovery sprint offer
-When the problem is good but the scope is unclear:
-> 1–2 weeks, fixed fee of £X. You get: research findings, a prioritised backlog, wireframes of the core journey, and a fixed-price build quote. If you go ahead with the build, 50% of the fee is credited. If you don't, you keep everything and can take it to anyone.
+## My respect red flags
+- Haggling before they've seen a plan
+- Ignoring the form, or "can we just jump on a call?"
+- Wanting it "by Friday"
+- (add your own)
+
+## Paid discovery offer
+When the problem is good but they couldn't answer the form: a fixed-price session where we fill it in together. If they go ahead with the build, credit half the fee.
+` },
+
+'doc-intake-emails': { title: 'Intake emails (1–7)', cat: 'Sales', body: `
+# Intake emails
+
+Save each as a Gmail template. Swap the [brackets]. Say it the way you'd say it face to face.
+
+## Email 1 — out of the blue: connect first
+**Subject:** Lovely to hear from you
+> Hi [first name],
+> Thanks for getting in touch. Before we dive in, let's connect properly. Most of my work comes through people I'm already connected to, so that's where my attention goes first.
+> Can you connect with me on LinkedIn? [link] And if someone pointed you my way, tell me who. I like to say thank you.
+> Then I'll send you the next step.
+> Sarah
+
+## Email 2 — send the form (within 4 hours)
+**Subject:** Your website project: next step
+> Hi [first name],
+> Thanks for getting in touch. So I can give you a proper answer, and so we can both see if we're right for each other, I need to know a bit more.
+> It takes about ten minutes: sarahjhill.com/start
+> Even if we don't end up working together, these questions will make you much clearer on what you want your website to do.
+> I read every answer properly and reply within two working days.
+> Sarah
+
+## Email 3 — reminder, day 5
+**Subject:** Checking in
+> Hi [first name],
+> I know how fast a week goes when you're running everything yourself. Just a nudge about your website project.
+> These few questions get us on the same page: sarahjhill.com/start
+> Even if we never work together, they'll help you get clear on what your website needs to do for you.
+> Sarah
+
+## Email 4 — last reminder, day 12
+**Subject:** Project start dates
+> Hi [first name],
+> Sorry for the extra email. You'd be amazed how many people tell me the first one went to spam.
+> This is the last one for now. I start new projects at the beginning of each month and I'd love to save you a space: sarahjhill.com/start
+> If you want me holding your hand all the way, I'm there. If you'd rather shout instructions from the sidelines, that works too.
+> And tell me straight if I'm being a pain.
+> Sarah
+
+## Email 5 — yes (better as a call)
+**Subject:** Let's do this
+> Hi [first name],
+> Thanks for filling in the form. I've read it properly, and I'm really excited about this one. It's exactly the kind of project I love.
+> Let's book a call to plan the next steps. I'm free [Tuesday at 10], [Tuesday at 2] or [Thursday at 11]. Which suits you?
+> Sarah
+
+## Email 6 — the budget (ring first, email to follow)
+**Subject:** Your project and budget
+> Hi [first name],
+> I've been through your answers properly. A project like this would be in the region of £[X]–£[Y]. It needs design, build and testing done properly, and my experience tells me it can't be done to a standard you'd be proud of for £[their budget].
+> I'd still love to help. Can we talk about what matters most, or a smaller first stage?
+> Sarah
+
+## Email 7 — no, with a referral
+**Subject:** Your website project
+> Hi [first name],
+> Thank you for telling me about your project. I'm not able to take it on right now. I couldn't give it the attention it deserves.
+> [Name] at [link] would be a great fit, and I'm happy to introduce you.
+> All the best with it,
+> Sarah
 ` },
 
 'doc-competitive': { title: 'Competitive Audit Template', cat: 'Research', body: `

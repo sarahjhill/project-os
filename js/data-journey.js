@@ -26,9 +26,9 @@ window.CLIENT_JOURNEY = {
 
   p0: {
     name: 'Getting to know your business',
-    did: 'We talk through what your business does, who you are trying to reach, and what you need a website to actually achieve.',
+    did: 'You tell me about your project with the Light the fire form, I read it properly and reply within two working days, and then we have a proper conversation.',
     needs: true,
-    you: 'A proper conversation, and honest answers about what is working and what is not.'
+    you: 'Fill in the form honestly, then pick a time for our call.'
   },
 
   p1: {
@@ -143,4 +143,74 @@ window.journeyFor = function (phaseId, fallbackName) {
   var j = window.CLIENT_JOURNEY[phaseId];
   if (j) return j;
   return { name: fallbackName || 'This stage', did: '', needs: false, you: '' };
+};
+
+
+/* =====================================================================
+   CLIENT_STEPS — task-level "right now" for the client page.
+
+   The phase journey above says what a whole stage is. This says what is
+   happening this week: keyed by the task Sarah is on, it tells the client
+   where things are, exactly what they need to do (or that they can sit
+   tight), and what happens next. A task with no entry falls back to the
+   phase's own "you" line, so the card is never empty or invented.
+
+   Fields
+     now    where things are, in one sentence
+     you    what the client does now ('' never: say "Nothing for now")
+     next   what happens after this
+     link   optional button for the client (e.g. the form)
+     label  the button text
+   ===================================================================== */
+window.CLIENT_STEPS = {
+  'p0-1': {
+    now: 'Your enquiry is in, and I am getting back to you.',
+    you: 'Fill in the Light the fire form. It takes about ten minutes, and rough, honest answers are perfect.',
+    next: 'Once your answers are in, I read them properly and reply within two working days.',
+    link: 'https://sarahjhill.com/start', label: 'Open the form'
+  },
+  'p0-1b': {
+    now: 'I am waiting for your answers to the Light the fire form.',
+    you: 'Fill in the form. If a question stumps you, just say so in the box and we will work it out together.',
+    next: 'Once your answers are in, I read them properly and reply within two working days.',
+    link: 'https://sarahjhill.com/start', label: 'Open the form'
+  },
+  'p0-1c': {
+    now: 'Your answers are in. I am reading them properly and sleeping on them before I reply.',
+    you: 'Nothing for now. Sit tight.',
+    next: 'Within two working days you hear back: a time to talk, an honest word about budget, or the name of someone who is a better fit.'
+  },
+  'p0-1d': {
+    now: 'I am writing back to you with my answer.',
+    you: 'Keep an eye on your inbox, and your spam folder just in case.',
+    next: 'If we are a good fit, we book a call at a time that suits you.'
+  },
+  'p0-2': {
+    now: 'Our first proper conversation.',
+    you: 'Pick one of the call times I offered. Come ready to talk about your business, your customers and what success looks like.',
+    next: 'After the call I decide, honestly, whether we are the right fit.'
+  },
+  'p0-3': {
+    now: 'I am deciding, honestly, whether we are the right fit after our call.',
+    you: 'Nothing for now.',
+    next: 'You get either a yes and a written plan with a fixed price, or an honest no and the name of someone better suited.'
+  },
+  'p0-4': {
+    now: 'I am researching your competitors and your market.',
+    you: 'Nothing for now. If a competitor or a website comes to mind, send it over.',
+    next: 'I pull my ideas together for your site.'
+  },
+  'p0-5': {
+    now: 'I am pulling my ideas for your site together.',
+    you: 'Nothing for now.',
+    next: 'You get a written plan with a fixed price and real dates.'
+  },
+  'p0-6': {
+    now: 'I am setting up your private project page.',
+    you: 'Sign in with the link I email you, and have a look round.',
+    next: 'You get a written plan with a fixed price and real dates.'
+  }
+};
+window.clientStepFor = function (taskId) {
+  return (taskId && window.CLIENT_STEPS[taskId]) || null;
 };

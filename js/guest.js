@@ -70,7 +70,7 @@
        Design — far enough in that the progress bars, the sprint board and
        the phase list all have something to show. */
     var DONE = [
-      'p0-1', 'p0-2', 'p0-3', 'p0-4', 'p0-5',
+      'p0-1', 'p0-1b', 'p0-1c', 'p0-1d', 'p0-2', 'p0-3', 'p0-4', 'p0-5',
       'p1-1', 'p1-2', 'p1-3', 'p1-4',
       'p2-1', 'p2-2'
     ];

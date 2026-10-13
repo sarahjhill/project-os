@@ -124,6 +124,19 @@
         if (curIdx === -1 && current && ph.id === current.phase.id) curIdx = idx;
       });
       payload.track = p.track || 'client';
+
+      /* The task Sarah is on right now: the first unfinished task in the
+         current stage. The client page turns it into a plain-English
+         "right now" card via CLIENT_STEPS; only the id is sent. */
+      if (current && payload.track === 'client') {
+        var tasksNow = S.phaseTasks(current.phase.id), stepId = '';
+        tasksNow.forEach(function (t) {
+          if (stepId) return;
+          var m = (p.tasks || {})[t.id];
+          if (!m || m.status !== 'done') stepId = t.id;
+        });
+        if (stepId) payload.step = { id: stepId };
+      }
       payload.phases = phaseList.map(function (ph, idx) {
         var ps = S.phaseStats(ph.id);
         var state = curIdx === -1 ? 'done'

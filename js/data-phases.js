@@ -19,28 +19,77 @@ window.PHASES = [
     'You have decided to proceed, decline, or run a paid discovery sprint'
   ],
   tasks: [
+    /* ---- The intake: from first email to a decision ----
+       Agency Mavericks "Incoming": connected or referred, the Light the
+       fire form, two reminders, sleep on it, score it, then yes / budget /
+       no within two working days. Each task has a client-side line in
+       CLIENT_STEPS (data-journey.js) so the client page says exactly
+       what is happening and what they need to do. */
     {
-      id: 'p0-1', title: 'Send the intake questionnaire', role: 'Lead', est: 1, pri: 1, pts: 1,
-      why: 'Filters out unqualified leads before you spend an hour on a call, and gives you written answers you can quote back in the proposal.',
+      id: 'p0-1', title: 'New enquiry: reply and send the form', role: 'Lead', est: 0.25, pri: 1, pts: 1,
+      why: 'The first reply sets the tone. Fast and clear says you are professional, organised and in demand.',
       how: [
-        'Send the questionnaire within 4 hours of first contact — speed is the strongest signal of professionalism.',
-        'Keep it to 12–15 questions. Anything longer gets abandoned.',
-        'Always include the three qualifying questions: budget range, deadline, and who signs off.',
-        'Use a form tool so answers land in one place (Tally, Typeform, Google Forms) — do not use a Word attachment.',
-        'Set an auto-reply confirming you will respond within 2 business days.',
-        'If budget or timeline is left blank, ask once by email before booking a call.'
+        'Read their message properly. Note who they are, what they want and how they found you.',
+        'If they came out of the blue, ask them to connect on LinkedIn or tell you who sent them (Email 1).',
+        'Reply within 4 hours with the form link: sarahjhill.com/start (Email 2).',
+        'Create a project for them here. Invite them under Clients and publish their page now, so they can see every next step (full set-up: "Onboard client to the client space").',
+        'Put a reminder in your calendar for 5 days from now.'
       ],
-      deliver: ['Completed intake questionnaire', 'Lead record in your CRM/notes'],
-      tools: ['Tally / Typeform', 'Notion or Airtable as a lead log'],
-      dod: ['Questionnaire returned', 'Budget band and deadline known', 'Decision-maker identified'],
-      docs: ['doc-intake']
+      deliver: ['Reply sent with the form link', 'Project created and client page published'],
+      tools: ['Gmail saved replies', 'Project OS: Clients'],
+      dod: ['Replied within 4 hours', 'Form link sent', 'Reminder in the calendar'],
+      docs: ['doc-intake-emails', 'doc-intake']
+    },
+    {
+      id: 'p0-1b', title: 'Chase the form if it has not come back', role: 'Lead', est: 0.25, pri: 2, pts: 1,
+      why: 'Most people mean to fill it in and forget. Two light reminders bring back the serious ones without sounding desperate.',
+      how: [
+        'Day 5 and no answers: send "Checking in" (Email 3).',
+        'Day 12 and still nothing: send "Project start dates". This is the last one (Email 4).',
+        'After that, stop. Mark the lead cold and move on.',
+        'If they say the questions are hard, offer a paid session to fill it in together.'
+      ],
+      deliver: ['Form back, or two reminders sent'],
+      tools: ['Gmail saved replies', 'Calendar'],
+      dod: ['Form received, or lead marked cold after two reminders'],
+      docs: ['doc-intake-emails']
+    },
+    {
+      id: 'p0-1c', title: 'Read the answers, sleep on it, score it', role: 'Lead', est: 0.5, pri: 1, pts: 1,
+      why: 'Gets your gut feeling out of your head and onto paper, so you decide with a clear head rather than on the spot.',
+      how: [
+        'When the Formspree email arrives, click "File these answers" to attach them to this project.',
+        'Read every answer. Do not reply yet.',
+        'Sleep on it. Read them again 24 hours later.',
+        'Score Budget, Project and Respect from 1 to 5 on the scorecard.',
+        '12–15 means yes. 7–11 means maybe: check the budget or set expectations firmly. 3–6 means no.'
+      ],
+      deliver: ['Answers filed on the project', 'Scorecard total out of 15'],
+      tools: ['Project OS: Answers', 'Client Scorecard'],
+      dod: ['Scored after sleeping on it', 'Decision made: yes, budget talk or no'],
+      docs: ['doc-qualify']
+    },
+    {
+      id: 'p0-1d', title: 'Reply with your decision within 2 working days', role: 'Lead', est: 0.5, pri: 1, pts: 1,
+      why: 'You promised an answer in two working days. Keeping that promise is the first proof that you keep deadlines.',
+      how: [
+        'Yes (12–15): ring or email. Say you are excited, then offer three times on your client days (Email 5).',
+        'Budget short (7–11): give your real range, say why, and offer a smaller first stage (Email 6).',
+        'No (3–6): decline politely and name someone better suited (Email 7).',
+        'Update their client page: write a short note and add their next action, e.g. "Pick a call time".',
+        'If it is a yes, book the call.'
+      ],
+      deliver: ['Decision sent', 'Client page updated'],
+      tools: ['Phone', 'Gmail saved replies', 'Project OS: Clients'],
+      dod: ['Replied within 2 working days', 'Call booked, budget talk started, or lead closed'],
+      docs: ['doc-intake-emails']
     },
     {
       id: 'p0-2', title: 'Run the discovery call', role: 'Lead', est: 1.5, pri: 1, pts: 2,
-      why: 'The questionnaire tells you what they think they want. The call tells you what they actually need and whether you can work with them.',
+      why: 'The form tells you what they think they want. The call tells you what they actually need and whether you can work with them.',
       how: [
         'Book 45 minutes. Record it with consent — you will want the exact wording later.',
-        'Open by restating their questionnaire answers back to them: "You said X — is that still right?" This builds trust fast.',
+        'Open by restating their form answers back to them: "You said X — is that still right?" This builds trust fast.',
         'Spend the first 20 minutes only on the problem, not the solution. Ask "what happens today when someone tries to do this?"',
         'Ask the money question directly: "What does it cost you every month that this problem exists?" This anchors value pricing.',
         'Ask the failure question: "If we ship this and in six months it has not worked, what would have gone wrong?" Surfaces hidden constraints.',
@@ -53,10 +102,10 @@ window.PHASES = [
       docs: ['doc-discovery-script']
     },
     {
-      id: 'p0-3', title: 'Qualify: go / no-go decision', role: 'Lead', est: 0.5, pri: 1, pts: 1,
+      id: 'p0-3', title: 'Final go / no-go after the call', role: 'Lead', est: 0.5, pri: 1, pts: 1,
       why: 'Bad-fit projects are the single biggest cause of unprofitable months for a solo studio. Say no early, in writing, politely.',
       how: [
-        'Score the lead against: budget fit, clear decision-maker, realistic timeline, problem you have solved before, client responsiveness.',
+        'Re-score Budget, Project and Respect with what you learnt on the call.',
         'Red flags: "we just need a quick site", no budget stated after two asks, more than three stakeholders with no lead, payment terms pushed beyond 30 days.',
         'If it is a strong problem but an unclear scope, offer a paid discovery sprint instead of a fixed-price build.',
         'If declining, send a short, warm email and recommend someone else. Referrals come back.'
