@@ -84,28 +84,71 @@ window.PHASES = [
       dod: ['Replied within 2 working days', 'Call booked, budget talk started, or lead closed'],
       docs: ['doc-intake-emails']
     },
+    /* ---- Positioning: from "yes, let's talk" to the proposal ----
+       Agency Mavericks "Positioning": the before-the-call checklist, the
+       call agenda (Go Wide, Go Deep), and the recap email within 24 hours.
+       The client gets a form at each step: "Before our call" and
+       "Check my recap". */
+    {
+      id: 'p0-1e', title: 'Get ready for the discovery call', role: 'Lead', est: 1, pri: 1, pts: 1,
+      why: 'Three things win or lose the call before it starts: the right people in the room, a quiet place to talk, and you knowing their business before they explain it.',
+      how: [
+        'As soon as they pick a time, send "Before our call" (Email 8) with the Before our call form. Publish their client page so it shows the form as their next step.',
+        'Decision makers: everyone who signs off must be on the call. Use the name from their Light the fire answers: "Can [approver] join us? I would love to hear it from them directly."',
+        'How: a Google Meet video call (email them the link) or a phone call (ring the number on their form). Never a cafe or anywhere public.',
+        'Research: their business, their industry, two or three competitors, any recent news or big events, and what they are probably trying to achieve.',
+        'Run their website through Dragonfire SEO so you walk in knowing their score, speed and biggest gaps.',
+        'When the form comes back, click "File these answers". Re-read it next to their Light the fire answers.',
+        'Check recording is ready (Apple Notes or Google Meet). Only record if they said yes on the form.',
+        'Write "Goals, not tech" at the top of your call notes.'
+      ],
+      deliver: ['Before our call form sent and filed', 'Research notes and Dragonfire report', 'Call agenda printed or open'],
+      tools: ['Gmail saved replies', 'Project OS: Answers', 'Dragonfire SEO', 'Apple Notes'],
+      dod: ['Every decision maker confirmed for the call', 'Video call or their premises booked', 'Research done and form re-read', 'Recording consent known'],
+      docs: ['doc-precall', 'doc-intake-emails', 'doc-discovery-script']
+    },
     {
       id: 'p0-2', title: 'Run the discovery call', role: 'Lead', est: 1.5, pri: 1, pts: 2,
-      why: 'The form tells you what they think they want. The call tells you what they actually need and whether you can work with them.',
+      why: 'This is where you stop being "a web designer" and become the expert they want. It is a listening exercise: their goals, in their words, are what the proposal is built from.',
       how: [
-        'Book 45 minutes. Record it with consent — you will want the exact wording later.',
-        'Open by restating their form answers back to them: "You said X — is that still right?" This builds trust fast.',
-        'Spend the first 20 minutes only on the problem, not the solution. Ask "what happens today when someone tries to do this?"',
-        'Ask the money question directly: "What does it cost you every month that this problem exists?" This anchors value pricing.',
-        'Ask the failure question: "If we ship this and in six months it has not worked, what would have gone wrong?" Surfaces hidden constraints.',
-        'Ask about existing systems, data, and integrations — this is where full-stack scope hides.',
-        'Close by stating next step and date: "I will send a proposal by Thursday."'
+        'Follow the Discovery Call Agenda (45 minutes). Keep small talk to their business: "How is business?"',
+        'Check every decision maker is there. If not, offer to rebook: you take this seriously and hope they do too.',
+        'Set the time ("I have got 45 minutes, I will keep us on track"), then ask to ask questions and record.',
+        'Say you have read their answers properly and today is about going deeper.',
+        'Go Wide: "Why do you need a new website?" Keep asking "Why else?" until they run out. Read the list back.',
+        'Go Deep: "If you had to pick one, which matters most?" Then "Why?" and "Help me understand." Then go wide again on that answer.',
+        'Success: "A year after launch, what are we celebrating?" Use their own form answer. Go wide, then deep.',
+        'Budget: "Is that the figure you have set aside? Does anyone else affect it?" Then stop talking. Sit in the silence.',
+        'Ask, lightly: "What superpower do you think I would bring to this?"',
+        'Their questions: no tech talk and no prices. "I will go through my notes and come back with the best plan."',
+        'Close: "Thank you. You will have my proposal in the next few days." Never promise 24 hours.'
       ],
-      deliver: ['Call recording + transcript', 'Notes against the discovery script', 'Draft scope bullet list'],
-      tools: ['Google Meet / Zoom with recording', 'Otter or built-in transcription'],
-      dod: ['Problem statement written', 'Constraints and integrations listed', 'Next step agreed on the call'],
+      deliver: ['Call recording and transcript', 'Their goals ranked, in their words', 'Success in 12 months, budget confirmed'],
+      tools: ['Google Meet', 'Apple Notes (recording and transcript)'],
+      dod: ['Wide and deep done on goals and success', 'Budget heard from them out loud', 'Next step and timing agreed on the call'],
       docs: ['doc-discovery-script']
+    },
+    {
+      id: 'p0-2b', title: 'Send the meeting recap within 24 hours', role: 'Lead', est: 0.5, pri: 1, pts: 1,
+      why: 'Almost nobody does this. A recap that proves you listened puts you above everyone else they are talking to, and it means there are no surprises when the proposal arrives.',
+      how: [
+        'Within 24 hours, send "Meeting recap" (Email 9). Fill it with their own words from the call.',
+        'Cover four things: what the business needs, what their customers need, what success looks like in a year, and the investment they have set aside.',
+        'Say "investment", never "cost" or "quote". End with "Stay tuned" so they watch for the proposal.',
+        'Optional: attach the transcript. Tidy it first, Apple Notes mishears names.',
+        'Link the Check my recap form so they can confirm or correct it in two minutes. Update their client page.',
+        'When their answers come back, click "File these answers". Anything they changed goes straight into the proposal.'
+      ],
+      deliver: ['Recap email sent within 24 hours', 'Check my recap answers filed'],
+      tools: ['Gmail saved replies', 'Project OS: Answers'],
+      dod: ['Recap sent within 24 hours', 'Client has confirmed it, or corrections are noted'],
+      docs: ['doc-recap', 'doc-intake-emails']
     },
     {
       id: 'p0-3', title: 'Final go / no-go after the call', role: 'Lead', est: 0.5, pri: 1, pts: 1,
       why: 'Bad-fit projects are the single biggest cause of unprofitable months for a solo studio. Say no early, in writing, politely.',
       how: [
-        'Re-score Budget, Project and Respect with what you learnt on the call.',
+        'Wait for their Check my recap answers, then re-score Budget, Project and Respect with what you learnt on the call.',
         'Red flags: "we just need a quick site", no budget stated after two asks, more than three stakeholders with no lead, payment terms pushed beyond 30 days.',
         'If it is a strong problem but an unclear scope, offer a paid discovery sprint instead of a fixed-price build.',
         'If declining, send a short, warm email and recommend someone else. Referrals come back.'

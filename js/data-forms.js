@@ -119,6 +119,76 @@ window.FORMS = {
   ]
 },
 
+'doc-precall': {
+  task: 'p0-1e',
+  title: 'Before our call',
+  intro: 'Five minutes now makes our call twice as useful. Rough answers are perfect. This is so I can come prepared, not a test.',
+  sections: [
+    {
+      name: 'Who is joining',
+      note: 'Everyone who will make the final decision needs to be on the call. It saves you passing everything on, and nothing gets lost. On a phone call, I can add them to a group call.',
+      fields: [
+        { id: 'name', label: 'Your name', type: 'text', required: true },
+        { id: 'email', label: 'Email address', type: 'email', required: true },
+        { id: 'time', label: 'Which of the call times I offered suits you?', type: 'text', required: true,
+          placeholder: 'e.g. Tuesday at 10' },
+        { id: 'people', label: 'Who else will be on the call? Names, roles and email addresses', type: 'textarea', required: true,
+          help: 'Include everyone who signs off on decisions or the budget. If it is just you, write "just me".' },
+        { id: 'where', label: 'How would you like to talk?', type: 'radio', required: true,
+          options: ['Google Meet video call', 'Phone call'] },
+        { id: 'phone', label: 'If you would like a phone call, what is the best number to ring?', type: 'tel',
+          placeholder: 'e.g. 07700 900123',
+          help: 'For a video call I will email you the Google Meet link.' }
+      ]
+    },
+    {
+      name: 'Getting ready',
+      fields: [
+        { id: 'record', label: 'Are you happy for me to record the call?', type: 'radio', required: true,
+          options: ['Yes, that is fine', 'No, please just take notes'],
+          help: 'Only so I do not miss anything you say. The recording is never shared, is used only for my notes, and is deleted when the project ends.' },
+        { id: 'why', label: 'Why do you need a new website? List every reason you can think of', type: 'textarea', required: true,
+          help: 'Big or small, all of them. We will dig into these together on the call.' },
+        { id: 'top', label: 'If you could only fix one thing, what would it be?', type: 'textarea' },
+        { id: 'changed', label: 'Has anything changed since you filled in the Light the fire form?', type: 'textarea',
+          help: 'A new date, a new budget, someone new involved, anything at all.' },
+        { id: 'look', label: 'Anything you would like me to look at before we talk?', type: 'textarea',
+          help: 'Competitors, websites you love, your social pages, a brochure. Links are perfect.' }
+      ]
+    }
+  ]
+},
+
+'doc-recap': {
+  task: 'p0-2b',
+  title: 'Check my recap',
+  intro: 'I have written down what I heard on our call. Two minutes to tell me I have got it right, or put me straight, and your proposal will be built on exactly what you need.',
+  sections: [
+    {
+      name: 'Did I get it right?',
+      fields: [
+        { id: 'name', label: 'Your name', type: 'text', required: true },
+        { id: 'right', label: 'How close is my recap?', type: 'radio', required: true,
+          options: ['Spot on', 'Mostly right, with a few small changes', 'I would change quite a lot'] },
+        { id: 'wrong', label: 'What did I get wrong, or miss?', type: 'textarea',
+          help: 'Your goals, your customers, what success looks like, the budget. Anything at all.' },
+        { id: 'since', label: 'Has anything come to mind since the call?', type: 'textarea' }
+      ]
+    },
+    {
+      name: 'Getting the proposal to you',
+      fields: [
+        { id: 'who', label: 'Who else needs to see the proposal?', type: 'textarea',
+          help: 'Names and email addresses, so it reaches everyone who decides at the same time.' },
+        { id: 'how', label: 'How would you like to go through it?', type: 'radio', required: true,
+          options: ['Talk me through it on a call', 'Email it and I will read it first', 'Both, please'] },
+        { id: 'when', label: 'Is there a date you need to decide by?', type: 'text',
+          placeholder: 'e.g. before our board meeting on the 20th, or no rush' }
+      ]
+    }
+  ]
+},
+
 'doc-screener': {
   task: 'p2-1',
   title: 'Research Session — Sign-up',

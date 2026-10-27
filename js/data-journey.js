@@ -26,9 +26,9 @@ window.CLIENT_JOURNEY = {
 
   p0: {
     name: 'Getting to know your business',
-    did: 'You tell me about your project with the Light the fire form, I read it properly and reply within two working days, and then we have a proper conversation.',
+    did: 'You tell me about your project with the Light the fire form, I read it properly and reply within two working days. Then we have a proper conversation about your goals, and I send you a written recap of everything I heard.',
     needs: true,
-    you: 'Fill in the form honestly, then pick a time for our call.'
+    you: 'Fill in the Light the fire form, pick a time for our call, fill in the short Before our call form, then check my recap after the call.'
   },
 
   p1: {
@@ -183,12 +183,24 @@ window.CLIENT_STEPS = {
   'p0-1d': {
     now: 'I am writing back to you with my answer.',
     you: 'Keep an eye on your inbox, and your spam folder just in case.',
-    next: 'If we are a good fit, we book a call at a time that suits you.'
+    next: 'If we are a good fit, we book a call at a time that suits you, and I send you a short form to fill in before it.'
+  },
+  'p0-1e': {
+    now: 'Our call is booked, and I am getting ready for it.',
+    you: 'Fill in the short Before our call form. It takes about five minutes. If anyone else has a say in the final decision, add them so they can join us.',
+    next: 'I research your business before we talk, so the call is about your goals, not the basics.',
+    link: 'https://sarahjhill.com/project-os/forms/precall.html', label: 'Open the Before our call form'
   },
   'p0-2': {
-    now: 'Our first proper conversation.',
-    you: 'Pick one of the call times I offered. Come ready to talk about your business, your customers and what success looks like.',
-    next: 'After the call I decide, honestly, whether we are the right fit.'
+    now: 'Our first proper conversation: about 45 minutes, on a Google Meet video call or by phone.',
+    you: 'Come ready to talk about why you want a new website, what success looks like a year from now, and your budget. Bring everyone who has a say in the decision.',
+    next: 'Within 24 hours you get a short recap of everything I heard, so you can check I have got it right.'
+  },
+  'p0-2b': {
+    now: 'I have written up everything I heard on our call.',
+    you: 'Read my recap email, then tell me if I got it right, or what I missed. It takes about two minutes.',
+    next: 'Your answers go straight into your proposal, so it is built on exactly what you told me.',
+    link: 'https://sarahjhill.com/project-os/forms/recap.html', label: 'Check my recap'
   },
   'p0-3': {
     now: 'I am deciding, honestly, whether we are the right fit after our call.',

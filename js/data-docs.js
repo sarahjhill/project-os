@@ -38,44 +38,100 @@ Link to send: **sarahjhill.com/start** (goes to forms/intake.html). Ten minutes 
 - "Under £300": almost always a polite no and a referral.
 ` },
 
-'doc-discovery-script': { title: 'Discovery Call Script', cat: 'Sales', body: `
-# Discovery Call Script (45 minutes)
+'doc-precall': { title: 'Before our call form', cat: 'Sales', body: `
+# Before our call
 
-**Before:** read their questionnaire, look at their site and two competitors. Get consent to record.
+Send with **Email 8** as soon as they pick a call time. Link: **sarahjhill.com/project-os/forms/precall.html**. Five minutes for them, 11 questions, 6 required.
 
-## 0–5 min — Frame
-"Thanks for the answers. I want to spend most of today understanding the problem rather than talking about solutions — is that OK? I'll follow up with a proposal by [date]."
+## Who is joining
+1. Your name *
+2. Email address *
+3. Which of the call times I offered suits you? *
+4. Who else will be on the call? Names, roles and emails * (everyone who signs off)
+5. How would you like to talk? * Google Meet video call / phone call
+6. If a phone call, the best number to ring
 
-## 5–25 min — The problem
-- You said [quote their answer]. Tell me more about that.
-- Walk me through what happens today, step by step, when someone tries to [core task].
-- Where does it break down most often?
-- Who inside the business feels that pain? What do they do about it?
-- **What does it cost you each month that this problem exists?**
-- What have you already tried?
+## Getting ready
+7. Happy for me to record the call? * (used for notes only, deleted after the project)
+8. Why do you need a new website? List every reason *
+9. If you could only fix one thing, what would it be?
+10. Has anything changed since the Light the fire form?
+11. Anything you would like me to look at before we talk?
 
-## 25–35 min — Users and context
-- Who are the people who'll use this? Describe a typical one.
-- What are they doing right before and right after they use it?
-- What do they use instead today?
-- Can I speak to two or three of them during research?
+---
 
-## 35–42 min — Constraints and systems
-- What systems does this need to talk to?
-- Where does your data live today, and what state is it in?
-- Anything that absolutely cannot change?
-- Who maintains it after launch?
-- **If we ship this and in six months it hasn't worked, what will have gone wrong?**
+### Reading the answers (internal, do not send)
+- Q4 is the checklist's first rule. If the person who decides is missing, ask for them now, not on the day.
+- Q5: video call → email the Google Meet link. Phone call → ring the number in Q6, and set up a group call if others are joining.
+- Q7 "no": take notes by hand, and do not record. Ever.
+- Q8 is your Go Wide list before you start. On the call, read it back and ask "Why else?"
+` },
 
-## 42–45 min — Close
-- Recap the problem back to them in your own words; ask "have I got that right?"
-- Confirm budget band and deadline out loud.
-- Confirm the decision-maker.
-- State the next step and the date. Then stop talking.
+'doc-recap': { title: 'Check my recap form', cat: 'Sales', body: `
+# Check my recap
+
+Linked from **Email 9** (Meeting recap), sent within 24 hours of the call. Link: **sarahjhill.com/project-os/forms/recap.html**. Two minutes for them, 7 questions, 3 required.
+
+## Did I get it right?
+1. Your name *
+2. How close is my recap? * Spot on / mostly right / I would change quite a lot
+3. What did I get wrong, or miss?
+4. Has anything come to mind since the call?
+
+## Getting the proposal to you
+5. Who else needs to see the proposal? (names and emails)
+6. How would you like to go through it? * Call / email / both
+7. Is there a date you need to decide by?
+
+---
+
+### Reading the answers (internal, do not send)
+- "Spot on": write the proposal straight from the recap.
+- Anything in Q3 or Q4 goes into the proposal in their words.
+- "I would change quite a lot": ring them before writing anything.
+- Q6 "Call": book a proposal walk-through on your client days.
+` },
+
+'doc-discovery-script': { title: 'Discovery Call Agenda', cat: 'Sales', body: `
+# Discovery Call Agenda (45 minutes)
+
+Google Meet video call or a phone call. Never a cafe. **Goals, not tech.**
+
+## Before
+- [ ] Every decision maker invited (their Before our call answers, Q4)
+- [ ] Research: their business, industry, competitors, recent news
+- [ ] Dragonfire SEO report run on their site
+- [ ] Light the fire and Before our call answers re-read
+- [ ] Recording ready (only if they said yes)
+
+## The call
+1. **Small talk about their business**, not the weather. "How is business?" Two minutes, then in.
+2. **Decision makers.** Everyone here who decides? If not, offer to rebook.
+3. **Set the time.** "I have got 45 minutes, I will keep us on track."
+4. **Ask to ask.** "OK if I ask lots of questions, and record so I do not miss anything?"
+5. **Their answers.** "I have read your answers properly. Today is about going deeper."
+6. **Goals: Go Wide.** "Why do you need a new website?" Then "Why else?" until they say that is it. Read the list back.
+7. **Goals: Go Deep.** "If you had to pick one, which matters most?" Then "Why?" and "Help me understand." Then go wide again on that answer.
+8. **Success.** "A year after launch, what are we celebrating?" (their own form answer) Go wide, then deep.
+9. **Budget.** "You gave a range on the form, I would just like to hear it from you. Is that the figure you have set aside? Does anyone else affect it?" Then **silence**.
+10. **The superpower question.** Lightly: "What superpower do you think I would bring to this?"
+11. **Their questions.** No tech talk, no prices. "I will go through my notes and come back with the best plan."
+12. **Close.** "Thank you. You will have my proposal in the next few days." Then send the recap within 24 hours.
+
+## Softening the "why else"
+"Just so I am completely on the same page, is there any other reason you...?"
+
+## Write down
+- Their goals, ranked, **in their exact words**
+- What success in 12 months looks like, with numbers
+- The budget, and who else affects it
+- The superpower they named
 
 ## Red flags to note
-- Cannot describe the user • No budget after two asks • Deadline with no reason
-- Talks only in features, never outcomes • Speaks badly about their last three suppliers
+- Decision maker missing twice
+- No budget after two asks
+- Talks only in features, never outcomes
+- Wants it "by Friday" with no reason
 ` },
 
 'doc-qualify': { title: 'Client Scorecard', cat: 'Sales', body: `
@@ -107,7 +163,7 @@ Read the form. **Sleep on it.** Read it again, then score. Never score on the da
 When the problem is good but they couldn't answer the form: a fixed-price session where we fill it in together. If they go ahead with the build, credit half the fee.
 ` },
 
-'doc-intake-emails': { title: 'Intake emails (1–7)', cat: 'Sales', body: `
+'doc-intake-emails': { title: 'Intake emails (1–9)', cat: 'Sales', body: `
 # Intake emails
 
 Save each as a Gmail template. Swap the [brackets]. Say it the way you'd say it face to face.
@@ -166,6 +222,26 @@ Save each as a Gmail template. Swap the [brackets]. Say it the way you'd say it 
 > Thank you for telling me about your project. I'm not able to take it on right now. I couldn't give it the attention it deserves.
 > [Name] at [link] would be a great fit, and I'm happy to introduce you.
 > All the best with it,
+> Sarah
+
+## Email 8 — before our call (as soon as they pick a time)
+**Subject:** Before our call
+> Hi [first name],
+> Lovely, [day and time] it is. I'm really looking forward to it.
+> So I can come properly prepared, could you fill this in before we talk? It takes about five minutes: sarahjhill.com/project-os/forms/precall.html
+> It asks who else should join us. If anyone else has a say in the final decision, I'd love them on the call too, so they hear it first hand.
+> Sarah
+
+## Email 9 — meeting recap (within 24 hours of the call)
+**Subject:** Meeting recap
+> Hi [first name],
+> It was lovely to talk about [business] yesterday. Here's what I heard, so you can check I've got it right:
+> **Your business needs to:** [1] · [2] · [3]
+> **Your customers need to:** [what they need to find, feel, do]
+> **A year from now, success looks like:** [their words]
+> **The investment you've set aside:** £[budget]
+> Have I missed anything, or would you change anything? Two minutes here: sarahjhill.com/project-os/forms/recap.html
+> I'll be in touch in the next few days with a proposal setting out the plan, the timeline and the investment. Stay tuned.
 > Sarah
 ` },
 
